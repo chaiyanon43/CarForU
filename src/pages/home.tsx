@@ -1,4 +1,4 @@
 const Home=()=>{
-    return <>This is Home in monggit branch ควย</>
+    return <>This is Home in monggit branch</>
 }
 export default Home
