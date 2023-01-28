@@ -92,3 +92,11 @@ body{
 .p-menubar .p-menubar-button{
   margin-left: auto;
 }
+.PhoneInputInput {
+  padding: 12px;
+  height: 47px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  font-size: 1rem;
+}
