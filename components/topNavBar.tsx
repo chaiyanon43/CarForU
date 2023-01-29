@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 
 import Link from 'next/link';
 import Login from '@/pages/login';
+import Signup from '@/pages/signup';
 const TopNavBar = () => {
     const [displayBasic, setDisplayBasic] = useState<boolean>(false);
     const renderFooter = () => {
@@ -12,6 +13,15 @@ const TopNavBar = () => {
             <div>
                 <Button label="No" icon="pi pi-times" onClick={() => setDisplayBasic(false)} className="p-button-text" />
                 <Button label="Yes" icon="pi pi-check" onClick={() => setDisplayBasic(false)} autoFocus />
+            </div>
+        );
+    }
+    const [displayBasicSignup, setDisplayBasicSignup] = useState<boolean>(false);
+    const renderFooterSignup = () => {
+        return (
+            <div>
+                <Button label="No" icon="pi pi-times" onClick={() => setDisplayBasicSignup(false)} className="p-button-text" />
+                <Button label="Yes" icon="pi pi-check" onClick={() => setDisplayBasicSignup(false)} autoFocus />
             </div>
         );
     }
@@ -35,7 +45,9 @@ const TopNavBar = () => {
             style: { marginLeft: "auto" },
             template: <><Button style={{ width: "100px", height: "50px", marginRight:"16px"}} label="Login"  onClick={() => setDisplayBasic(true)} />
                 {displayBasic ? <Login displayBasic={displayBasic} renderFooter={renderFooter} setDisplayBasic={setDisplayBasic}/>: <></>}
-                <Button style={{ width: "100px", height: "50px" }} label="SignUp" /></>
+                <Button style={{ width: "100px", height: "50px" }} label="SignUp" onClick={() => setDisplayBasicSignup(true)}  />
+                {displayBasicSignup ? <Signup displayBasicSignup={displayBasicSignup} renderFooterSignup={renderFooterSignup} setDisplayBasicSignup={setDisplayBasicSignup}/>: <></>}
+                </>
 
         }
     ];
