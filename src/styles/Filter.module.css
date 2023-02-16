@@ -1,0 +1,62 @@
+.filter-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 0px;
+}
+.filter-container .filter-box {
+  margin: 16px 8px;
+}
+.filter-container .filter-box h3 {
+  margin-bottom: 1rem;
+}
+.filter-container .filter-box .filter-inside {
+  margin: 0px 16px;
+}
+.filter-container .filter-box .filter-inside .brand-model {
+  width: 100%;
+}
+.filter-container .filter-box .filter-inside .brand-model #input-brand {
+  width: 100%;
+}
+.filter-container .filter-box .filter-inside .header-slider {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.filter-container .filter-box .filter-inside .fuel-container {
+  width: fit-content;
+  margin: 0 auto;
+}
+.filter-container .filter-box .filter-inside .fuel-container button {
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  padding: 10px;
+  margin: 8px;
+}
+
+.filter-container .filter-box .filter-inside .seat-selected {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
+.filter-container .filter-box .filter-inside .seat-selected label {
+  margin-left: 8px;
+}
+.filter-container .filter-box .filter-inside .gear-selected {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+}
+.filter-container .filter-box .filter-inside .gear-selected label {
+  margin-left: 12px;
+}
+.filter-container .filter-box .filter-inside .gear-selected .radio-btn {
+  margin-bottom: 8px;
+}
+@media (max-width: 700px) {
+  .filter-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

@@ -6,11 +6,29 @@
   padding-bottom: 8px;
   margin-bottom: 1rem;
   background-color: #fff;
-  border-radius: 25px;
+  border-radius: 15px;
   box-shadow: 5px 5px 5px rgb(0, 0, 0, 0.2);
-  height: 125px;
   overflow: hidden;
+  height: 120px;
   transition-duration: 0.5s;
+}
+.search-box .arrow-search{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin:8px;
+  height: 26px;
+}
+.search-box .arrow-search i{
+  transition-duration: 0.3s;
+}
+.search-box .arrow-search i:hover{
+
+  font-weight: 900;
+  transition-duration: 0.3s;
+}
+.search-box .arrow-search i{
+  cursor: pointer;
 }
 .search-box .search-detail{
   display: flex;
@@ -22,37 +40,70 @@
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
+  margin: 16px 0px;
 }
 .card-container .card {
   background-color: #fff;
-  border-radius: 50px;
-  grid-column-end: span 4;
+  border-radius: 17px;
   padding-bottom:8px;
-  box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.2);
-  margin: 16px;
-  height: 550px;
+  box-shadow: 0px 10px 10px rgb(0, 0, 0, 0.2);
+  margin: 0;
+  height: 540px;
   position: relative;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+.card-container .card:hover{
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.726);
+  transition-duration: 0.3s;
 }
 .card-container .card .image-container {
   height: 250px;
   overflow: hidden;
   display: flex;
-  border-top-left-radius: 50px;
-  border-top-right-radius: 50px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   justify-content: center;
   align-items: center;
+
 }
 .card-container .card .image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.card-container a{
+  padding: 0;
+  margin: 16px;
+  text-decoration: none;
+
+}
 .card-container .card .car-detail{
   margin: 16px;
   padding-right: 12px;
-  height: 235px;
+  height: 245px;
   overflow-y: auto;
+}
+.card-container .card .car-detail h3{
+  color: rgba(0, 0, 0, 0.726);
+}
+.card-container .card .car-detail .detail-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-container .card .car-detail .detail-header i{
+  color: rgb(228, 24, 24);
+  font-size: 20px;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+.card-container .card .car-detail .detail-header i:hover{
+  font-size: 25px;
+  font-weight: bold;
+  transition-duration: 0.3s;
+  
 }
 .card-container .card .car-detail::-webkit-scrollbar{
   width:4px;
@@ -84,4 +135,34 @@
   font-weight: bold;
   transition-duration: 0.3s;
   
+}
+.card-container .card .car-detail Button{
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+.card-container .card .car-detail .detail-box-container{
+  display: flex;
+}
+.card-container .card .car-detail .detail-box{
+  margin-top:12px;
+  width: 100%;
+  display: flex;
+}
+.card-container .card .car-detail .detail-box h3{
+  margin: 0 auto;
+  border: 2px solid #f5b873;
+  background-color: #f5b873;
+  padding:6px;
+  border-radius: 5px;
+  color: #fff;
+}
+@media (max-width: 1600px) {
+  .card-container  { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 1150px) {
+  .card-container  { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 800px) {
+  .card-container  { grid-template-columns: repeat(1, 1fr); }
 }

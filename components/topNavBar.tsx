@@ -12,7 +12,7 @@ const TopNavBar = () => {
         return (
             <div>
                 <Button label="No" icon="pi pi-times" onClick={() => setDisplayBasic(false)} className="p-button-text" />
-                <Button label="Yes" icon="pi pi-check" onClick={() => setDisplayBasic(false)} autoFocus />
+                <Button label="Yes" icon="pi pi-check" onClick={() => setDisplayBasic(false)} type='submit' autoFocus />
             </div>
         );
     }
@@ -20,8 +20,7 @@ const TopNavBar = () => {
     const renderFooterSignup = () => {
         return (
             <div>
-                <Button label="No" icon="pi pi-times" onClick={() => setDisplayBasicSignup(false)} className="p-button-text" />
-                <Button label="Yes" icon="pi pi-check" onClick={() => setDisplayBasicSignup(false)} autoFocus />
+                <Button label="Cancel" icon="pi pi-times" onClick={() => setDisplayBasicSignup(false)} className="p-button-text" />
             </div>
         );
     }
@@ -29,17 +28,17 @@ const TopNavBar = () => {
         {
             label: 'ซื้อรถยนต์ใหม่',
             icon: 'pi pi-fw pi-car',
-            command: () => { window.location.href = "/buy_new_car"; }
+            command: () => { window.location.href = "/buy-new"; },
         },
         {
             label: 'ซื้อรถยนต์มือสอง',
             icon: 'pi pi-fw pi-replay',
-
+            command: () => { window.location.href = "/second-hand-car"; }
         },
         {
             label: 'ประกาศขายรถยนต์',
             icon: 'pi pi-fw pi-dollar',
-
+            command: () => { window.location.href = "/sell-car"; }
         },
         {
             style: { marginLeft: "auto" },
@@ -48,7 +47,6 @@ const TopNavBar = () => {
                 <Button style={{ width: "100px", height: "50px" }} label="SignUp" onClick={() => setDisplayBasicSignup(true)}  />
                 {displayBasicSignup ? <Signup displayBasicSignup={displayBasicSignup} renderFooterSignup={renderFooterSignup} setDisplayBasicSignup={setDisplayBasicSignup}/>: <></>}
                 </>
-
         }
     ];
 

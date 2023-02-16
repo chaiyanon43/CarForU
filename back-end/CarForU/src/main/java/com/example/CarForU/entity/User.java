@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,8 +27,16 @@ public class User{
     private String address;
     @Column(name = "USER_ROLE")
     private int role;
-    @Column(name = "USER_IMAGE")
+    @Lob
+    @Column(name = "USER_IMAGE",columnDefinition = "MEDIUMBLOB")
     private String image;
+    @OneToMany(mappedBy = "user")
+    private Set<Car> cars;
+    @OneToMany(mappedBy = "user")
+    private Set<Notification> notifications;
+    @OneToMany(mappedBy = "user")
+    Set<CarLikes> carLikes;
+
 
     public User() {
     }

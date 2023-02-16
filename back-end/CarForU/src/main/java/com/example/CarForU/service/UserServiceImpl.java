@@ -27,12 +27,17 @@ public class UserServiceImpl implements UserService{
         }catch (IOException e){
             e.printStackTrace();
         }
+
+        System.out.println(image.getName());
+        System.out.println(image.getContentType());
+        System.out.println(image.getSize());
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setName(name);
         newUser.setPhoneNumber(phoneNumber);
         newUser.setAddress(address);
         newUser.setRole(2);
+
         userRepository.save(newUser);
     }
 }
