@@ -7,6 +7,7 @@ import style from '../src/styles/Filter.module.css'
 import { RadioButton } from 'primereact/radiobutton';
 import { BuyCar } from './BuyCar/buy_new_car';
 import { TreeSelect } from 'primereact/treeselect';
+import { CommonFunc } from './commonFunc';
 interface filterForm {
     range: [0, 10000000];
 }
@@ -18,6 +19,7 @@ const SearchCar = (props: BuyCar) => {
     const [seats, setSeats] = useState<any>([]);
     const [gears, setGears] = useState<any>([]);
     const [brandModel, setBeandModel] = useState<any>(null)
+    const commonFunc = new CommonFunc();
     const nodes = [
         {
             key: "0",
@@ -34,9 +36,6 @@ const SearchCar = (props: BuyCar) => {
             }]
         }
     ]
-    const numberWithCommas = (num: number) => {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
     const onSeatChange = (e: any) => {
         let selectedSeats = [...seats];
 
@@ -73,8 +72,8 @@ const SearchCar = (props: BuyCar) => {
                     <h3>ราคา</h3>
                     <div className={style['filter-inside']}>
                         <div className={style['header-slider']}>
-                            <label>{numberWithCommas(range[0])}</label>
-                            <label>{numberWithCommas(range[1])}</label>
+                            <label>{commonFunc.numberWithCommas(range[0])}</label>
+                            <label>{commonFunc.numberWithCommas(range[1])}</label>
                         </div>
                         <Slider value={range} onChange={(e:any) => setRange(e.value)} min={200000} max={5000000} step={400000} range />
                     </div>

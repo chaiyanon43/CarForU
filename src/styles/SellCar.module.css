@@ -1,0 +1,15 @@
+.sell-main-container{
+    width: 95%;
+    background-color: #FEFEFE;
+    margin:30px auto;
+    border-radius: 5px;
+    padding: 16px;
+    max-width: 750px;
+}
+.sell-box{
+    width: 100%;
+    margin-bottom: 16px;
+}
+.sell-box .dropdown{
+    width: 320px;
+}

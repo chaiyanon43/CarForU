@@ -42,9 +42,9 @@ const TopNavBar = () => {
         },
         {
             style: { marginLeft: "auto" },
-            template: <><Button style={{ width: "100px", height: "50px", marginRight:"16px"}} label="Login"  onClick={() => setDisplayBasic(true)} />
+            template: <><Button style={{ width: "100px", height: "50px", marginRight:"16px",background:"rgb(20, 219, 20)",border:'solid 1px rgb(20, 219, 20)'}} label="Login"  onClick={() => setDisplayBasic(true)} />
                 {displayBasic ? <Login displayBasic={displayBasic} renderFooter={renderFooter} setDisplayBasic={setDisplayBasic}/>: <></>}
-                <Button style={{ width: "100px", height: "50px" }} label="SignUp" onClick={() => setDisplayBasicSignup(true)}  />
+                <Button style={{ width: "100px", height: "50px",background:"red",border:'solid 1px red' }} label="SignUp" onClick={() => setDisplayBasicSignup(true)}  />
                 {displayBasicSignup ? <Signup displayBasicSignup={displayBasicSignup} renderFooterSignup={renderFooterSignup} setDisplayBasicSignup={setDisplayBasicSignup}/>: <></>}
                 </>
         }

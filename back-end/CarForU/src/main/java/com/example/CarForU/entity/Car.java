@@ -21,6 +21,8 @@ public class Car {
     private CarModel modelId;
     @Column(name = "CAR_FUEL_TYPE")
     private String carFuelType;
+    @Column(name = "CAR_HEADER")
+    private String carHeader;
     @Column(name = "CAR_YEAR")
     private double carYear;
     @Column(name = "CAR_MILEAGE")

@@ -17,6 +17,8 @@ public class CarImage {
     @Lob
     @Column(name = "CAR_IMAGE_IMG",columnDefinition = "MEDIUMBLOB")
     private String carImage;
+    @Column(name = "CAR_IMAGE_STATUS")
+    private int carImageStatus;
     @ManyToOne
     @JoinColumn(name = "CAR_ID",nullable = false)
     private Car car;

@@ -1,13 +1,13 @@
 package com.example.CarForU.service;
 
-import com.example.CarForU.bean.CarsAllResponse;
-import com.example.CarForU.bean.CarForRec;
-import com.example.CarForU.bean.EuclideanResult;
-import com.example.CarForU.bean.EuclideanResultListResponse;
+import com.example.CarForU.bean.*;
 import com.example.CarForU.entity.Car;
+import com.example.CarForU.entity.CarImage;
+import com.example.CarForU.repository.CarImageRepository;
 import com.example.CarForU.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ public class CarServiceImpl implements CarService{
 
     @Autowired
     CarRepository carRepository;
+    @Autowired
+    CarImageRepository carImageRepository;
     @Override
     public EuclideanResultListResponse CarRecommendation(int carId) {
         List<Car> carAll = carRepository.findAll();
@@ -63,10 +65,22 @@ public class CarServiceImpl implements CarService{
         return ConditionClassify(cars);
     }
 
+    @Override
+    public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, MultipartFile[] carImage, MultipartFile[] carImageDefect, double carMileage, String carModelName, double carPrice, double carSeats, double carYear) {
+        Car addCar = new Car();
+    }
+
     public List<CarsAllResponse> ConditionClassify(List<Car> cars){
         List<CarsAllResponse> carResult = new ArrayList<>();
         for (int i = 0; i<cars.size();i++){
             CarsAllResponse car = new CarsAllResponse();
+            List<CarImageResponse> images = new ArrayList<CarImageResponse>();
+            carImageRepository.findCarImageByCarId(cars.get(i).getCarId()).forEach(img -> {
+                CarImageResponse image = new CarImageResponse();
+                image.setCarImage(img.getCarImage());
+                images.add(image);
+                    }
+            );
             car.setCarId(cars.get(i).getCarId());
             car.setCarBrand(cars.get(i).getModelId().getCarBrand().getBrandName());
             car.setCarModel(cars.get(i).getModelId().getModelName());
@@ -81,6 +95,8 @@ public class CarServiceImpl implements CarService{
             car.setCarCondition(cars.get(i).getCarCondition());
             car.setCarGas(cars.get(i).getCarGas());
             car.setCarMileage(cars.get(i).getCarMileage());
+            car.setCarFuelType(cars.get(i).getCarFuelType());
+            car.setCarImage(images);
             carResult.add(car);
         }
         return carResult;

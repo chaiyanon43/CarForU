@@ -1,7 +1,10 @@
+import SellCarPanel from "components/SellCar/sell_car_panel"
+
 const SellCar =()=> {
+    
     return (
         <>
-        <h1>ขายรถ</h1>
+            <SellCarPanel/>
         </>
     )
 }

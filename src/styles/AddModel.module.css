@@ -1,0 +1,23 @@
+.add-model-container{
+    max-width: 90%;
+    width: 700px;
+    background-color: rgb(184, 184, 184);
+    margin: 30px auto;
+    padding: 30px;
+}
+.add-model-container .brand-dropdown{
+    width: 100%;
+}
+.add-model-container input{
+    width: 100%;
+    margin:16px 0px;
+}
+.add-model-container button{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+}
+.add-model-container h2{
+    margin-bottom: 16px;
+}

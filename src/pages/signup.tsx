@@ -31,22 +31,23 @@ const Signup = (props: SignupFormProps) => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<userForm>();
     const [fileName, setFileName] = useState<string>('None');
     const userSubmmit: SubmitHandler<userForm> = (user) => {
-        axios.post('http://localhost:8080/addUser', {
-            image: user.image,
-            username: user.username,
-            password: user.password,
-            name: user.name,
-            phoneNumber: user.phoneNumber,
-            address: user.address
-        }, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        }).then((res: any) => {
-            alert(res.data)
-        }).catch((err: any) => {
-            alert("Add User Failed.")
-        })
+        // axios.post('http://localhost:8080/addUser', {
+        //     image: user.image,
+        //     username: user.username,
+        //     password: user.password,
+        //     name: user.name,
+        //     phoneNumber: user.phoneNumber,
+        //     address: user.address
+        // }, {
+        //     headers: {
+        //         "Content-Type": "multipart/form-data",
+        //     },
+        // }).then((res: any) => {
+        //     alert(res.data)
+        // }).catch((err: any) => {
+        //     alert("Add User Failed.")
+        // })
+        console.log(user)
     }
         const hiddenFileInput = React.useRef(null);
 

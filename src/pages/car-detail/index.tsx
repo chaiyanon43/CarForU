@@ -1,6 +1,6 @@
 const CarDetail=()=>{
     return (
-        <>this is fucking detail</>
+        <>this is detail</>
     )
 }
 export default CarDetail
