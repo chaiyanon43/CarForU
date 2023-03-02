@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CarImageService {
     List<String> GetCarImage(int carId);
-    String AddCarImage(MultipartFile[] multipartFiles,int carId);
+    String AddCarImage(List<MultipartFile> multipartFiles,int carId,int status);
 }

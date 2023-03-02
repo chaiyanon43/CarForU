@@ -1,0 +1,52 @@
+.login-container{
+    background-color: ;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width:550px;
+    max-width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+.login-container .login-inside{
+    display: flex;
+    flex-direction: column;
+    margin:16px 0;
+}
+.login-container .login-inside-button{
+    width:fit-content;
+    margin-left: auto;
+    display: flex;
+}
+.login-container .login-inside input{
+    width: 100%;
+}
+.login-container .login-inside .login-inside-button button{
+    width: 120px;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    margin-left: 16px;
+    border: none;
+}
+.login-container .login-inside-button #signup{
+    background-color: transparent;
+    transition-duration: 0.5s;
+    cursor: pointer;
+}
+.login-container .login-inside-button #signup:hover{
+    font-weight: 600;
+    text-decoration: underline;
+    transition-duration: 0.5s;
+}
+.login-container .login-inside-button #login{
+    background-color: #FEFEFE;
+    color: #495057;
+}
+.login-container .login-inside-button #login:hover{
+    background-color: #252525;
+    color: #FEFEFE;
+}
+

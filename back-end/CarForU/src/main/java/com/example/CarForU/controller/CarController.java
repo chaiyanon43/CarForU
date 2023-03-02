@@ -1,20 +1,16 @@
 package com.example.CarForU.controller;
 
-import com.example.CarForU.bean.CarsAllResponse;
-import com.example.CarForU.bean.CarForRec;
-import com.example.CarForU.bean.EuclideanResultListResponse;
+import com.example.CarForU.bean.*;
 import com.example.CarForU.service.CarImageService;
 import com.example.CarForU.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Entity;
+import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -27,43 +23,74 @@ public class CarController {
 
 
     @GetMapping("/rec-func1")
-    public ResponseEntity<EuclideanResultListResponse> RecommendCarFunc1(@RequestParam("carId") int carId){
+    public ResponseEntity<EuclideanResultListResponse> RecommendCarFunc1(@RequestParam("carId") int carId) {
         CarForRec carForRec = new CarForRec();
         EuclideanResultListResponse EuclideanData = carService.CarRecommendation(carId);
         return new ResponseEntity<EuclideanResultListResponse>(EuclideanData, HttpStatus.OK);
     }
 
     @GetMapping("/all-first-hand-car")
-    public ResponseEntity<List<CarsAllResponse>> GetFirstHandCars(){
+    public ResponseEntity<List<CarsAllResponse>> GetFirstHandCars() {
         return new ResponseEntity<>(carService.GetAllFirstHandCars(), HttpStatus.OK);
     }
+    @GetMapping("/getCar")
+    public ResponseEntity<CarDetailAndRec> GetCarDetail(@RequestParam("carId") int carId){
+        System.out.println(carId);
+        return new ResponseEntity<>(carService.GetCarDetail(carId), HttpStatus.OK);
+    }
+
     @GetMapping("/all-second-hand-car")
-    public ResponseEntity<List<CarsAllResponse>> GetSecondHandCars(){
+    public ResponseEntity<List<CarsAllResponse>> GetSecondHandCars() {
         return new ResponseEntity<>(carService.GetAllSecondHandCars(), HttpStatus.OK);
     }
+
     @PostMapping("/add-car")
     public ResponseEntity<String> saveCar(
-            @RequestParam("carAddress") String carAddress,
-            @RequestParam("carBrandName") String carBrandName,
-            @RequestParam("carColor") String carColor,
-            @RequestParam("carCondition") String carCondition,
-            @RequestParam("carDesc") String carDesc,
-            @RequestParam("carEVRange") double carEVRange,
-            @RequestParam("carFuelConsumption") double carFuelConsumption,
-            @RequestParam("carFuelType") String carFuelType,
-            @RequestParam("carGas") Boolean carGas,
-            @RequestParam("carGearType") String carGearType,
-            @RequestParam("carHorsePower") double carHorsePower,
-            @RequestParam("carImage") MultipartFile[] carImage,
-            @RequestParam("carImageDefect") MultipartFile[] carImageDefect,
-            @RequestParam("carMileage") double carMileage,
-            @RequestParam("carModelName") String carModelName,
-            @RequestParam("carPrice") double carPrice,
-            @RequestParam("carSeats") double carSeats,
-            @RequestParam("carYear") double carYear,
-            @RequestParam("carId") int carId
-                                           ){
-        carImageService.AddCarImage(carImage,carId);
-        return new ResponseEntity<>("Car image Added", HttpStatus.OK);
+            @RequestParam(name = "carAddress") String carAddress,
+            @RequestParam(name = "carBrand") String carBrand,
+            @RequestParam(name = "carColor") String carColor,
+            @RequestParam(name = "carCondition") String carCondition,
+            @RequestParam(name = "carDesc") String carDesc,
+            @RequestParam(name = "carEVRange") double carEVRange,
+            @RequestParam(name = "carFuelConsumption") double carFuelConsumption,
+            @RequestParam(name = "carFuelType") String carFuelType,
+            @RequestParam(name = "carGas") Boolean carGas,
+            @RequestParam(name = "carGearType") String carGearType,
+            @RequestParam(name = "carHorsePower") double carHorsePower,
+            @RequestParam(name = "carMileage") double carMileage,
+            @RequestParam(name = "carImage") List<MultipartFile> carImage,
+            @RequestParam(name = "carImageDefect",required = false) List<MultipartFile> carImageDefect,
+            @RequestParam(name = "carModel") String carModel,
+            @RequestParam(name = "carPrice") double carPrice,
+            @RequestParam(name = "carSeats") double carSeats,
+            @RequestParam(name = "carYear") double carYear,
+            @RequestParam(name = "carHeader") String carHeader,
+            @RequestParam(name = "carId") int carId
+    ) {
+        try{
+                carService.AddCar(
+                        carAddress,
+                        carBrand,
+                        carColor,
+                        carCondition,
+                        carDesc,
+                        carEVRange,
+                        carFuelConsumption,
+                        carFuelType, carGas,
+                        carGearType,
+                        carHorsePower,
+                        carMileage,
+                        carModel,
+                        carPrice,
+                        carSeats,
+                        carYear,
+                        carHeader,
+                        carId,
+                        carImage,
+                        carImageDefect);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return new ResponseEntity<>("Car Added", HttpStatus.OK);
     }
 }

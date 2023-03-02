@@ -1,31 +1,37 @@
-import { Dialog } from 'primereact/dialog';
-import { Dispatch, SetStateAction } from 'react';
+import style from "../styles/Login.module.css"
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
+import { Button } from "primereact/button";
+import Link from "next/link";
 
-interface LoginFormProps {
-    displayBasic: boolean;
-    renderFooter: Function;
-    setDisplayBasic: Dispatch<SetStateAction<boolean>>;
-}
-const Login = (props: LoginFormProps) => {
-    const { displayBasic, renderFooter, setDisplayBasic } = props
+const Login = () => {
     return (<>
-        <Dialog header="Login" visible={displayBasic} style={{width:'630px' ,maxWidth:'90%'}}  footer={renderFooter()} onHide={() => setDisplayBasic(false)}>
-            <div className="flex justify-content-center">
-                <form className="p-fluid">
-                    <div className="field">
-                        <label>Username</label>
-                        <InputText placeholder='Username'/>
+        <div className={style['login-container']}>
+            <div className={style['login-box']}>
+                <h1 style={{ color: '#FEFEFE' }}>LOGIN</h1>
+                <form>
+                    <div className={style['login-inside']}>
+                        <label style={{ color: '#FEFEFE' }}>Username</label>
+                        <InputText placeholder='Username' />
                     </div>
-                    <div className="field">
-                        <label >Password</label>
+                    <div className={style['login-inside']}>
+                        <label style={{ color: '#FEFEFE' }}>Password</label>
                         <Password placeholder='Password' toggleMask />
+                    </div>
+                    <div className={style['login-inside']}>
+                        <div className={style['login-inside-button']}>
+                            <Button id={style['signup']}>
+                                <Link style={{ textDecoration: "none",color: "#FEFEFE" }} href={'/sign-up'}>
+                                    Sign-up
+                                </Link>
+                            </Button>
+                            <Button id={style['login']}>Login</Button>
+                        </div>
                     </div>
                 </form>
             </div>
 
-        </Dialog>
+        </div>
     </>)
 }
 export default Login

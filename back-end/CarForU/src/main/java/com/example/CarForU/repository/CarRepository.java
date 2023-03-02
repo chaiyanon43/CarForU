@@ -11,12 +11,14 @@ import java.util.Optional;
 
 @Repository
 public interface CarRepository extends JpaRepository<Car,Integer> {
-    @Query("SELECT c FROM Car c WHERE c.carCondition ='1' ")
+    @Query("SELECT c FROM Car c WHERE c.carCondition ='มือหนึ่ง' ")
     List<Car> findFirstHandCondition();
-    @Query("SELECT c FROM Car c WHERE c.carCondition ='2' ")
+    @Query("SELECT c FROM Car c WHERE c.carCondition ='มือสอง' ")
     List<Car> findSecondHandCondition();
 
-    @Query("SELECT c FROM Car c WHERE c.carId = :carId and c.carCondition ='1'")
+    @Query("SELECT c FROM Car c WHERE c.carId = :carId")
     Car findById(@Param("carId") int carId);
+    @Query("SELECT c FROM Car c where c.carId = :carId")
+    Car findRecCarById(@Param("carId")int carId);
 
 }

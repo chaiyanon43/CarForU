@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Menubar } from 'primereact/menubar';
+import Image from "next/image";
 import { Button } from 'primereact/button';
 
-
+import mainlogo from "../images/logo-main.png";
 import Link from 'next/link';
 import Login from '@/pages/login';
-import Signup from '@/pages/signup';
+import Signup from '@/pages/sign-up';
 const TopNavBar = () => {
     const [displayBasic, setDisplayBasic] = useState<boolean>(false);
     const renderFooter = () => {
@@ -40,17 +41,19 @@ const TopNavBar = () => {
             icon: 'pi pi-fw pi-dollar',
             command: () => { window.location.href = "/sell-car"; }
         },
-        {
-            style: { marginLeft: "auto" },
-            template: <><Button style={{ width: "100px", height: "50px", marginRight:"16px",background:"rgb(20, 219, 20)",border:'solid 1px rgb(20, 219, 20)'}} label="Login"  onClick={() => setDisplayBasic(true)} />
-                {displayBasic ? <Login displayBasic={displayBasic} renderFooter={renderFooter} setDisplayBasic={setDisplayBasic}/>: <></>}
-                <Button style={{ width: "100px", height: "50px",background:"red",border:'solid 1px red' }} label="SignUp" onClick={() => setDisplayBasicSignup(true)}  />
-                {displayBasicSignup ? <Signup displayBasicSignup={displayBasicSignup} renderFooterSignup={renderFooterSignup} setDisplayBasicSignup={setDisplayBasicSignup}/>: <></>}
-                </>
-        }
+        // {
+        //     style: { marginLeft: "auto" },
+        //     template: <><Button style={{ width: "100px", height: "50px", marginRight:"16px",background:"rgb(20, 219, 20)",border:'solid 1px rgb(20, 219, 20)'}} label="Login"  onClick={() => setDisplayBasic(true)} />
+        //         {displayBasic ? <Login displayBasic={displayBasic} renderFooter={renderFooter} setDisplayBasic={setDisplayBasic}/>: <></>}
+        //         <Button style={{ width: "100px", height: "50px",background:"red",border:'solid 1px red' }} label="SignUp" onClick={() => setDisplayBasicSignup(true)}  />
+        //         {displayBasicSignup ? <Signup displayBasicSignup={displayBasicSignup} renderFooterSignup={renderFooterSignup} setDisplayBasicSignup={setDisplayBasicSignup}/>: <></>}
+        //         </>
+        // }
     ];
 
-    const start = <Link style={{ textDecoration: "none", fontWeight: "bold" }} href={'/home'}>CarForU</Link>;
+    const start = <Link style={{ textDecoration: "none", fontWeight: "bold", margin: "0 8px",color:"#FEFEFE",letterSpacing:"2px"}} href={'/home'}>
+        CAR<span style={{color:"red",letterSpacing:"2px"}}>FORU</span>
+    </Link>;
     return (
         <div>
             <Menubar

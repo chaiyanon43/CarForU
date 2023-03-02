@@ -15,6 +15,18 @@ export interface CarData{
     carMileage:number,
     carCondition:String,
     carImage:CarImage[],
+    carHeader:string,
+}
+export interface RecCarList{
+    normalCar: RecCarDetail[],
+    hybridCar: RecCarDetail[],
+    evcar: RecCarDetail[],
+}
+export interface RecCarDetail{
+    carId: number,
+    carImage: string,
+    carHeader: string,
+    carPrice: number
 }
 export interface CarImage{
     carImage:String;
@@ -40,4 +52,11 @@ export interface SellForm{
     carBrand:string,
     carImage:File[],
     carImageDefect:File[]
+    carId:string;
+}
+export interface itemImage {
+    itemImageSrc : string,
+    thumbnailImageSrc : string,
+    alt: string,
+    title : string
 }

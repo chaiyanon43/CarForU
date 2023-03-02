@@ -1,4 +1,6 @@
+import Login from "./login"
+
 const Home=()=>{
-    return <>This is Home in monggit branch</>
+    return <Login/>
 }
 export default Home

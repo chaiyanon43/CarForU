@@ -17,6 +17,42 @@
 input#file-input {
   display: none;
 }
+.signup-container{
+  width: 100%;
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+.signup-container .signup-box{
+  width: 90%;
+  max-width: 600px;
+}
+.signup-container .signup-box .sigup-inside{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.signup-container .signup-box .sigup-inside label{
+  color: #FEFEFE;
+}
+.signup-container .signup-box .sigup-inside input{
+  width: 100% !important;
+}
+.signup-container .signup-box .sigup-inside button{
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  width: 120px !important;
+  background-color: #FEFEFE;
+  color: #000;
+  border: none;
+}
+.signup-container .signup-box .sigup-inside button:hover{
+  background-color: #272727;
+  box-shadow: 0 5px 5px rgba(0,0, 0, 0.3);
+  color: #FEFEFE;
+}
 .profile-image button {
   width: 120px;
   height: 30px;

@@ -24,6 +24,8 @@ public class CarsAllResponse {
     private boolean carGas;
     private double carMileage;
     private String carCondition;
+    private String carHeader;
+
     private List<CarImageResponse> carImage;
 
     public CarsAllResponse() {

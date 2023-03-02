@@ -25,7 +25,7 @@ const BuyNewCar = (props: BuyCar) => {
         axios.get("http://localhost:8080/all-first-hand-car")
         .then((res:any)=>{
             setData(res.data)
-    
+            console.log(res.data)
         })
     }
     useEffect(()=>{
@@ -60,7 +60,7 @@ const BuyNewCar = (props: BuyCar) => {
                                     </div>
                                     <div className={style["car-detail"]}>
                                         <div className={style["detail-header"]}>
-                                            <h3>{e.carBrand} {e.carModel}</h3>
+                                            <h3>{e.carHeader}</h3>
                                             <i className="pi pi-heart"></i>
                                         </div>
 
@@ -118,7 +118,7 @@ const BuyNewCar = (props: BuyCar) => {
                                             <p>: {e.carAddress}</p>
                                         </div>
                                         <div className={style["detail-box"]}>
-                                            <h3>{commonFunc.numberWithCommas(e.carPrice)} บาท</h3>
+                                            <h3>฿{commonFunc.numberWithCommas(e.carPrice)} </h3>
                                         </div>
                                     </div>
                                 </div>

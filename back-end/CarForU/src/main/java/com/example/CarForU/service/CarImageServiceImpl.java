@@ -24,21 +24,21 @@ public class CarImageServiceImpl implements CarImageService{
     @Autowired
     CarImageRepository carImageRepository;
     @Override
-    public String AddCarImage(MultipartFile[] multipartFiles,int carId) {
+    public String AddCarImage(List<MultipartFile> multipartFiles,int carId,int status) {
         Car car = carRepository.findById(carId);
-        for (int i = 0; i < multipartFiles.length; i++) {
+        for (int i = 0; i< multipartFiles.size() ; i++){
             CarImage carImage = new CarImage();
-            String fileName = StringUtils.cleanPath(multipartFiles[i].getOriginalFilename());
+            String fileName = StringUtils.cleanPath(multipartFiles.get(i).getOriginalFilename());
             if(fileName.contains("..")){
                 System.out.println("not a valid file");
             }
             try{
-                carImage.setCarImage(Base64.getEncoder().encodeToString(multipartFiles[i].getBytes()));
+                carImage.setCarImage(Base64.getEncoder().encodeToString(multipartFiles.get(i).getBytes()));
             }catch (IOException e){
                 e.printStackTrace();
             }
             carImage.setCar(car);
-            carImage.setCarImageStatus(1);
+            carImage.setCarImageStatus(status);
             carImageRepository.save(carImage);
         }
         return "Success";
