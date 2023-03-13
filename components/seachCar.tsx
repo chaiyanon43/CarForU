@@ -80,7 +80,7 @@ const SearchCar = (props: BuyCar) => {
                             <label>{commonFunc.numberWithCommas(range[0])}</label>
                             <label>{commonFunc.numberWithCommas(range[1])}</label>
                         </div>
-                        <Slider id='price' value={range} onChange={(e:any) => setRange(e.value)} min={200000} max={5000000} step={400000} range />
+                        <Slider value={range} onChange={(e:any) => setRange(e.value)} min={200000} max={5000000} step={400000} range />
                     </div>
                 </div>
                 <div className={style['filter-box']}>
@@ -90,17 +90,17 @@ const SearchCar = (props: BuyCar) => {
                             <label>{year[0]}</label>
                             <label>{year[1]}</label>
                         </div>
-                        <Slider id='year' value={year} onChange={(e:any) => setYear(e.value)} min={2012} max={2023} step={1} range />
+                        <Slider value={year} onChange={(e:any) => setYear(e.value)} min={2012} max={2023} step={1} range />
                     </div>
                 </div>
                 <div className={style['filter-box']}>
                     <h3>เชื้อเพลิง</h3>
                     <div className={style['filter-inside']}>
                         <div className={style['fuel-container']}>
-                            <Button id='fuelType1' label="เบนซิน" className="p-button-raised p-button-rounded" />
-                            <Button id='fuelType2' label="ดีเซล" className="p-button-raised p-button-rounded" />
-                            <Button id='fuelType3' label="ไฮบริด" className="p-button-raised p-button-rounded" />
-                            <Button id='fuelType4' label="EV" className="p-button-raised p-button-rounded" />
+                            <Button label="เบนซิน" className="p-button-raised p-button-rounded" />
+                            <Button label="ดีเซล" className="p-button-raised p-button-rounded" />
+                            <Button label="ไฮบริด" className="p-button-raised p-button-rounded" />
+                            <Button label="EV" className="p-button-raised p-button-rounded" />
                         </div>
                     </div>
                 </div>
@@ -109,19 +109,19 @@ const SearchCar = (props: BuyCar) => {
                     <div className={style['filter-inside']}>
                         <div className={style['seat-selected']}>
                             <div className="field-checkbox">
-                                <Checkbox id='seat1' value="2" onChange={onSeatChange} checked={seats.indexOf('2') !== -1} />
+                                <Checkbox value="2" onChange={onSeatChange} checked={seats.indexOf('2') !== -1} />
                                 <label>2</label>
                             </div>
                             <div className="field-checkbox">
-                                <Checkbox id='seat2' value="4" onChange={onSeatChange} checked={seats.indexOf('4') !== -1} />
+                                <Checkbox value="4" onChange={onSeatChange} checked={seats.indexOf('4') !== -1} />
                                 <label>4</label>
                             </div>
                             <div className="field-checkbox">
-                                <Checkbox id='seat3' value="5" onChange={onSeatChange} checked={seats.indexOf('5') !== -1} />
+                                <Checkbox value="5" onChange={onSeatChange} checked={seats.indexOf('5') !== -1} />
                                 <label>5</label>
                             </div>
                             <div className="field-checkbox">
-                                <Checkbox id='seat4' value="7" onChange={onSeatChange} checked={seats.indexOf('7') !== -1} />
+                                <Checkbox value="7" onChange={onSeatChange} checked={seats.indexOf('7') !== -1} />
                                 <label>7</label>
                             </div>
                         </div>
@@ -132,11 +132,11 @@ const SearchCar = (props: BuyCar) => {
                     <div className={style['filter-inside']}>
                         <div className={style['gear-selected']}>
                             <div className="field-checkbox">
-                                <Checkbox id='gear1' value="อัตโนมัติ" onChange={onGearChange} checked={gears.indexOf('อัตโนมัติ') !== -1} />
+                                <Checkbox value="อัตโนมัติ" onChange={onGearChange} checked={gears.indexOf('อัตโนมัติ') !== -1} />
                                 <label>อัตโนมัติ</label>
                             </div>
                             <div className="field-checkbox">
-                                <Checkbox id='gear2' value="ธรรมดา" onChange={onGearChange} checked={gears.indexOf('ธรรมดา') !== -1} />
+                                <Checkbox value="ธรรมดา" onChange={onGearChange} checked={gears.indexOf('ธรรมดา') !== -1} />
                                 <label>ธรรมดา</label>
                             </div>
                         </div>
@@ -147,19 +147,19 @@ const SearchCar = (props: BuyCar) => {
                     <div className={style['filter-inside']}>
                         <div className={style['gear-selected']}>
                             <div className={style['radio-btn']}>
-                                <RadioButton id='mile1' value="Cheese" />
+                                <RadioButton value="Cheese" />
                                 <label>น้อยกว่า 20,000</label>
                             </div>
                             <div className={style['radio-btn']}>
-                                <RadioButton id='mile2' value="Cheese" />
+                                <RadioButton value="Cheese" />
                                 <label>น้อยกว่า 40,000</label>
                             </div>
                             <div className={style['radio-btn']}>
-                                <RadioButton id='mile3' value="Cheese" />
+                                <RadioButton value="Cheese" />
                                 <label>น้อยกว่า 70,000</label>
                             </div>
                             <div className={style['radio-btn']}>
-                                <RadioButton id='mile4' value="Cheese" />
+                                <RadioButton value="Cheese" />
                                 <label>มากกว่า 70,000</label>
                             </div>
                         </div>
