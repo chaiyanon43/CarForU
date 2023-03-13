@@ -15,7 +15,7 @@ public class User{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private int userId;
-    @Column(name = "USER_USERNAME")
+    @Column(name = "USER_USERNAME",unique = true)
     private String username;
     @Column(name = "USER_PASSWORD")
     private String password;
@@ -26,7 +26,7 @@ public class User{
     @Column(name = "USER_ADDRESS")
     private String address;
     @Column(name = "USER_ROLE")
-    private int role;
+    private String role;
     @Lob
     @Column(name = "USER_IMAGE",columnDefinition = "MEDIUMBLOB")
     private String image;
@@ -40,4 +40,5 @@ public class User{
 
     public User() {
     }
+
 }

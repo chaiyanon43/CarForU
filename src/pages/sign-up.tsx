@@ -10,6 +10,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Button } from 'primereact/button';
 import React from 'react';
+import Image from 'next/image';
+import { FileUpload } from 'primereact/fileupload';
 
 
 
@@ -29,8 +31,10 @@ interface userForm {
 }
 const Signup = (props: SignupFormProps) => {
     const { displayBasicSignup, renderFooterSignup, setDisplayBasicSignup } = props;
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<userForm>();
+    const { register, handleSubmit, getValues, setValue, resetField, formState: { errors } } = useForm<userForm>();
     const [fileName, setFileName] = useState<string>('None');
+    const [file, setFile] = useState();
+    const [imageURL, setImageURL] = useState<string>();
     const userSubmmit: SubmitHandler<userForm> = (user) => {
         // axios.post('http://localhost:8080/addUser', {
         //     image: user.image,
@@ -48,32 +52,51 @@ const Signup = (props: SignupFormProps) => {
         // }).catch((err: any) => {
         //     alert("Add User Failed.")
         // })
+        if (!user.image) {
+            console.log("error")
+        }
         console.log(user)
     }
-        const hiddenFileInput = React.useRef(null);
+    const hiddenFileInput = React.useRef(null);
 
-        const handleClick = (event: any) => {
-            hiddenFileInput.current!.click();
-        };
-        const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-            if (event.target.files) {
+    const handleClick = (event: any) => {
+        hiddenFileInput.current!.click();
+    };
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            if (event.target.files[0]) {
                 setValue('image', event.target.files[0])
+                setImageURL(URL.createObjectURL(event.target.files[0]))
                 setFileName(event.target.files[0].name)
             }
-        };
+        }
+    };
+    const onUploadFile = async (e: any) => {
+        console.log(e.files)
+        setFile(e.files)
+        setImageURL(URL.createObjectURL(e.files[0]))
+    }
+    const onRemoveFile = async (e: any) => {
+    }
 
 
-        return (<>
+    return (<>
 
-            <div className={style['signup-container']}>
-                <div className={style['signup-box']}>
+        <div className={style['signup-container']}>
+            <div className={style['signup-box']}>
                 <form onSubmit={handleSubmit(userSubmmit)} encType='multipart/form-data'>
                     <div>
                         <div className={style["profile-image"]}>
-                            <i className='pi pi-user'>
-                                <i className='pi pi-times-circle'></i>
+                            <i className='pi pi-user' >
+                            {getValues('image') && <img src={imageURL} />}
+                                <i className='pi pi-times-circle' onClick={(e) => {
+                                    setImageURL('')
+                                    setFileName('')
+                                    setFile(undefined)
+                                    setValue('image', '')
+                                }} ></i>
                             </i>
-                            <label>Choose file: <span><input className={style['input-file-name']} value={fileName} disabled></input></span></label>
+                            <label style={{color:"#FEFEFE"}}>Choose file: <span><input className={style['input-file-name']} value={fileName} disabled></input></span></label>
                             <button type='button' onClick={handleClick}>Upload a file</button>
                             <input type='file' ref={hiddenFileInput}
                                 onChange={handleChange} id={style["file-input"]} />
@@ -107,8 +130,8 @@ const Signup = (props: SignupFormProps) => {
                         </div>
                     </div>
                 </form>
-                </div>
             </div>
-        </>)
-    }
-    export default Signup
+        </div >
+    </>)
+}
+export default Signup

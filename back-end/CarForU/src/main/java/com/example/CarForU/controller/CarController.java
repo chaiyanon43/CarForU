@@ -22,25 +22,28 @@ public class CarController {
     CarImageService carImageService;
 
 
-    @GetMapping("/rec-func1")
-    public ResponseEntity<EuclideanResultListResponse> RecommendCarFunc1(@RequestParam("carId") int carId) {
-        CarForRec carForRec = new CarForRec();
-        EuclideanResultListResponse EuclideanData = carService.CarRecommendation(carId);
-        return new ResponseEntity<EuclideanResultListResponse>(EuclideanData, HttpStatus.OK);
-    }
+//    @GetMapping("/rec-func1")
+//    public ResponseEntity<EuclideanResultListResponse> RecommendCarFunc1(@RequestParam("carId") int carId) {
+//        CarForRec carForRec = new CarForRec();
+//        EuclideanResultListResponse EuclideanData = carService.CarRecommendation(carId);
+//        return new ResponseEntity<EuclideanResultListResponse>(EuclideanData, HttpStatus.OK);
+//    }
 
     @GetMapping("/all-first-hand-car")
-    public ResponseEntity<List<CarsAllResponse>> GetFirstHandCars() {
+    public ResponseEntity<List<CarDetailCard>> GetFirstHandCars() {
         return new ResponseEntity<>(carService.GetAllFirstHandCars(), HttpStatus.OK);
     }
     @GetMapping("/getCar")
     public ResponseEntity<CarDetailAndRec> GetCarDetail(@RequestParam("carId") int carId){
-        System.out.println(carId);
         return new ResponseEntity<>(carService.GetCarDetail(carId), HttpStatus.OK);
+    }
+    @GetMapping("myCars")
+    public ResponseEntity<List<CarDetailCard>> GetMyCars(@RequestParam("username") String username){
+        return new ResponseEntity<>(carService.GetMyCars(username),HttpStatus.OK);
     }
 
     @GetMapping("/all-second-hand-car")
-    public ResponseEntity<List<CarsAllResponse>> GetSecondHandCars() {
+    public ResponseEntity<List<CarDetailCard>> GetSecondHandCars() {
         return new ResponseEntity<>(carService.GetAllSecondHandCars(), HttpStatus.OK);
     }
 

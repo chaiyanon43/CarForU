@@ -11,7 +11,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { InputText } from 'primereact/inputtext';
 import { CarService } from 'services/CarService';
 import { toaster } from "evergreen-ui";
-import axios from 'axios';
+import axios from '../../axios.config';
 import Router from 'next/router'
 
 
@@ -29,6 +29,7 @@ const SellCarPanel = () => {
             setBrands!(res)
         })
     }
+    
     useEffect(() => {
         getBrandList()
     }, [])

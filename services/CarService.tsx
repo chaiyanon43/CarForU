@@ -1,5 +1,5 @@
-import axios from "axios";
-import { CarData } from "components/interfaces";
+import axios from "../axios.config"
+import { CarData, FavoriteRequest } from "components/interfaces";
 import { toaster } from "evergreen-ui";
 
 export class CarService {
@@ -13,6 +13,7 @@ export class CarService {
             });
         }
     }
+    
     async getModelList(carBrandName: string) {
         try {
             return await axios.get('http://localhost:8080/get-model', {
@@ -37,6 +38,90 @@ export class CarService {
                 .then((res) => res.data)
         } catch (err: any) {
             toaster.danger("Get car detail Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getCarFirstHand(){
+        try {
+            return await axios.get("http://localhost:8080/all-first-hand-car")
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get cars Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getCarSecondHand(){
+        try {
+            return await axios.get("http://localhost:8080/all-second-hand-car")
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get cars Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getFavoriteCars(username:string){
+        try {
+            return await axios.get("http://localhost:8080/getFavCar",{
+                params:{username:username}
+            })
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get Favorite Cars Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getFavoriteCarsId(username:string){
+        try {
+            return await axios.get("http://localhost:8080/getFavCarId",{
+                params:{username:username}
+            })
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get Favorite Cars Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async deleteFavoriteCar(favCar:FavoriteRequest){
+        try {
+            await axios.delete("http://localhost:8080/unlikeCar", {data:favCar} )
+            .then((res)=>{
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            })
+        }catch{
+            toaster.success("delete error", {
+                duration: 5,
+            });
+        }
+    }
+    async addToFavoriteCar(favCar:FavoriteRequest){
+        try {
+            await axios.post('http://localhost:8080/likeCar', favCar)
+            .then((res)=>{
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            })
+        }catch{
+            toaster.success("Add to favorite error", {
+                duration: 5,
+            });
+        }
+    }
+    async getMyCars(username:string){
+        try {
+            return await axios.get("http://localhost:8080/myCars",{
+                params:{username:username}
+            })
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get Cars Error!", {
                 duration: 5,
             });
         }

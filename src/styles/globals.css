@@ -87,6 +87,8 @@ body {
   border-radius: 0 !important;
   border: none !important;
   background-color: rgb(51, 51, 51) !important;
+  height: 60px;
+  box-shadow: 0 5px 5px rgb(0, 0,0,0.1);
 }
 .p-menubar .p-menubar-root-list{
   background-color: rgb(51, 51, 51) !important;
