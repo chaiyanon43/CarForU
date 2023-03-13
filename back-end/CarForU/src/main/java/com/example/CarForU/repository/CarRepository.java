@@ -1,6 +1,7 @@
 package com.example.CarForU.repository;
 
 import com.example.CarForU.entity.Car;
+import com.example.CarForU.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +21,7 @@ public interface CarRepository extends JpaRepository<Car,Integer> {
     Car findById(@Param("carId") int carId);
     @Query("SELECT c FROM Car c where c.carId = :carId")
     Car findRecCarById(@Param("carId")int carId);
+    @Query("SELECT c FROM Car c WHERE c.user = :user")
+    List<Car>  findCarByUser(@Param("user") User user);
 
 }

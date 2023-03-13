@@ -1,6 +1,7 @@
 package com.example.CarForU.service;
 
 import com.example.CarForU.bean.CarDetailAndRec;
+import com.example.CarForU.bean.CarDetailCard;
 import com.example.CarForU.bean.CarsAllResponse;
 import com.example.CarForU.bean.EuclideanResultListResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,12 +9,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CarService {
-    EuclideanResultListResponse CarRecommendation(int carId);
+    EuclideanResultListResponse CarRecommendation(int carId,String condition);
     CarDetailAndRec GetCarDetail(int carId);
 
-    List<CarsAllResponse> GetAllFirstHandCars();
+    List<CarDetailCard> GetAllFirstHandCars();
 
-    List<CarsAllResponse> GetAllSecondHandCars();
+    List<CarDetailCard> GetAllSecondHandCars();
+    List<CarDetailCard> GetMyCars(String username);
 
     void AddCar(String carAddress,
                 String carBrandName,

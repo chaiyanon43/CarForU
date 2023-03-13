@@ -32,8 +32,13 @@ public class CarServiceImpl implements CarService{
     @Autowired
     CarImageService carImageService;
     @Override
-    public EuclideanResultListResponse CarRecommendation(int carId) {
-        List<Car> carAll = carRepository.findAll();
+    public EuclideanResultListResponse CarRecommendation(int carId,String condition) {
+        List<Car> carAll = new ArrayList<>();
+        if(condition.equals("มือหนึ่ง")){
+            carAll = carRepository.findFirstHandCondition();
+        }else{
+            carAll = carRepository.findSecondHandCondition();
+        }
         double priceMax = carAll.stream().max(Comparator.comparing(v -> v.getCarPrice())).get().getCarPrice();
         double priceMin = carAll.stream().min(Comparator.comparing(v -> v.getCarPrice())).get().getCarPrice();
         double fuelConsMax = carAll.stream().max(Comparator.comparing(v -> v.getCarFuelConsumption())).get().getCarFuelConsumption();
@@ -57,7 +62,6 @@ public class CarServiceImpl implements CarService{
             carRecTemp.setCarHorsePower(NormalizeCalculate(horsePowMax, horsePowMin, carAll.get(i).getCarHorsePower()));
             carRecTemp.setCarEVRange(NormalizeCalculate(carEVRangeMax,carEVRangeMin,carAll.get(i).getCarEVRange()));
             carRecTemp.setCarFuelType(carAll.get(i).getCarFuelType());
-//            carRecTemp.setCarBrand(carAll.get(i).getCarBrand());
             normalizeCar.add(carRecTemp);
         }
         return EuclideanDistance(normalizeCar,carId);
@@ -91,7 +95,7 @@ public class CarServiceImpl implements CarService{
         );
         carRes.setCarHeader(car.getCarHeader());
         carRes.setCarImage(images);
-        EuclideanResultListResponse EuclideanData = CarRecommendation(carId);
+        EuclideanResultListResponse EuclideanData = CarRecommendation(carId,car.getCarCondition());
         RecResponseList recResponseList = new RecResponseList();
         List<EuclideanResult> evResult = new ArrayList<>();
         List<RecResponse> carEVList = new ArrayList<>();
@@ -137,19 +141,26 @@ public class CarServiceImpl implements CarService{
     }
 
     @Override
-    public List<CarsAllResponse> GetAllFirstHandCars() {
+    public List<CarDetailCard> GetAllFirstHandCars() {
         List<Car> cars = carRepository.findFirstHandCondition();
         return ConditionClassify(cars);
     }
 
     @Override
-    public List<CarsAllResponse> GetAllSecondHandCars() {
+    public List<CarDetailCard> GetAllSecondHandCars() {
         List<Car> cars = carRepository.findSecondHandCondition();
         return ConditionClassify(cars);
     }
+
+    @Override
+    public List<CarDetailCard> GetMyCars(String username) {
+        User user = userRepository.findUserByUsernameForProfile(username);
+        List<Car>  cars = carRepository.findCarByUser(user);
+        return ConditionClassify(cars);
+    }
+
     @Override
     public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, double carMileage, String carModelName, double carPrice, double carSeats, double carYear,String carHeader,int carId,List<MultipartFile> carImage,List<MultipartFile> carImageDefect) {
-        System.out.println(carBrandName);
         Car addCar = new Car();
         CarModel carModel = carModelRepository.findCarModelByModelName(carModelName);
         User user = userRepository.findUserById(1);
@@ -177,34 +188,20 @@ public class CarServiceImpl implements CarService{
         }
     }
 
-    public List<CarsAllResponse> ConditionClassify(List<Car> cars){
-        List<CarsAllResponse> carResult = new ArrayList<>();
+    public List<CarDetailCard> ConditionClassify(List<Car> cars){
+        List<CarDetailCard> carResult = new ArrayList<>();
         for (int i = 0; i<cars.size();i++){
-            CarsAllResponse car = new CarsAllResponse();
+            CarDetailCard car = new CarDetailCard();
             List<CarImageResponse> images = new ArrayList<CarImageResponse>();
-            carImageRepository.findCarImageByCarId(cars.get(i).getCarId()).forEach(img -> {
-                CarImageResponse image = new CarImageResponse();
-                image.setCarImage(img.getCarImage());
-                images.add(image);
-                    }
-            );
             car.setCarId(cars.get(i).getCarId());
-            car.setCarBrand(cars.get(i).getModelId().getCarBrand().getBrandName());
-            car.setCarModel(cars.get(i).getModelId().getModelName());
             car.setCarGearType(cars.get(i).getCarGearType());
             car.setCarPrice(cars.get(i).getCarPrice());
-            car.setCarYear(cars.get(i).getCarYear());
-            car.setCarSeats(cars.get(i).getCarSeats());
-            car.setCarHorsePower(cars.get(i).getCarHorsePower());
-            car.setCarDesc(cars.get(i).getCarDesc());
             car.setCarAddress(cars.get(i).getCarAddress());
-            car.setCarFuelConsumption(cars.get(i).getCarFuelConsumption());
-            car.setCarCondition(cars.get(i).getCarCondition());
-            car.setCarGas(cars.get(i).getCarGas());
             car.setCarMileage(cars.get(i).getCarMileage());
             car.setCarFuelType(cars.get(i).getCarFuelType());
             car.setCarHeader(cars.get(i).getCarHeader());
-            car.setCarImage(images);
+            car.setCarImage(carImageRepository.findCarImageByCarId(cars.get(i).getCarId()).get(0).getCarImage());
+            car.setUsername(cars.get(i).getUser().getUsername());
             carResult.add(car);
         }
         return carResult;
@@ -255,10 +252,14 @@ public class CarServiceImpl implements CarService{
                         (Math.pow(recTemp.getCarHorsePower()-norCar.getCarHorsePower(),2));
         if(recTemp.getCarFuelType().equals("EV") && norCar.getCarFuelType().equals("EV")){
             tempEuclideanDistance = tempEuclideanDistance + Math.pow(recTemp.getCarEVRange()-norCar.getCarEVRange(),2);
-        }else if(!recTemp.getCarFuelType().equals("EV") && !norCar.getCarFuelType().equals("EV")){
+        }else if(
+                ((recTemp.getCarFuelType().equals("ไฮบริด") && norCar.getCarFuelType().equals("ไฮบริด")) ||
+                (!recTemp.getCarFuelType().equals("ไฮบริด") && !norCar.getCarFuelType().equals("ไฮบริด"))) && !(recTemp.getCarFuelType().equals("EV") || norCar.getCarFuelType().equals("EV"))
+        ){
             tempEuclideanDistance = tempEuclideanDistance +
                     (Math.pow(recTemp.getCarFuelConsumption()-norCar.getCarFuelConsumption(),2));
         }
+        System.out.println(norCar.getCarId());
         tempEuclideanDistance = Math.sqrt(tempEuclideanDistance);
         return tempEuclideanDistance;
     }

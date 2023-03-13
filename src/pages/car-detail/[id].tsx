@@ -109,7 +109,7 @@ const Details = () => {
                 </div>
             </div>
             <div className={style['car-rec-container']}>
-            <h3>NORMAL</h3>
+            <h3 style={{ color: '#FEFEFE' }}>NORMAL</h3>
                 <div className={style['car-rec-box']}>
                     {carRec?.normalCar.map((carNm) => {
                         return (
@@ -119,13 +119,14 @@ const Details = () => {
                                 </div>
                                 <div className={style['car-rec-text']}>
                                     <label id={style['header']}>{carNm.carHeader}</label>
+                                    <label >{carNm.carId}</label>
                                     <label>{commonFunc.numberWithCommas(carNm.carPrice)}</label>
                                 </div>
                             </div>
                         )
                     })}
                 </div>
-                <h3>HYBRID</h3>
+                <h3 style={{ color: '#FEFEFE' }}>HYBRID</h3>
                 <div className={style['car-rec-box']}>
                     {carRec?.hybridCar.map((carHb) => {
                         return (
@@ -135,13 +136,14 @@ const Details = () => {
                                 </div>
                                 <div className={style['car-rec-text']}>
                                     <label id={style['header']}>{carHb.carHeader}</label>
+                                    <label >{carHb.carId}</label>
                                     <label>฿{commonFunc.numberWithCommas(carHb.carPrice)}</label>
                                 </div>
                             </div>
                         )
                     })}
                 </div>
-                <h3>EV</h3>
+                <h3 style={{ color: '#FEFEFE' }}>EV</h3>
                 <div className={style['car-rec-box']}>
                     {carRec?.evcar.map((carEv) => {
                         return (
@@ -151,6 +153,7 @@ const Details = () => {
                                 </div>
                                 <div className={style['car-rec-text']}>
                                     <label id={style['header']}>{carEv.carHeader}</label>
+                                    <label >{carEv.carId}</label>
                                     <label>{commonFunc.numberWithCommas(carEv.carPrice)}</label>
                                 </div>
                             </div>

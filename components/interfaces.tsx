@@ -17,6 +17,21 @@ export interface CarData{
     carImage:CarImage[],
     carHeader:string,
 }
+export interface carCard{
+    carId:number,
+    carHeader:string,
+    carGearType:string,
+    carPrice:number,
+    carMileage:number,
+    carAddress:string,
+    carFuelType:string,
+    carImage: string,
+    username: string
+}
+export interface FavoriteRequest{
+    username:string,
+    carId:number
+}
 export interface RecCarList{
     normalCar: RecCarDetail[],
     hybridCar: RecCarDetail[],
@@ -27,6 +42,14 @@ export interface RecCarDetail{
     carImage: string,
     carHeader: string,
     carPrice: number
+}
+export interface UserProfileTag{
+    image:File,
+    name:String
+}
+export interface loginForm{
+    username:string;
+    password:string;
 }
 export interface CarImage{
     carImage:String;
