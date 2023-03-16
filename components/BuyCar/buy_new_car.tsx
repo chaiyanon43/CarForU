@@ -45,11 +45,12 @@ const BuyNewCar = (props: BuyCar) => {
     const goToDetail = () => {
         window.location.href = "/car-detail"
     }
+
     return (
         <div className={style["main-container"]}>
             <div className={style["search-box"]} style={{ height: `${searchDetail ? 'auto' : ''}` }}>
                 <div className="p-inputgroup">
-                    <InputText placeholder="Keyword" />
+                    <InputText placeholder="Keyword"/>
                     <Button icon="pi pi-search" className="p-button-warning" />
                 </div>
                 {searchDetail && <SearchCar isSecond={isSecond} />}

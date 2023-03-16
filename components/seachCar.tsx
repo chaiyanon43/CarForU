@@ -36,6 +36,9 @@ const SearchCar = (props: BuyCar) => {
             }]
         }
     ]
+    const searchCar = () => {
+
+    }
     const onSeatChange = (e: any) => {
         let selectedSeats = [...seats];
 
@@ -56,10 +59,12 @@ const SearchCar = (props: BuyCar) => {
 
         setGears(selectedGears);
     }
+    const filter = (e: any) => {
+    }
     return (
         <div>
             <div className={style['filter-container']}>
-                <div className={style['filter-box']}>
+                <div className={style['filter-box']}>   
                     <h3>ยี่ห้อ - รุ่น</h3>
                     <div className={style['filter-inside']}>
                         <div className={style['brand-model']}>
