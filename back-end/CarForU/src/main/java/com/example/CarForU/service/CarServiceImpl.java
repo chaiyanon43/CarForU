@@ -160,10 +160,10 @@ public class CarServiceImpl implements CarService{
     }
 
     @Override
-    public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, double carMileage, String carModelName, double carPrice, double carSeats, double carYear,String carHeader,int carId,List<MultipartFile> carImage,List<MultipartFile> carImageDefect) {
+    public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, double carMileage, String carModelName, double carPrice, double carSeats, double carYear,String carHeader,int carId,int userId,List<MultipartFile> carImage,List<MultipartFile> carImageDefect) {
         Car addCar = new Car();
         CarModel carModel = carModelRepository.findCarModelByModelName(carModelName);
-        User user = userRepository.findUserById(1);
+        User user = userRepository.findUserById(userId);
         addCar.setCarAddress(carAddress);
         addCar.setCarColor(carColor);
         addCar.setCarCondition(carCondition);

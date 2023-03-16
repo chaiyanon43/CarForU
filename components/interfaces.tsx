@@ -28,6 +28,16 @@ export interface carCard{
     carImage: string,
     username: string
 }
+export interface userForm {
+    userId:number
+    username: string;
+    password?: string;
+    name: string;
+    image: File;
+    phoneNumber: string;
+    address: string;
+    role?:string;
+}
 export interface FavoriteRequest{
     username:string,
     carId:number

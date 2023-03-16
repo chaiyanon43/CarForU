@@ -33,22 +33,42 @@ input#file-input {
   flex-direction: column;
   margin-top: 10px;
 }
+.signup-container .signup-box .sigup-btn-container{
+  display: flex;
+  margin-top: 10px;
+}
 .signup-container .signup-box .sigup-inside label{
   color: #FEFEFE;
 }
 .signup-container .signup-box .sigup-inside input{
   width: 100% !important;
 }
-.signup-container .signup-box .sigup-inside button{
+.signup-container .signup-box .sigup-btn-container button{
   display: flex;
   justify-content: center;
-  margin-left: auto;
   width: 120px !important;
   background-color: #FEFEFE;
   color: #000;
   border: none;
+  margin-left: 16px;
 }
-.signup-container .signup-box .sigup-inside button:hover{
+.signup-container .signup-box .sigup-btn-container .btn-inside{
+  width: fit-content;
+  display: flex;
+  margin-left: auto;
+}
+.signup-container .signup-box .sigup-btn-container .btn-inside #cancel{
+  background: transparent;
+  color: #FEFEFE;
+  text-decoration: underline;
+}
+.signup-container .signup-box .sigup-btn-container .btn-inside #cancel:hover{
+  font-weight: 600;
+  background-color: transparent;
+  box-shadow: none;
+  
+}
+.signup-container .signup-box .sigup-btn-container .btn-inside button:hover{
   background-color: #272727;
   box-shadow: 0 5px 5px rgba(0,0, 0, 0.3);
   color: #FEFEFE;

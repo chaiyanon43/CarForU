@@ -95,6 +95,7 @@ const SellCarPanel = () => {
         data.append('carSeats',carForm.carSeats)
         data.append('carYear',carForm.carYear)
         data.append('carHeader',carForm.carHeader)
+        data.appent('userId',sessionStorage.getItem('userId'))
 
         var config = {
             method: 'post',

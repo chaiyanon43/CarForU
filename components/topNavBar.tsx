@@ -72,7 +72,7 @@ const TopNavBar = () => {
         {
             label: 'ข้อมูลส่วนตัว',
             icon: 'pi pi-fw pi-user',
-            command: () => { onClickMenu(1) },
+            command: () => { window.location.href = "/user-setting"; },
         },
         {
             label: 'รถของฉัน',
@@ -87,20 +87,18 @@ const TopNavBar = () => {
         {
             label: 'ออกจากระบบ',
             icon: 'pi pi-fw pi-sign-out',
-            command: () => { onClickMenu(3) },
+            command: () => { onClickMenu() },
         }
     ]
-    const onClickMenu=(e:number)=>{
-        if(e===3){
-            sessionStorage.clear();
-            localStorage.clear();
-            Cookies.remove("token");
-            toaster.success("Sign out", {
-                description: `ออกจากระบบสำเร็จ`,
-                duration: 3,
-            });
-            const response = router.push("/login");
-        }
+    const onClickMenu = () => {
+        sessionStorage.clear();
+        localStorage.clear();
+        Cookies.remove("token");
+        toaster.success("Sign out", {
+            description: `ออกจากระบบสำเร็จ`,
+            duration: 3,
+        });
+        const response = router.push("/login");
     }
     const end = (<>
         <TieredMenu model={userDrop} onClick={onClickMenu} popup ref={menu} id="overlay_tmenu" />
@@ -111,8 +109,8 @@ const TopNavBar = () => {
                 </div>
                 <p style={{
                     display: "flex",
-                    justifyContent: "center", 
-                    textShadow: "0 2px 2px rgb(255,255,255,0.2)", 
+                    justifyContent: "center",
+                    textShadow: "0 2px 2px rgb(255,255,255,0.2)",
                     textTransform: 'uppercase'
                 }}>
                     {userProfile?.name}
@@ -124,7 +122,7 @@ const TopNavBar = () => {
             <Menubar
                 model={items}
                 start={start}
-                end={sessionStorage.getItem('user') ? end:null}
+                end={sessionStorage.getItem('user') ? end : null}
             />
         </div>
     );

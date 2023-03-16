@@ -12,6 +12,7 @@ import { Button } from 'primereact/button';
 import React from 'react';
 import Image from 'next/image';
 import { FileUpload } from 'primereact/fileupload';
+import Link from 'next/link';
 
 
 
@@ -36,6 +37,7 @@ const Signup = (props: SignupFormProps) => {
     const [file, setFile] = useState();
     const [imageURL, setImageURL] = useState<string>();
     const userSubmmit: SubmitHandler<userForm> = (user) => {
+        console.log(user)
         // axios.post('http://localhost:8080/addUser', {
         //     image: user.image,
         //     username: user.username,
@@ -55,7 +57,6 @@ const Signup = (props: SignupFormProps) => {
         if (!user.image) {
             console.log("error")
         }
-        console.log(user)
     }
     const hiddenFileInput = React.useRef(null);
 
@@ -88,7 +89,7 @@ const Signup = (props: SignupFormProps) => {
                     <div>
                         <div className={style["profile-image"]}>
                             <i className='pi pi-user' >
-                            {getValues('image') && <img src={imageURL} />}
+                                {getValues('image') && <img src={imageURL} />}
                                 <i className='pi pi-times-circle' onClick={(e) => {
                                     setImageURL('')
                                     setFileName('')
@@ -96,7 +97,7 @@ const Signup = (props: SignupFormProps) => {
                                     setValue('image', '')
                                 }} ></i>
                             </i>
-                            <label style={{color:"#FEFEFE"}}>Choose file: <span><input className={style['input-file-name']} value={fileName} disabled></input></span></label>
+                            <label style={{ color: "#FEFEFE" }}>Choose file: <span><input className={style['input-file-name']} value={fileName} disabled></input></span></label>
                             <button type='button' onClick={handleClick}>Upload a file</button>
                             <input type='file' ref={hiddenFileInput}
                                 onChange={handleChange} id={style["file-input"]} />
@@ -125,8 +126,14 @@ const Signup = (props: SignupFormProps) => {
                             <label >Address</label>
                             <InputTextarea autoResize placeholder='Address' rows={5} {...register("address")} />
                         </div>
-                        <div className={style['sigup-inside']}>
-                            <Button type='submit'>Sign Up</Button>
+                        <div className={style['sigup-btn-container']}>
+                            <div className={style['btn-inside']}>
+                                <Button id={style['cancel']}>
+                                    <Link style={{ textDecoration: "none", color: "#FEFEFE" }} href={'/login'}>
+                                        Cancel
+                                    </Link></Button>
+                                <Button type='submit'>Sign Up</Button>
+                            </div>
                         </div>
                     </div>
                 </form>

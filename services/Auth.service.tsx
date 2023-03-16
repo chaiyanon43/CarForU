@@ -18,6 +18,7 @@ export class AuthService extends Component {
                     const authType = JSON.parse(sessionStorage.getItem("authType")!);
                     const token = Cookies.get("token");
                     axios.defaults.headers.common["Authorization"] = `${authType} ${token}`;
+                    this.getUserId(user.username)
                     sessionStorage.setItem('user', user.username)
                     toaster.success("Login Successful", {
                         description: `Welcome to CarForU`,
@@ -25,10 +26,25 @@ export class AuthService extends Component {
                     });
                     await this.state.router.push("/buy-new");
                 })
-        }catch{
+        } catch {
             toaster.danger("Login Failed", {
                 description: `Invalid Username or Password`,
                 duration: 3,
+            });
+        }
+    }
+    async getUserId(username: string) {
+        try {
+            return await axios.get('http://localhost:8080/getUserId', {
+                params: {
+                    username: username
+                }
+            })
+                .then((res) => sessionStorage.setItem('userId', res.data)
+                );
+        } catch (err: any) {
+            toaster.danger("Get User id Error!", {
+                duration: 5,
             });
         }
     }

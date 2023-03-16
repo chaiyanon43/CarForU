@@ -35,6 +35,7 @@ public interface CarService {
                 double carYear,
                 String carHeader,
                 int carId,
+                int userId,
                 List<MultipartFile> carImage,
                 List<MultipartFile> carImageDefect
     );

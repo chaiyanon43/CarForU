@@ -4,12 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "USER")
+@Table(name = "USER" ,uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "USER_USERNAME"
+        })
+})
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +41,5 @@ public class User{
     private Set<Notification> notifications;
     @OneToMany(mappedBy = "user")
     Set<CarLikes> carLikes;
-
-
-    public User() {
-    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.CarForU.controller;
 
+import com.example.CarForU.bean.UserDetailResponse;
 import com.example.CarForU.bean.UserProfileResponse;
 import com.example.CarForU.jwt.JwtProvider;
 import com.example.CarForU.jwt.JwtResponse;
@@ -62,9 +63,34 @@ public class UserController {
         return ResponseEntity.ok(new JwtResponse(jwt));
     }
 
+    @GetMapping("/getUserId")
+    public ResponseEntity<Integer> getUserId(@RequestParam("username") String username) {
+        return new ResponseEntity<>(userService.getUserId(username), HttpStatus.OK);
+    }
+
     @GetMapping("/userProfile")
     public ResponseEntity<UserProfileResponse> getUserProfile(@RequestParam("username") String username) {
         return new ResponseEntity<>(userService.getUserProfile(username), HttpStatus.OK);
     }
 
+    @GetMapping("/userDetail")
+    public ResponseEntity<UserDetailResponse> getUserDetail(@RequestParam("username") String username) {
+        return new ResponseEntity<UserDetailResponse>(userService.getUserDetail(username), HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateUser")
+    public ResponseEntity<String> updateUser(@RequestParam(value = "image",required = false) MultipartFile image,
+                                             @RequestParam("username") String username,
+                                             @RequestParam("name") String name,
+                                             @RequestParam("phoneNumber") String phoneNumber,
+                                             @RequestParam("address") String address,
+                                             @RequestParam("userId") int userId) {
+        if(image == null){
+            userService.updateUserWithOut(username, name, phoneNumber, address, userId);
+        }else{
+            userService.updateUser(image,username,name,phoneNumber,address,userId);
+        }
+
+        return new ResponseEntity<>("User Updated", HttpStatus.OK);
+    }
 }

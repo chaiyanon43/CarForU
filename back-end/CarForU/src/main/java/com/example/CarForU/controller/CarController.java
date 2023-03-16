@@ -6,6 +6,7 @@ import com.example.CarForU.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,7 +69,8 @@ public class CarController {
             @RequestParam(name = "carSeats") double carSeats,
             @RequestParam(name = "carYear") double carYear,
             @RequestParam(name = "carHeader") String carHeader,
-            @RequestParam(name = "carId") int carId
+            @RequestParam(name = "carId") int carId,
+            @RequestParam(name = "userId") int userId
     ) {
         try{
                 carService.AddCar(
@@ -89,6 +91,7 @@ public class CarController {
                         carYear,
                         carHeader,
                         carId,
+                        userId,
                         carImage,
                         carImageDefect);
         }catch (Exception e){
