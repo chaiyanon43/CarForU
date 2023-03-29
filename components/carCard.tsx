@@ -11,8 +11,9 @@ import { CommonFunc } from './commonFunc';
 export interface CarCardForm {
     carDetail: carCard;
     carFavId?: number[];
-    getFavId?:any;
-    isMine?:boolean;
+    getFavId?: any;
+    isSecond?:boolean;
+    isMine?: boolean;
 }
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { toaster } from 'evergreen-ui';
@@ -25,7 +26,7 @@ const CarCard = (props: CarCardForm) => {
     const carService = new CarService();
     const [displayDialog, setDisplayDialog] = useState(false);
     const [displayDialogDelete, setDisplayDialogDelete] = useState(false);
-    const { carDetail, carFavId ,getFavId,isMine} = props
+    const { carDetail, carFavId, getFavId, isMine,isSecond } = props
     const acceptLiked = async () => {
         const carForm: FavoriteRequest = {
             username: sessionStorage.getItem('user')!,
@@ -113,7 +114,7 @@ const CarCard = (props: CarCardForm) => {
                                     />
                                 }
                             />
-                            <p>: 0-5k km.</p>
+                            <p>: {isSecond ? commonFunc.numberWithCommas(carDetail.carMileage):"0-5k"} km.</p>
                         </div>
                         <div className={style["detail-box"]}>
                             <Button
@@ -147,9 +148,11 @@ const CarCard = (props: CarCardForm) => {
                     </div>
                 </div>
             </Link>
-            {sessionStorage.getItem("user") === carDetail.username ? <i className="pi pi-pencil"></i>:carFavId?.find(num => {
-                return num === carDetail.carId
-            }) ? <i onClick={() => setDisplayDialogDelete(true)} className="pi pi-heart-fill"></i> : <i onClick={() => setDisplayDialog(true)} className="pi pi-heart"></i>}
+            <div className={style['header-icon-card']}>
+                {sessionStorage.getItem("user") === carDetail.username ? <><Link href={'/edit-car-detail/' + carDetail.carId} key={carDetail.carId}><i className="pi pi-pencil"></i></Link></> : carFavId?.find(num => {
+                    return num === carDetail.carId
+                }) ? <i onClick={() => setDisplayDialogDelete(true)} className="pi pi-heart-fill"></i> : <i onClick={() => setDisplayDialog(true)} className="pi pi-heart"></i>}
+            </div>
             <Dialog header="เพิ่มรถยนต์ในรายการโปรด" visible={displayDialog} style={{ width: '400px' }} footer={renderFooter()} onHide={() => onHide()}>
             </Dialog>
             <Dialog header="ลบรถยนต์ออกจากรายการโปรด" visible={displayDialogDelete} style={{ width: '400px' }} footer={renderFooterDelete()} onHide={() => onHideDelete()}>

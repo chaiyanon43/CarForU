@@ -25,7 +25,6 @@ const AddModel = () => {
         })
     }
     const onAddModel: SubmitHandler<carBrandAdd> = (brand) => {
-        console.log(brand)
         axios.post("http://localhost:8080/add-model", {
             brandName:brand.brandName,
             modelName:brand.modelName   

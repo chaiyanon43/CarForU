@@ -17,9 +17,13 @@ public class Notification {
     @Column(name = "NOTIFICATION_ID")
     private int notificationId;
     @Column(name = "NOTIFICATION_CONTACTOR")
-    private String notificationContactor;
-    @Column(name = "NOTIFICATION_PHONE")
-    private String notificationPhone;
+    private int notificationContactorId;
+    @Column(name = "NOTIFICATION_CONTACT")
+    private String notificationContact;
+    @Column(name = "NOTIFICATION_CONTACT_TYPE")
+    private String notificationContactType;
+    @Column(name = "NOTIFICATION_DESC")
+    private String notificationDesc;
     @ManyToOne
     @JoinColumn(name = "NOTIFICATION_USER_ID",nullable = false)
     private User user;

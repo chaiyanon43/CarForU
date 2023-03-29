@@ -9,17 +9,30 @@ import mainlogo from "../images/logo-main.png";
 import Link from 'next/link';
 import Login from '@/pages/login';
 import Signup from '@/pages/sign-up';
-import { UserProfileTag } from './interfaces';
+import { notificationRequest, UserProfileTag } from './interfaces';
 import { UserService } from 'services/UserService';
 import Cookies from "js-cookie";
 import { toaster } from 'evergreen-ui';
+import { Dropdown } from 'primereact/dropdown';
+import { NotificationService } from 'services/Notification.service';
+import { MenuItemCommandParams } from 'primereact/menuitem';
+import { NotificationPanel } from './notificationPanel';
+import style from "../src/styles/Header.module.css"
 const TopNavBar = () => {
     const [displayBasic, setDisplayBasic] = useState<boolean>(false);
     const [userProfile, setUserProfile] = useState<UserProfileTag>();
+    const [notification, setNotification] = useState<notificationRequest>();
+    const [notiLabel, setNotiLabel] = useState<{
+        label: string, command?(e: MenuItemCommandParams): void;
+    }[]>([])
     const router = useRouter();
     const [items, setItems] = useState<any[]>([]);
     const userService = new UserService();
     const menu = useRef(null);
+    const notiMenu = useRef(null);
+    const notificationService = new NotificationService();
+    const [displayDialog, setDisplayDialog] = useState(false);
+    const [notificationId,setNotificationId]= useState();
     const renderFooter = () => {
         return (
             <div>
@@ -59,11 +72,37 @@ const TopNavBar = () => {
             },
         ])
     }
+    const getNotifications = (userId: number) => {
+        const response = notificationService.getNotificationList(userId)
+        response.then((res) => {
+            res.map((e) => {
+                if (res.length > notiLabel.length) {
+                    notiLabel.push(
+                        {
+                            label: "การติดต่อจากคุณ : " + e.contactorName,
+                            command: () => { 
+                                const response = notificationService.getNotificationDetail(e.notificationId)
+                                response.then(async (res)=>{
+                                    setNotification(res)
+                                    await setDisplayDialog(true)
+                                })
+                             }
+                        }
+                    )
+                }
+            })
+
+        })
+    }
     useEffect(() => {
         if (sessionStorage.getItem('user')) {
             getItems();
+
+        } if (sessionStorage.getItem('userId')) {
+            getNotifications(sessionStorage.getItem('userId'))
         }
-    }, [sessionStorage.getItem('user')])
+
+    }, [sessionStorage.getItem('user'), sessionStorage.getItem('userId')])
 
     const start = <Link style={{ textDecoration: "none", fontWeight: "bold", margin: "0 8px", color: "#FEFEFE", letterSpacing: "2px" }} href={'/home'}>
         CAR<span style={{ color: "red", letterSpacing: "2px" }}>FORU</span>
@@ -90,6 +129,21 @@ const TopNavBar = () => {
             command: () => { onClickMenu() },
         }
     ]
+    const notiDrop = [
+        {
+            label: 'noti1',
+        },
+        {
+            label: 'noti2',
+        },
+        {
+            label: 'noti1',
+        }
+    ]
+    const onClickNotification = (notiId: number) => {
+        console.log(notiId)
+        return <>Hello {notiId}</>
+    }
     const onClickMenu = () => {
         sessionStorage.clear();
         localStorage.clear();
@@ -100,8 +154,13 @@ const TopNavBar = () => {
         });
         const response = router.push("/login");
     }
-    const end = (<>
-        <TieredMenu model={userDrop} onClick={onClickMenu} popup ref={menu} id="overlay_tmenu" />
+    const end = (<div style={{ display: "flex", alignItems: "center" }}>
+        <div className={style["bell-box"]}><i className='pi pi-bell' style={{ color: "#FEFEFE" }} onClick={(event) => {
+            notiMenu.current.toggle(event)
+        }
+        } ></i></div>
+        <TieredMenu model={notiLabel} onClick={onClickMenu} popup ref={notiMenu} id={style["notification-drop"]}/>
+        <TieredMenu model={userDrop} onClick={onClickNotification} popup ref={menu} id="overlay_tmenu" />
         <Button style={{ background: "transparent", border: "none" }} onClick={(event) => menu.current.toggle(event)} aria-haspopup aria-controls="overlay_tmenu">
             <div style={{ width: "auto", display: 'flex' }}>
                 <div style={{ marginRight: "12px", width: "30px", height: "30px", overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: "25px" }}>
@@ -116,9 +175,10 @@ const TopNavBar = () => {
                     {userProfile?.name}
                 </p>
             </div>
-        </Button></>)
+        </Button></div>)
     return (
         <div>
+            {notification && <NotificationPanel displayDialog={displayDialog} setDisplayDialog={setDisplayDialog} notificationData={notification}/>}
             <Menubar
                 model={items}
                 start={start}

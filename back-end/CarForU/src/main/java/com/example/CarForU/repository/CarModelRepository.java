@@ -14,9 +14,15 @@ public interface CarModelRepository extends JpaRepository<CarModel,Integer> {
     @Query(
             value = "SELECT * FROM car_model m WHERE m.brand_id =:brandId",
             nativeQuery = true)
-    List<CarModel> findCarModelByBrand(@Param("brandId")int brandId);
+    List<CarModel> findCarModelByBrand(@Param("brandId") int brandId);
+
     @Query(
             value = "SELECT * FROM car_model m WHERE m.model_name =:modelName",
             nativeQuery = true)
-    CarModel findCarModelByModelName(@Param("modelName")String modelName);
+    CarModel findCarModelByModelName(@Param("modelName") String modelName);
+
+    @Query("SELECT m FROM CarModel m WHERE m.carBrand.brandId =:brandId")
+    List<CarModel> findCarModelsByBrandId(@Param("brandId") int brandId);
 }
+
+

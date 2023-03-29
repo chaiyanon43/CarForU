@@ -1,5 +1,6 @@
 package com.example.CarForU.controller;
 
+import com.example.CarForU.bean.CarBrandAndModelSearch;
 import com.example.CarForU.entity.CarBrand;
 import com.example.CarForU.service.CarBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,9 @@ public class CarBrandController {
     @GetMapping("/getAllBrand")
     public ResponseEntity<List<String>> GetAllBrand(){
         return new ResponseEntity<>(carBrandService.GetAllBrand(), HttpStatus.OK);
+    }
+    @GetMapping("/getAllBrandsAndModels")
+    public ResponseEntity<List<CarBrandAndModelSearch>> GetAllBrandsAndModels(){
+        return new ResponseEntity<>(carBrandService.GetAllBrandsAndModels(), HttpStatus.OK);
     }
 }

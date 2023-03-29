@@ -1,15 +1,11 @@
 package com.example.CarForU.service;
 
 import com.example.CarForU.bean.*;
-import com.example.CarForU.entity.Car;
-import com.example.CarForU.entity.CarImage;
-import com.example.CarForU.entity.CarModel;
-import com.example.CarForU.entity.User;
-import com.example.CarForU.repository.CarImageRepository;
-import com.example.CarForU.repository.CarModelRepository;
-import com.example.CarForU.repository.CarRepository;
-import com.example.CarForU.repository.UserRepository;
+import com.example.CarForU.entity.*;
+import com.example.CarForU.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +17,7 @@ import java.util.*;
 @Service
 public class CarServiceImpl implements CarService{
 
+
     @Autowired
     CarRepository carRepository;
     @Autowired
@@ -31,6 +28,8 @@ public class CarServiceImpl implements CarService{
     UserRepository userRepository;
     @Autowired
     CarImageService carImageService;
+    @Autowired
+    CarBrandRepository carBrandRepository;
     @Override
     public EuclideanResultListResponse CarRecommendation(int carId,String condition) {
         List<Car> carAll = new ArrayList<>();
@@ -71,6 +70,14 @@ public class CarServiceImpl implements CarService{
     public CarDetailAndRec GetCarDetail(int carId) {
         CarsAllResponse carRes = new CarsAllResponse();
         Car car = carRepository.findById(carId);
+        User user = car.getUser();
+        UserDetailResponse userDetailResponse = new UserDetailResponse();
+        userDetailResponse.setUserId(user.getUserId());
+        userDetailResponse.setName(user.getName());
+        userDetailResponse.setPhoneNumber(user.getPhoneNumber());
+        userDetailResponse.setAddress(user.getAddress());
+        userDetailResponse.setImage(user.getImage());
+        carRes.setUserId(car.getUser().getUserId());
         carRes.setCarBrand(car.getModelId().getCarBrand().getBrandName());
         carRes.setCarModel(car.getModelId().getModelName());
         carRes.setCarId(car.getCarId());
@@ -86,15 +93,25 @@ public class CarServiceImpl implements CarService{
         carRes.setCarMileage(car.getCarMileage());
         carRes.setCarGearType(car.getCarGearType());
         carRes.setCarHorsePower(car.getCarHorsePower());
-        List<CarImageResponse> images = new ArrayList<CarImageResponse>();
-        carImageRepository.findCarImageByCarId(carId).forEach(img -> {
+        carRes.setCarColor(car.getCarColor());
+        carRes.setCarEVRange(car.getCarEVRange());
+        List<CarImageResponse> imagesOne = new ArrayList<CarImageResponse>();
+        carImageRepository.findCarImageByCarIdWhereStatusOne(carId).forEach(img -> {
                     CarImageResponse image = new CarImageResponse();
                     image.setCarImage(img.getCarImage());
-                    images.add(image);
+            imagesOne.add(image);
+                }
+        );
+        List<CarImageResponse> imagesTwo = new ArrayList<CarImageResponse>();
+        carImageRepository.findCarImageByCarIdWhereStatusTwo(carId).forEach(img -> {
+                    CarImageResponse image = new CarImageResponse();
+                    image.setCarImage(img.getCarImage());
+                    imagesTwo.add(image);
                 }
         );
         carRes.setCarHeader(car.getCarHeader());
-        carRes.setCarImage(images);
+        carRes.setCarImage(imagesOne);
+        carRes.setCarImageDefect(imagesTwo);
         EuclideanResultListResponse EuclideanData = CarRecommendation(carId,car.getCarCondition());
         RecResponseList recResponseList = new RecResponseList();
         List<EuclideanResult> evResult = new ArrayList<>();
@@ -137,12 +154,86 @@ public class CarServiceImpl implements CarService{
         CarDetailAndRec carDetailAndRec = new CarDetailAndRec();
         carDetailAndRec.setCar(carRes);
         carDetailAndRec.setRecList(recResponseList);
+        carDetailAndRec.setUser(userDetailResponse);
         return carDetailAndRec;
     }
 
     @Override
     public List<CarDetailCard> GetAllFirstHandCars() {
         List<Car> cars = carRepository.findFirstHandCondition();
+        return ConditionClassify(cars);
+    }
+
+    @Override
+    public List<CarDetailCard> GetAllFirstHandCarsSearch(String keyword,
+                                                   String[] carPrice,
+                                                   String[] carYear,
+                                                   String carFuelType,
+                                                   List<String> carBrands,
+                                                   List<String> carModels,
+                                                   double carSeats,
+                                                   String carGear) {
+
+        if(carBrands.size() == 0 && carModels.size() == 0){
+            carBrands = new ArrayList<>();
+            List<CarBrand> carBrand = carBrandRepository.findAll();
+            for (int i = 0; i < carBrand.size(); i++) {
+                carBrands.add(carBrand.get(i).getBrandName());
+            }
+            carModels = new ArrayList<>();
+            List<CarModel> carModel = carModelRepository.findAll();
+            for (int i = 0; i < carModel.size(); i++) {
+                carModels.add(carModel.get(i).getModelName());
+            }
+        }
+        double priceMin = Double.parseDouble(carPrice[0]);
+        double priceMax = Double.parseDouble(carPrice[1]);
+        double yearMin = Double.parseDouble(carYear[0]);
+        double yearMax = Double.parseDouble(carYear[1]);
+        List<Double> seats = new ArrayList<>();
+        if(carSeats == 0){
+            seats.add(2.0);
+            seats.add(4.0);
+            seats.add(5.0);
+            seats.add(7.0);
+        }else{
+            seats.add(carSeats);
+        }
+        List<Car> cars = carRepository.searchCar(keyword, carBrands,carModels,priceMin,priceMax,yearMin,yearMax,seats,carGear,carFuelType);
+        return ConditionClassify(cars);
+    }
+
+    @Override
+    public List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword, String[] carPrice, String[] carYear, String carFuelType, List<String> carBrands, List<String> carModels, double carSeats, String carGear, double carMileage) {
+        if(carBrands.size() == 0 && carModels.size() == 0){
+            carBrands = new ArrayList<>();
+            List<CarBrand> carBrand = carBrandRepository.findAll();
+            for (int i = 0; i < carBrand.size(); i++) {
+                carBrands.add(carBrand.get(i).getBrandName());
+            }
+            carModels = new ArrayList<>();
+            List<CarModel> carModel = carModelRepository.findAll();
+            for (int i = 0; i < carModel.size(); i++) {
+                carModels.add(carModel.get(i).getModelName());
+            }
+        }
+        double priceMin = Double.parseDouble(carPrice[0]);
+        double priceMax = Double.parseDouble(carPrice[1]);
+        double yearMin = Double.parseDouble(carYear[0]);
+        double yearMax = Double.parseDouble(carYear[1]);
+        if(carMileage == 70001.0){
+            carMileage = 100000000;
+        }
+        List<Double> seats = new ArrayList<>();
+        if(carSeats == 0){
+            seats.add(2.0);
+            seats.add(4.0);
+            seats.add(5.0);
+            seats.add(7.0);
+        }else{
+            seats.add(carSeats);
+        }
+        List<Car> cars = carRepository.searchSecondCar(keyword, carBrands,carModels,priceMin,priceMax,yearMin,yearMax,seats,carGear,carFuelType,carMileage);
         return ConditionClassify(cars);
     }
 
@@ -160,7 +251,60 @@ public class CarServiceImpl implements CarService{
     }
 
     @Override
-    public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, double carMileage, String carModelName, double carPrice, double carSeats, double carYear,String carHeader,int carId,int userId,List<MultipartFile> carImage,List<MultipartFile> carImageDefect) {
+    public ResponseEntity<CarDetailEdit> GetCarDetailForEdit(int carId, int userId) {
+        try{
+            Car car = carRepository.findByIdAndUserid(carId,userId);
+//            if(userId != car.getUser().getUserId()){
+//                return null;
+//            }
+            CarDetailEdit carDetailEdit = new CarDetailEdit();
+            carDetailEdit.setCarId(car.getCarId());
+            carDetailEdit.setUserId(car.getUser().getUserId());
+            carDetailEdit.setCarBrand(car.getModelId().getCarBrand().getBrandName());
+            carDetailEdit.setCarModel(car.getModelId().getModelName());
+            carDetailEdit.setCarGearType(car.getCarGearType());
+            carDetailEdit.setCarPrice(car.getCarPrice());
+            carDetailEdit.setCarYear(car.getCarYear());
+            carDetailEdit.setCarSeats(car.getCarSeats());
+            carDetailEdit.setCarHorsePower(car.getCarHorsePower());
+            carDetailEdit.setCarDesc(car.getCarDesc());
+            carDetailEdit.setCarAddress(car.getCarAddress());
+            carDetailEdit.setCarFuelConsumption(car.getCarFuelConsumption());
+            carDetailEdit.setCarFuelType(car.getCarFuelType());
+            carDetailEdit.setCarColor(car.getCarColor());
+            carDetailEdit.setCarGas(car.getCarGas());
+            carDetailEdit.setCarMileage(car.getCarMileage());
+            carDetailEdit.setCarCondition(car.getCarCondition());
+            carDetailEdit.setCarHeader(car.getCarHeader());
+            carDetailEdit.setCarEVRange(car.getCarEVRange());
+            List<ImageDetail> imageDetailsOne = new ArrayList<>();
+            List<CarImage> carImagesOne = carImageRepository.findCarImageByCarIdWhereStatusOne(car.getCarId());
+            for (int i = 0; i < carImagesOne.size(); i++) {
+                ImageDetail imageDetail = new ImageDetail();
+                imageDetail.setCarImage(carImagesOne.get(i).getCarImage());
+                imageDetail.setImageId(carImagesOne.get(i).getCarImageId());
+                imageDetailsOne.add(imageDetail);
+            }
+            List<ImageDetail> imageDetailsTwo = new ArrayList<>();
+
+            List<CarImage> carImagesTwo = carImageRepository.findCarImageByCarIdWhereStatusTwo(car.getCarId());
+            for (int i = 0; i < carImagesTwo.size(); i++) {
+                ImageDetail imageDetail = new ImageDetail();
+                imageDetail.setCarImage(carImagesTwo.get(i).getCarImage());
+                imageDetail.setImageId(carImagesTwo.get(i).getCarImageId());
+                imageDetailsTwo.add(imageDetail);
+            }
+            carDetailEdit.setCarImages(imageDetailsOne);
+            carDetailEdit.setCarImagesDefect(imageDetailsTwo);
+            return new ResponseEntity<>(carDetailEdit, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @Override
+    public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, double carMileage, String carModelName, double carPrice, double carSeats, double carYear,String carHeader,int userId,List<MultipartFile> carImage,List<MultipartFile> carImageDefect) {
         Car addCar = new Car();
         CarModel carModel = carModelRepository.findCarModelByModelName(carModelName);
         User user = userRepository.findUserById(userId);
@@ -186,6 +330,22 @@ public class CarServiceImpl implements CarService{
         if(carImageDefect != null){
             carImageService.AddCarImage(carImageDefect,carAdded.getCarId(),2);
         }
+    }
+
+    @Override
+    public void EditCarData(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange,
+                            double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower,
+                            double carMileage, String carModelName, double carPrice, double carSeats, double carYear,
+                            String carHeader, List<MultipartFile> carImage, List<MultipartFile> carImageDefect,
+                            int[] carImageIdDelete,int carId) {
+        CarModel carModel = carModelRepository.findCarModelByModelName(carModelName);
+        carRepository.UpdateCarDetail(carAddress,carColor,carCondition,carDesc,carEVRange,carFuelConsumption,carFuelType,carGas,carGearType,carHorsePower,carMileage,carPrice,carSeats,carYear,carModel,carHeader,carId);
+        if(carImageIdDelete != null){
+            for (int i = 0; i < carImageIdDelete.length; i++) {
+                carImageRepository.DeleteCarImageByID(carImageIdDelete[i]);
+            }
+        }
+
     }
 
     public List<CarDetailCard> ConditionClassify(List<Car> cars){
@@ -259,7 +419,6 @@ public class CarServiceImpl implements CarService{
             tempEuclideanDistance = tempEuclideanDistance +
                     (Math.pow(recTemp.getCarFuelConsumption()-norCar.getCarFuelConsumption(),2));
         }
-        System.out.println(norCar.getCarId());
         tempEuclideanDistance = Math.sqrt(tempEuclideanDistance);
         return tempEuclideanDistance;
     }
