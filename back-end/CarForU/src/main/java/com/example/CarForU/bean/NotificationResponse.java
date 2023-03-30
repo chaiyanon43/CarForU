@@ -1,4 +1,4 @@
-package com.example.CarForU.controller;
+package com.example.CarForU.bean;
 
 import lombok.Getter;
 import lombok.Setter;

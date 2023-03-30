@@ -42,10 +42,11 @@ export class NotificationService {
     }
     async getNotificationDetail(notificationId: number) {
         try {
-            return await axios.get("http://localhost:8080/getNotificationDetail", {
+            console.log(notificationId)
+            return await axios.get<notificationRequest>("http://localhost:8080/getNotificationDetail", {
                 params:
                 {
-                    notificationId
+                    notificationId:notificationId
                 }
             })
                 .then((res) => res.data)

@@ -1,6 +1,6 @@
 package com.example.CarForU.service;
 
-import com.example.CarForU.controller.NotificationResponse;
+import com.example.CarForU.bean.NotificationResponse;
 import com.example.CarForU.entity.Car;
 import com.example.CarForU.entity.CarImage;
 import com.example.CarForU.entity.Notification;

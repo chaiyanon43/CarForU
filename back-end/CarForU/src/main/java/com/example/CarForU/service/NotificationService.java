@@ -1,7 +1,6 @@
 package com.example.CarForU.service;
 
-import com.example.CarForU.controller.NotificationResponse;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.example.CarForU.bean.NotificationResponse;
 
 import java.util.List;
 

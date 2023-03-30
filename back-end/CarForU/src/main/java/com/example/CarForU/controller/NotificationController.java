@@ -1,6 +1,7 @@
 package com.example.CarForU.controller;
 
 import com.example.CarForU.bean.NotificationRequest;
+import com.example.CarForU.bean.NotificationResponse;
 import com.example.CarForU.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
