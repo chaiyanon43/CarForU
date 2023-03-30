@@ -131,7 +131,8 @@ export interface childrenDropDown {
 }
 export interface notificationRequest {
     userId?: number|null,
-    notificationContactType?:{ name: string, code: string },
+    notificationId:number,
+    notificationContactType?:{ name: string, code: string }|string,
     notificationContact?:string,
     notificationContactor?:number,
     carId?:number,

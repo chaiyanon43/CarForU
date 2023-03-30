@@ -82,9 +82,9 @@ const TopNavBar = () => {
                             label: "การติดต่อจากคุณ : " + e.contactorName,
                             command: () => { 
                                 const response = notificationService.getNotificationDetail(e.notificationId)
-                                response.then(async (res)=>{
+                                response.then((res)=>{
                                     setNotification(res)
-                                    await setDisplayDialog(true)
+                                    setDisplayDialog(true)
                                 })
                              }
                         }
@@ -99,7 +99,7 @@ const TopNavBar = () => {
             getItems();
 
         } if (sessionStorage.getItem('userId')) {
-            getNotifications(sessionStorage.getItem('userId'))
+            getNotifications(Number(sessionStorage.getItem('userId')))
         }
 
     }, [sessionStorage.getItem('user'), sessionStorage.getItem('userId')])
@@ -141,7 +141,6 @@ const TopNavBar = () => {
         }
     ]
     const onClickNotification = (notiId: number) => {
-        console.log(notiId)
         return <>Hello {notiId}</>
     }
     const onClickMenu = () => {
@@ -178,7 +177,7 @@ const TopNavBar = () => {
         </Button></div>)
     return (
         <div>
-            {notification && <NotificationPanel displayDialog={displayDialog} setDisplayDialog={setDisplayDialog} notificationData={notification}/>}
+            {notification && <NotificationPanel displayDialog={displayDialog} setDisplayDialog={setDisplayDialog} notificationData={notification} setNotificationData={setNotification}/>}
             <Menubar
                 model={items}
                 start={start}

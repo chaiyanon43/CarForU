@@ -15,9 +15,11 @@ interface notificationForm {
     displayDialog: boolean,
     setDisplayDialog: Dispatch<SetStateAction<boolean>>
     notificationData?: notificationRequest;
+    setNotificationData?: Dispatch<SetStateAction<notificationRequest>>
+
 }
 export const NotificationPanel = (props: notificationForm) => {
-    const { user, car, isSend, displayDialog, setDisplayDialog, notificationData } = props;
+    const { user, car, isSend, displayDialog, setDisplayDialog, notificationData,setNotificationData } = props;
     const notificationService = new NotificationService();
 
     const contact = [
@@ -25,12 +27,10 @@ export const NotificationPanel = (props: notificationForm) => {
         { name: 'LINE ID', code: 'ระบุ Line ID' },
         { name: 'E-Mail', code: 'ระบุ E-mail' },
     ];
-    console.log(notificationData)
     const { register, handleSubmit, reset, getValues, watch, setValue, resetField, formState: { errors } } = useForm<notificationRequest>({
         defaultValues:
             notificationData
     });
-
     const onContact: SubmitHandler<notificationRequest> = (noti) => {
         noti.carId = car?.carId,
             noti.userId = user?.userId
@@ -52,7 +52,10 @@ export const NotificationPanel = (props: notificationForm) => {
     }
     return (
         <form onSubmit={handleSubmit(onContact)}>
-            <Dialog header={notificationData ? notificationData.carHeader : "กรอกข้อมูลเพื่อให้ผู้ขายติดต่อกลับ"} visible={displayDialog} style={{ width: '600px', maxWidth: "90%" }} footer={notificationData ? null : renderFooter()} onHide={() => setDisplayDialog(false)}>
+            <Dialog header={notificationData ? notificationData.carHeader : "กรอกข้อมูลเพื่อให้ผู้ขายติดต่อกลับ"} visible={displayDialog} style={{ width: '600px', maxWidth: "90%" }} footer={notificationData ? null : renderFooter()} onHide={() => {
+                reset()
+                setDisplayDialog(false)
+                }}>
                 {notificationData &&
                     <div className={style["notification-img"]}>
                         <img src={`data:image/jpeg;base64,${notificationData.carImage}`}></img>
@@ -62,14 +65,14 @@ export const NotificationPanel = (props: notificationForm) => {
                     {notificationData &&
                         <div className={style["contact-box"]}>
                             <label>ผู้ติดต่อ</label>
-                            <InputText value={watch('contactorName')} disabled={true} />
+                            <InputText value={notificationData ? notificationData.contactorName: watch('contactorName')} disabled={true} />
                         </div>
                     }
                     <div className={style["contact-box"]}>
                         <label>ช่องทางการติดต่อ</label>
                         <div className={style["input-contact"]}>
                             {notificationData ?
-                                <InputText id={style["contact-title"]} value={watch('notificationContactType')} disabled={watch("notificationContactType") === undefined || notificationData} />
+                                <InputText id={style["contact-title"]} value={notificationData.notificationContactType} disabled={notificationData} />
                                 : <Dropdown id={style["contact-title"]} value={watch('notificationContactType')} onChange={(e) => setValue("notificationContactType", e.value)} options={contact} optionLabel="name" placeholder="ช่องทางการติดต่อ" disabled={notificationData} />}
                             <InputText id={style["contact-data"]} placeholder={watch("notificationContactType.code")}  {...register("notificationContact")} disabled={watch("notificationContactType") === undefined || notificationData} />
                         </div>
@@ -77,7 +80,7 @@ export const NotificationPanel = (props: notificationForm) => {
                     <div className={style["contact-box"]}>
                         <label>รายละเอียด</label>
                         <InputTextarea id={style["desc"]} style={{ margin: "8px 0", overflow: "auto" }} rows={5} cols={30} autoResize placeholder="กรุณากรอกรายละเอียดหรือข้อมูลที่ต้องการสอบถามเบื้องต้น"
-                            onChange={(e) => setValue("notificationDesc", e.target.value)} value={watch("notificationDesc")} disabled={notificationData} />
+                            onChange={(e) => setValue("notificationDesc", e.target.value)} value={notificationData ? notificationData.notificationDesc:watch("notificationDesc")} disabled={notificationData} />
                     </div>
                 </div>
             </Dialog>
