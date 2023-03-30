@@ -17,12 +17,12 @@ export default function Auth(props: ProtectedRouteInterface) {
         setAuthenticate(token !== undefined);
         axios.defaults.headers.common["Authorization"] = `${authType} ${token}`;
 
-        if (!(router.asPath === "/login" || router.asPath === "/sign-up")) {
+        if (!(router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/home")) {
             if (!token) {
                   router.push("/login");  
             }
         }
-        if (router.asPath === "/login" || router.asPath === "/sign-up") {
+        if (router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/home") {
             if (token) {
                 router.back();
             }
@@ -33,8 +33,8 @@ export default function Auth(props: ProtectedRouteInterface) {
     }, [redirect, token]);
 
     if (
-        (authenticate && (router.asPath === "/login" || router.asPath === "/sign-up")) ||
-        (!authenticate && !(router.asPath === "/login" || router.asPath === "/sign-up")) ||
+        (authenticate && (router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/home")) ||
+        (!authenticate && !(router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/home")) ||
         authenticate === undefined
       ) {
         return (
