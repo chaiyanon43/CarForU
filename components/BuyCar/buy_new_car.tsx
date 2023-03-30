@@ -1,17 +1,20 @@
 import SearchCar from "components/seachCar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from '../../src/styles/NewCar.module.css'
 import { CommonFunc } from "components/commonFunc";
 import { carCard, CarData } from "components/interfaces";
 import { CarService } from "services/CarService";
 import CarCard from "components/carCard";
+import { toaster } from "evergreen-ui/types";
 export interface BuyCar {
     isSecond?: boolean;
+    isSearch?: boolean;
+    setData?:  Dispatch<SetStateAction<CarData>>
 }
 const BuyNewCar = (props: BuyCar) => {
-    const { isSecond } = props
+    const { isSecond, isSearch } = props
     const commonFunc = new CommonFunc();
     const [searchDetail, setSearchDetail] = useState<boolean>(false)
     const [arrow, setArrow] = useState<string>("pi pi-angle-down")
@@ -24,7 +27,7 @@ const BuyNewCar = (props: BuyCar) => {
             response.then((res) => {
                 setData!(res)
             })
-        }else{
+        } else {
             const response = carService.getCarSecondHand();
             response.then((res) => {
                 setData!(res)
@@ -47,32 +50,30 @@ const BuyNewCar = (props: BuyCar) => {
     }
 
     return (
-        <div className={style["main-container"]}>
-            <div className={style["search-box"]} style={{ height: `${searchDetail ? 'auto' : ''}` }}>
-                <div className="p-inputgroup">
-                    <InputText placeholder="Keyword"/>
-                    <Button icon="pi pi-search" className="p-button-warning" />
+        <>
+            <div className={style["main-container"]}>
+                <div className={style["search-box"]} style={{ height: `${searchDetail ? 'auto' : ''}` }}>
+                    <SearchCar isSecond={isSecond} isSearch={searchDetail} setData={setData}/>
+                    <div className={style['arrow-search']}>
+                        <i onClick={() => {
+                            setSearchDetail(!searchDetail)
+                            setArrow(searchDetail ? "pi pi-angle-down" : "pi pi-angle-up")
+                        }} className={arrow} style={{ 'fontSize': '24px' }}></i>
+                    </div>
                 </div>
-                {searchDetail && <SearchCar isSecond={isSecond} />}
-                <div className={style['arrow-search']}>
-                    <i onClick={() => {
-                        setSearchDetail(!searchDetail)
-                        setArrow(searchDetail ? "pi pi-angle-down" : "pi pi-angle-up")
-                    }} className={arrow} style={{ 'fontSize': '24px' }}></i>
-                </div>
-            </div>
-            <div className={style["card-container"]}>
-                {data.map((e, index) => {
-                    return (
-                        <>
-                            <CarCard carDetail={e} carFavId={favCarId} getFavId={getFavId} />
-                        </>
+                <div className={style["card-container"]}>
+                    {data ? data.map((e, index) => {
+                        return (
+                            <>
+                                <CarCard carDetail={e} carFavId={favCarId} getFavId={getFavId} isSecond={isSecond}/>
+                            </>
 
-                    )
-                })
-                }
+                        )
+                    }):null
+                    }
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 export default BuyNewCar

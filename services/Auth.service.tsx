@@ -19,12 +19,12 @@ export class AuthService extends Component {
                     const token = Cookies.get("token");
                     axios.defaults.headers.common["Authorization"] = `${authType} ${token}`;
                     this.getUserId(user.username)
-                    sessionStorage.setItem('user', user.username)
+                    await sessionStorage.setItem('user', user.username)
                     toaster.success("Login Successful", {
                         description: `Welcome to CarForU`,
                         duration: 3,
                     });
-                    await this.state.router.push("/buy-new");
+                    this.state.router.push("/buy-new");
                 })
         } catch {
             toaster.danger("Login Failed", {

@@ -1,6 +1,5 @@
 package com.example.CarForU.bean;
 
-import com.example.CarForU.entity.CarImage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CarsAllResponse {
+public class CarDetailEdit {
     private int userId;
     private int carId;
     private String carBrand;
@@ -22,16 +21,12 @@ public class CarsAllResponse {
     private String carAddress;
     private double carFuelConsumption;
     private String carFuelType;
+    private String carColor;
     private boolean carGas;
     private double carMileage;
     private String carCondition;
-    private String carHeader;
-    private String carColor;
     private double carEVRange;
-
-    private List<CarImageResponse> carImage;
-    private List<CarImageResponse> carImageDefect;
-
-    public CarsAllResponse() {
-    }
+    private String carHeader;
+    private List<ImageDetail> carImages;
+    private List<ImageDetail> carImagesDefect;
 }

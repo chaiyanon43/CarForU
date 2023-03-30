@@ -13,7 +13,7 @@ export class CarService {
             });
         }
     }
-    
+
     async getModelList(carBrandName: string) {
         try {
             return await axios.get('http://localhost:8080/get-model', {
@@ -42,7 +42,29 @@ export class CarService {
             });
         }
     }
-    async getCarFirstHand(){
+    async getCarFirstHandSearch(keyword?: string, carPrice?: [], carYear?: [], carFuelType?: string, carBrands?: string[], carModels?: string[], carSeats?: number, carGear?: string) {
+        try {
+            console.log(carBrands)
+            return await axios.get("http://localhost:8080/all-first-hand-car-search", {
+                params: {
+                    "searchKeyword": keyword,
+                    "carPrice": carPrice[0] + "," + carPrice[1],
+                    "carYear": carYear[0] + "," + carYear[1],
+                    "carFuelType": carFuelType,
+                    "carBrands": carBrands
+                    // carModels:carModels ? carModels.map((e)=>{ return `${e},`}):'',
+                    // carSeats:carSeats,
+                    // carGear:carGear
+                }
+            })
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get cars Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getCarFirstHand() {
         try {
             return await axios.get("http://localhost:8080/all-first-hand-car")
                 .then((res) => res.data)
@@ -52,7 +74,7 @@ export class CarService {
             });
         }
     }
-    async getCarSecondHand(){
+    async getCarSecondHand() {
         try {
             return await axios.get("http://localhost:8080/all-second-hand-car")
                 .then((res) => res.data)
@@ -62,10 +84,10 @@ export class CarService {
             });
         }
     }
-    async getFavoriteCars(username:string){
+    async getFavoriteCars(username: string) {
         try {
-            return await axios.get("http://localhost:8080/getFavCar",{
-                params:{username:username}
+            return await axios.get("http://localhost:8080/getFavCar", {
+                params: { username: username }
             })
                 .then((res) => res.data)
         } catch (err: any) {
@@ -74,10 +96,10 @@ export class CarService {
             });
         }
     }
-    async getFavoriteCarsId(username:string){
+    async getFavoriteCarsId(username: string) {
         try {
-            return await axios.get("http://localhost:8080/getFavCarId",{
-                params:{username:username}
+            return await axios.get("http://localhost:8080/getFavCarId", {
+                params: { username: username }
             })
                 .then((res) => res.data)
         } catch (err: any) {
@@ -86,42 +108,102 @@ export class CarService {
             });
         }
     }
-    async deleteFavoriteCar(favCar:FavoriteRequest){
+    async deleteFavoriteCar(favCar: FavoriteRequest) {
         try {
-            await axios.delete("http://localhost:8080/unlikeCar", {data:favCar} )
-            .then((res)=>{
-                toaster.success(res.data, {
-                    duration: 5,
-                });
-            })
-        }catch{
+            await axios.delete("http://localhost:8080/unlikeCar", { data: favCar })
+                .then((res) => {
+                    toaster.success(res.data, {
+                        duration: 5,
+                    });
+                })
+        } catch {
             toaster.success("delete error", {
                 duration: 5,
             });
         }
     }
-    async addToFavoriteCar(favCar:FavoriteRequest){
+    async addToFavoriteCar(favCar: FavoriteRequest) {
         try {
             await axios.post('http://localhost:8080/likeCar', favCar)
-            .then((res)=>{
-                toaster.success(res.data, {
-                    duration: 5,
-                });
-            })
-        }catch{
+                .then((res) => {
+                    toaster.success(res.data, {
+                        duration: 5,
+                    });
+                })
+        } catch {
             toaster.success("Add to favorite error", {
                 duration: 5,
             });
         }
     }
-    async getMyCars(username:string){
+    async getMyCars(username: string) {
         try {
-            return await axios.get("http://localhost:8080/myCars",{
-                params:{username:username}
+            return await axios.get("http://localhost:8080/myCars", {
+                params: { username: username }
             })
                 .then((res) => res.data)
         } catch (err: any) {
             toaster.danger("Get Cars Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getAllBrandsAndModels() {
+        try {
+            return await axios.get("http://localhost:8080/getAllBrandsAndModels")
+                .then((res) => res.data)
+        } catch (err: any) {
+            toaster.danger("Get Brands And Models Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getCarDetailForEdit(carId: number, userId: number) {
+        try {
+            return await axios.get("http://localhost:8080/getCarDetail", {
+                params:
+                {
+                    carId: carId,
+                    userId: userId
+                }
+            })
+                .then((res) => res.data)
+        } catch (err: any) {
+            return false
+        }
+    }
+    async editCarData(carDetail: CarData) {
+        try {
+            await axios.put('http://localhost:8080/edit-car-data', {
+                carHeader: carDetail?.carHeader,
+                carCondition: carDetail?.carCondition,
+                carFuelType: carDetail?.carFuelType,
+                carBrand: carDetail?.carBrand,
+                carModel: carDetail?.carModel,
+                carColor: carDetail?.carColor,
+                carGearType: carDetail?.carGearType,
+                carHorsePower: carDetail?.carHorsePower,
+                carMileage: carDetail?.carMileage,
+                carSeats: carDetail?.carSeats,
+                carFuelConsumption: carDetail?.carFuelConsumption,
+                carYear: carDetail?.carYear,
+                carEVRange: carDetail?.carEVRange,
+                carGas: carDetail?.carGas === "ติดตั้ง" ? true : false,
+                carDesc: carDetail?.carDesc,
+                carAddress: carDetail?.carAddress,
+                carPrice: carDetail?.carPrice,
+                carImageIDDelete: carDetail.carImageIDDelete,
+                carImage: carDetail.carImage,
+                carImageDefect: carDetail.carImageDefect,
+                carId: carDetail.carId
+            })
+                .then((res) => {
+                    toaster.success(res.data, {
+                        duration: 5,
+                    });
+                })
+        } catch {
+            toaster.success("Edit car data error", {
                 duration: 5,
             });
         }

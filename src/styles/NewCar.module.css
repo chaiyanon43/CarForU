@@ -95,21 +95,42 @@
   align-items: center;
   position:relative;
 }
-.card-container .card i{
+.card-container .card .header-icon-card a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+}
+.card-container .card .header-icon-card i{
   color: rgb(228, 24, 24);
   font-size: 20px;
   cursor: pointer;
   transition-duration: 0.3s;
+  padding: 0;
+  margin: 0;
+}
+.card-container .card .header-icon-card{
   position: absolute;
   z-index: 999;
   top: 12px;
   right: 12px;
+  background-color: #fefefe;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px 5px;
+  box-shadow: 5px 5px 5px rgb(0, 0, 0, 0.2);
+
 }
-.card-container .card i:hover{
+.card-container .card .header-icon-card i:hover{
   font-size: 25px;
-  font-weight: bold;
   transition-duration: 0.3s;
+  
 }
+
 .card-container .card .car-detail .detail-header i{
   color: rgb(228, 24, 24);
   font-size: 20px;

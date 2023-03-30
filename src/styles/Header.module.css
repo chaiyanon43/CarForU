@@ -1,0 +1,11 @@
+#notification-drop{
+    width: 320px !important;
+    height: 300px !important;
+    overflow: auto;
+}
+/* .bell-box{
+    background-color: red;
+    height: 55px;
+    align-items: center;
+    display: flex;
+} */

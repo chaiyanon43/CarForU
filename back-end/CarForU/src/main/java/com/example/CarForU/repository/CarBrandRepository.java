@@ -5,14 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Repository
 public interface CarBrandRepository extends JpaRepository<CarBrand, Integer> {
-    @Query("SELECT b FROM CarBrand b")
+    @Query("SELECT b FROM CarBrand b order by b.brandName")
     CarBrand[] findAllBrand();
-    @Query("SELECT b FROM CarBrand b WHERE b.brandName = :brandName")
+    @Query("SELECT b FROM CarBrand b WHERE b.brandName = :brandName order by b.brandName")
     CarBrand findCarBrandByBrandName(@Param("brandName") String brandName);
 }
