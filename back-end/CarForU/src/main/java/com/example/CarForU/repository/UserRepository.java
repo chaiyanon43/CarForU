@@ -19,12 +19,16 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(
             value = "SELECT u FROM User u WHERE u.role <> 'admin'")
     List<User> findAllUser();
+
     @Query(
             value = "SELECT u FROM User u WHERE u.username =:username")
     User findUserByUsernameForProfile(@Param("username") String username);
     @Query(
             value = "SELECT u.role FROM User u WHERE u.username =:username")
     String findRoleByUsernameForProfile(@Param("username") String username);
+    @Query(
+            value = "SELECT u.status FROM User u WHERE u.username =:username")
+    int findStatusByUsernameForProfile(@Param("username") String username);
     @Query(
             value = "SELECT u FROM User u WHERE u.username =:username and u.status=1")
     Optional<User> findUserByUsername(@Param("username") String username);
@@ -49,4 +53,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Transactional
     @Query(value = "update User u set u.status=2 where u.userId=:userId")
     void banUserById(@Param("userId") int userId);
+    @Modifying
+    @Transactional
+    @Query(value = "update User u set u.status=1 where u.userId=:userId")
+    void unbanUserById(@Param("userId") int userId);
 }

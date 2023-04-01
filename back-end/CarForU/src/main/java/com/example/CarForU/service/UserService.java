@@ -16,5 +16,7 @@ public interface UserService {
     void updateUserWithOut(String username, String name, String phoneNumber, String address,int userId);
     int getUserId(String username);
     void BanUser(int userId);
+    void UnbanUser(int userId);
     List<UserDetailResponse> GetAllUser();
+    UserDetailResponse GetUserDetailForAdmin(int userId);
 }

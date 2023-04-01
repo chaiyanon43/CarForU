@@ -16,14 +16,14 @@ const Home = () => {
                 <p className={style["Text_Sub_Top_Home"]}>เว็บไซต์รองรับรถยนต์หลากหลายcบบทั้งมือหนึ่งและมือสอง</p>
                 <p className={style["Text_Sub_Top_Home"]}>และยังสามารถรองรับรับรถ EV อีกด้วย</p>
             </div>
-            <div className={style["button-search-form"]}>
+            {sessionStorage.getItem("user") ? null:<div className={style["button-search-form"]}>
                 <Link style={{ textDecoration: "none",color: "#FEFEFE" }} href={'/sign-up'}>
                     <Button id={styleButton['signup']}>สมัครสมาชิก</Button>
                 </Link>
                 <Link style={{ textDecoration: "none",color: "#FEFEFE" }} href={'/login'}>
                     <Button id={styleButton['login']}>เข้าสู่ระบบ</Button>
                 </Link>
-            </div>
+            </div>}
         </>
     )
 }

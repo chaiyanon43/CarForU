@@ -101,6 +101,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void UnbanUser(int userId) {
+        userRepository.unbanUserById(userId);
+    }
+
+    @Override
     public List<UserDetailResponse> GetAllUser() {
         List<User> users = userRepository.findAllUser();
         List<UserDetailResponse> userDetailResponseList = new ArrayList<>();
@@ -117,6 +122,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             userDetailResponseList.add(userDetailResponse);
         }
         return userDetailResponseList;
+    }
+
+    @Override
+    public UserDetailResponse GetUserDetailForAdmin(int userId) {
+        User user = userRepository.findUserById(userId);
+        UserDetailResponse userDetailResponse = new UserDetailResponse();
+        userDetailResponse.setUserId(user.getUserId());
+        userDetailResponse.setName(user.getName());
+        userDetailResponse.setUsername(user.getUsername());
+        userDetailResponse.setAddress(user.getAddress());
+        userDetailResponse.setPhoneNumber(user.getPhoneNumber());
+        userDetailResponse.setStatus(user.getStatus());
+        userDetailResponse.setImage(user.getImage());
+        return userDetailResponse;
     }
 
     @Override

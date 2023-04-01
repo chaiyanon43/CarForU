@@ -60,4 +60,46 @@ export class UserService {
             });
         }
     }
+    async getUserDetailForAdmin(userId){
+        try {
+            return await axios.get('http://localhost:8080/getUserDetailForAdmin',{
+                params:{
+                    userId:userId
+                }
+            })
+                .then((res) => res.data);
+        } catch (err: any) {
+            toaster.danger("Get User detail Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async banUser(userId: number) {
+        axios.patch('http://localhost:8080/banUser',
+            { userId: userId }
+        )
+            .then((res) => {
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            }).catch((err) => {
+                toaster.danger("Ban user error", {
+                    duration: 5,
+                });
+            })
+    }
+    async unBanUser(userId: number) {
+        axios.patch('http://localhost:8080/unbanUser',
+            { userId: userId }
+        )
+            .then((res) => {
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            }).catch((err) => {
+                toaster.danger("Unban user error", {
+                    duration: 5,
+                });
+            })
+    }
 }

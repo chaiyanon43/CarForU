@@ -11,7 +11,7 @@ import { toaster } from "evergreen-ui/types";
 export interface BuyCar {
     isSecond?: boolean;
     isSearch?: boolean;
-    setData?:  Dispatch<SetStateAction<CarData>>
+    setData?: Dispatch<SetStateAction<CarData>>
 }
 const BuyNewCar = (props: BuyCar) => {
     const { isSecond, isSearch } = props
@@ -22,6 +22,9 @@ const BuyNewCar = (props: BuyCar) => {
     const [favCarId, setFavCarId] = useState<number[]>([])
     const carService = new CarService
     const getAllData = () => {
+        if (sessionStorage.getItem('role') === 'admin') {
+            
+        }
         if (!isSecond) {
             const response = carService.getCarFirstHand();
             response.then((res) => {
@@ -43,7 +46,11 @@ const BuyNewCar = (props: BuyCar) => {
         })
     }
     useEffect(() => {
-        getAllData()
+        if (!sessionStorage.getItem('role')) return
+        else {
+            getAllData()
+        }
+
     }, [])
     const goToDetail = () => {
         window.location.href = "/car-detail"
@@ -53,7 +60,7 @@ const BuyNewCar = (props: BuyCar) => {
         <>
             <div className={style["main-container"]}>
                 <div className={style["search-box"]} style={{ height: `${searchDetail ? 'auto' : ''}` }}>
-                    <SearchCar isSecond={isSecond} isSearch={searchDetail} setData={setData}/>
+                    <SearchCar isSecond={isSecond} isSearch={searchDetail} setData={setData} />
                     <div className={style['arrow-search']}>
                         <i onClick={() => {
                             setSearchDetail(!searchDetail)
@@ -65,11 +72,11 @@ const BuyNewCar = (props: BuyCar) => {
                     {data ? data.map((e, index) => {
                         return (
                             <>
-                                <CarCard carDetail={e} carFavId={favCarId} getFavId={getFavId} isSecond={isSecond} setCarDetails={setData}/>
+                                <CarCard carDetail={e} carFavId={favCarId} getFavId={getFavId} isSecond={isSecond} setCarDetails={setData} />
                             </>
 
                         )
-                    }):null
+                    }) : null
                     }
                 </div>
             </div>

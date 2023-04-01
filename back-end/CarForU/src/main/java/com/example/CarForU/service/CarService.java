@@ -2,7 +2,6 @@ package com.example.CarForU.service;
 
 import com.example.CarForU.bean.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -11,19 +10,14 @@ public interface CarService {
     EuclideanResultListResponse CarRecommendation(int carId, String condition);
 
     ResponseEntity<CarDetailAndRec> GetCarDetail(int carId);
+
     ResponseEntity<CarDetailForAdmin> GetCarDetailForAdmin(int carId);
-    List<CarDetailCard> GetAllFirstHandCars();
+
+    List<CarDetailCard> GetAllFirstHandCars(int status);
+
     List<CarDetailCard> GetAllBanedCar();
 
     List<CarDetailCard> GetAllFirstHandCarsSearch(String keyword,
-                                            String[] carPrice,
-                                            String[] carYear,
-                                            String carFuelType,
-                                            List<String> carBrands,
-                                            List<String> carModels,
-                                            double carSeats,
-                                            String carGear);
-    List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword,
                                                   String[] carPrice,
                                                   String[] carYear,
                                                   String carFuelType,
@@ -31,9 +25,20 @@ public interface CarService {
                                                   List<String> carModels,
                                                   double carSeats,
                                                   String carGear,
-                                                   double carMileage);
+                                                  int status);
 
-    List<CarDetailCard> GetAllSecondHandCars();
+    List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword,
+                                                   String[] carPrice,
+                                                   String[] carYear,
+                                                   String carFuelType,
+                                                   List<String> carBrands,
+                                                   List<String> carModels,
+                                                   double carSeats,
+                                                   String carGear,
+                                                   double carMileage,
+                                                   int status);
+
+    List<CarDetailCard> GetAllSecondHandCars(int status);
 
     List<CarDetailCard> GetMyCars(String username);
 
@@ -84,8 +89,11 @@ public interface CarService {
             int[] carImageIdDelete,
             int carId
     );
+
     void BanCar(int carId);
+
     void UnBanCar(int carId);
+
     void DeleteCar(int carId);
 
     List<CarDetailTable> GetCarDetailTable(int userId);

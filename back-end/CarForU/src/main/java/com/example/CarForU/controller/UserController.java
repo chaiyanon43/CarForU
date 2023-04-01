@@ -1,5 +1,6 @@
 package com.example.CarForU.controller;
 
+import com.example.CarForU.bean.JustUserId;
 import com.example.CarForU.bean.UserDetailResponse;
 import com.example.CarForU.bean.UserProfileResponse;
 import com.example.CarForU.entity.User;
@@ -56,7 +57,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginForm loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -100,12 +100,21 @@ public class UserController {
         return new ResponseEntity<>("User Updated", HttpStatus.OK);
     }
     @PatchMapping("/banUser")
-    public ResponseEntity<String> BanUser(@RequestParam("userId") int userId){
-        userService.BanUser(userId);
+    public ResponseEntity<String> BanUser(@RequestBody JustUserId user){
+        userService.BanUser(user.getUserId());
         return new ResponseEntity<>("แบนผู้ใช้เรียบร้อย", HttpStatus.OK);
+    }
+    @PatchMapping("/unbanUser")
+    public ResponseEntity<String> UnbanUser(@RequestBody JustUserId user) {
+        userService.UnbanUser(user.getUserId());
+        return new ResponseEntity<>("ปลดแบนผู้ใช้เรียบร้อย", HttpStatus.OK);
     }
     @GetMapping("/getAllUser")
     public ResponseEntity<List<UserDetailResponse>> GetAllUser(){
         return new ResponseEntity<>(userService.GetAllUser(),HttpStatus.OK);
+    }
+    @GetMapping("/getUserDetailForAdmin")
+    public ResponseEntity<UserDetailResponse> GetUserDetailForAdmin(@RequestParam("userId")int userId){
+        return new ResponseEntity<>(userService.GetUserDetailForAdmin(userId),HttpStatus.OK);
     }
 }

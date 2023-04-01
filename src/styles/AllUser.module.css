@@ -40,6 +40,9 @@
   overflow: ellipsis !important;
 }
 .table-btn-container button {
+  width: 110px;
+  display: flex;
+  justify-content: center;
   border: none;
 }
 .table-btn-container #user-detail {
@@ -55,22 +58,70 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.car-detaile-table-container{
-    width: 100%;
+.car-detaile-table-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.user-detail-admin-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.user-detail-admin-page .user-detail-box {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 24px;
+}
+.user-detail-admin-page .user-detail-box label{
+    margin-bottom: 4px;
+}
+.user-detail-admin-page .user-detail-box button{
+    width: 150px;
     display: flex;
     justify-content: center;
+    border: none;
+    cursor: default;
+}
+.user-detail-admin-page .user-detail-box #not-ban{
+    background-color: rgb(50, 205, 50);
+}
+.user-detail-admin-page .user-detail-box #ban{
+    background-color: red;
+}
+.user-detail-admin-page .user-detail-box input:disabled{
+    opacity: 100%;
+}
+.user-detail-admin-page .user-detail-box #text-area:disabled{
+    opacity: 100%;
+    height: 100px;
+}
+.user-detail-admin-page .image-container {
+  height: 200px;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 25px;
+  margin: 8px auto;
+  box-shadow: 0 5px 10px rgb(0, 0, 0, 0.32);
+}
+.user-detail-admin-page .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 @media (max-width: 960px) {
-    #username {
-        width: 320px !important;
+  #username {
+    width: 320px !important;
 
-        text-align: right;
-      }
+    text-align: right;
+  }
 }
 @media (max-width: 500px) {
-    #username {
-        width: 200px !important;
-        text-align: right;
-      }
+  #username {
+    width: 200px !important;
+    text-align: right;
+  }
 }
-

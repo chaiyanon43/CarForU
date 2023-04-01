@@ -16,10 +16,10 @@ import java.util.Optional;
 
 @Repository
 public interface CarRepository extends JpaRepository<Car,Integer> {
-    @Query("SELECT c FROM Car c WHERE c.carCondition ='มือหนึ่ง'and c.carStatus=1 and c.user.status=1 order by c.carId DESC ")
-    List<Car> findFirstHandCondition();
-    @Query("SELECT c FROM Car c WHERE c.carCondition ='มือสอง' and c.carStatus=1 and c.user.status=1 order by c.carId DESC")
-    List<Car> findSecondHandCondition();
+    @Query("SELECT c FROM Car c WHERE c.carCondition ='มือหนึ่ง'and c.carStatus=1 and c.user.status IN :status  order by c.carId DESC ")
+    List<Car> findFirstHandCondition(@Param("status") List<Integer> status);
+    @Query("SELECT c FROM Car c WHERE c.carCondition ='มือสอง' and c.carStatus=1 and c.user.status IN :status order by c.carId DESC")
+    List<Car> findSecondHandCondition(@Param("status") List<Integer> status);
     @Query("SELECT c FROM Car c WHERE c.carStatus=2 order by c.carId DESC")
     List<Car> findBanedCar();
 
@@ -45,25 +45,25 @@ public interface CarRepository extends JpaRepository<Car,Integer> {
             "OR c.modelId.modelName LIKE CONCAT('%', :keyword,'%')  " +
             "OR c.carDesc LIKE CONCAT('%', :keyword,'%')) and (c.modelId.carBrand.brandName IN :carBrands or " +
             "c.modelId.modelName IN :carModels) and (c.carPrice between :priceMin and :priceMax) and (c.carYear between :yearMin and  :yearMax) " +
-            "and c.carSeats in :carSeats and c.carGearType LIKE CONCAT('%', :gear,'%') and c.carFuelType LIKE CONCAT('%', :fuelType,'%') and  c.carCondition='มือหนึ่ง' and c.carStatus=1 and c.user.status=1 " +
+            "and c.carSeats in :carSeats and c.carGearType LIKE CONCAT('%', :gear,'%') and c.carFuelType LIKE CONCAT('%', :fuelType,'%') and  c.carCondition='มือหนึ่ง' and c.carStatus=1 and c.user.status IN :status " +
             "ORDER BY c.carId DESC "
             )
     List<Car> searchCar(@Param("keyword") String keyword,@Param("carBrands") List<String> carBrands,@Param("carModels") List<String> carModels
             ,@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,@Param("yearMin") double yearMin
-            ,@Param("yearMax") double yearMax,List<Double> carSeats,@Param("gear") String gear,@Param("fuelType") String fuelType);
+            ,@Param("yearMax") double yearMax,List<Double> carSeats,@Param("gear") String gear,@Param("fuelType") String fuelType,@Param("status") List<Integer> status);
     @Query("SELECT c FROM Car c WHERE (c.carHeader LIKE CONCAT('%', :keyword,'%') " +
             "OR c.modelId.carBrand.brandName LIKE CONCAT('%', :keyword,'%')  " +
             "OR c.modelId.modelName LIKE CONCAT('%', :keyword,'%')  " +
             "OR c.carDesc LIKE CONCAT('%', :keyword,'%')) and (c.modelId.carBrand.brandName IN :carBrands or " +
             "c.modelId.modelName IN :carModels) and (c.carPrice between :priceMin and :priceMax) and (c.carYear between :yearMin and  :yearMax) and " +
             "(c.carMileage <:carMileage)" +
-            "and c.carSeats in :carSeats and c.carGearType LIKE CONCAT('%', :gear,'%') and c.carFuelType LIKE CONCAT('%', :fuelType,'%') and  c.carCondition='มือสอง' and c.carStatus=1 and c.user.status=1 " +
+            "and c.carSeats in :carSeats and c.carGearType LIKE CONCAT('%', :gear,'%') and c.carFuelType LIKE CONCAT('%', :fuelType,'%') and  c.carCondition='มือสอง' and c.carStatus=1 and c.user.status IN :status " +
             "ORDER BY c.carId DESC "
     )
     List<Car> searchSecondCar(@Param("keyword") String keyword,@Param("carBrands") List<String> carBrands,@Param("carModels") List<String> carModels
             ,@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,@Param("yearMin") double yearMin
             ,@Param("yearMax") double yearMax,List<Double> carSeats,@Param("gear") String gear,@Param("fuelType") String fuelType
-            ,@Param("carMileage") double carMileage);
+            ,@Param("carMileage") double carMileage,@Param("status") List<Integer> status);
     @Modifying
     @Transactional
     @Query("UPDATE Car c set c.carAddress =:carAddress, c.carColor =:carColor " +
