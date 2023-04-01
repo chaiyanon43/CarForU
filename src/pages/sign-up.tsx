@@ -236,8 +236,7 @@ const Signup = (props: SignupFormProps) => {
                             <div className={style['btn-inside']}>
                                 <label className={style['policy_text']}>คุณรับทราบ</label>
                                 <label className={style['policy']} onClick={()=>setDisplay(true)}>Policy</label>
-                                <Checkbox className={style['policy_check']} value="check" onChange={onCheck}></Checkbox>
-                                <Button id={style['cancel']}>
+                                <Checkbox className={style['policy_check']} value="check" onChange={onCheck}></Checkbox>                                <Button type='button' id={style['cancel']}>
                                     <Link style={{ textDecoration: "none", color: "#FEFEFE" }} href={'/login'}>
                                         Cancel
                                     </Link></Button>
