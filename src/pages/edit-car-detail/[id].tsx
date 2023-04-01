@@ -20,7 +20,6 @@ const EditCarDetail = () => {
             }
 
         })
-
     }
     useEffect(() => {
         if (!router.isReady) return;

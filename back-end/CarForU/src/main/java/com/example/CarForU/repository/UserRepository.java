@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,10 +17,16 @@ public interface UserRepository extends JpaRepository<User,Integer> {
             value = "SELECT u FROM User u WHERE u.userId =:userId")
     User findUserById(@Param("userId") int userId);
     @Query(
+            value = "SELECT u FROM User u WHERE u.role <> 'admin'")
+    List<User> findAllUser();
+    @Query(
             value = "SELECT u FROM User u WHERE u.username =:username")
     User findUserByUsernameForProfile(@Param("username") String username);
     @Query(
-            value = "SELECT u FROM User u WHERE u.username =:username")
+            value = "SELECT u.role FROM User u WHERE u.username =:username")
+    String findRoleByUsernameForProfile(@Param("username") String username);
+    @Query(
+            value = "SELECT u FROM User u WHERE u.username =:username and u.status=1")
     Optional<User> findUserByUsername(@Param("username") String username);
     @Modifying
     @Transactional
@@ -38,4 +45,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
                     @Param("phoneNumber") String phoneNumber,
                     @Param("address") String address,
                     @Param("userId") int userId);
+    @Modifying
+    @Transactional
+    @Query(value = "update User u set u.status=2 where u.userId=:userId")
+    void banUserById(@Param("userId") int userId);
 }

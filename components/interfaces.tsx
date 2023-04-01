@@ -23,13 +23,15 @@ export interface CarData {
     carEVRange: number,
     carHeader: string,
     carImageIDDelete?: number[],
-    carImageDefectDelete?: number[]
+    carImageDefectDelete?: number[],
+    carStatus?:number
 }
 export interface User {
     userId: number,
     name: string,
     phoneNumber:string,
     address:string,
+    status:number,
     image: File
 }
 export interface carCard {
@@ -140,4 +142,14 @@ export interface notificationRequest {
     contactorName?:string
     carHeader?:string,
     carImage?:File
+}
+export interface carRec{
+    user:User,
+    car:CarData,
+    recList: RecomonedList
+}
+export interface RecomonedList{
+    normalCar:CarData,
+    hybridCar:CarData,
+    EVCar:CarData
 }

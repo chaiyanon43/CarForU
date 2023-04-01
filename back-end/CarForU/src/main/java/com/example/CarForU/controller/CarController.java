@@ -1,8 +1,6 @@
 package com.example.CarForU.controller;
 
-import com.example.CarForU.bean.CarDetailAndRec;
-import com.example.CarForU.bean.CarDetailCard;
-import com.example.CarForU.bean.CarDetailEdit;
+import com.example.CarForU.bean.*;
 import com.example.CarForU.service.CarImageService;
 import com.example.CarForU.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,10 +83,20 @@ public class CarController {
 
     @GetMapping("/getCar")
     public ResponseEntity<CarDetailAndRec> GetCarDetail(@RequestParam("carId") int carId) {
-        return new ResponseEntity<>(carService.GetCarDetail(carId), HttpStatus.OK);
+        return carService.GetCarDetail(carId);
+    }
+    @GetMapping("/getCarForAdmin")
+    public ResponseEntity<CarDetailForAdmin> GetCarDetailForAdmin(@RequestParam("carId") int carId) {
+        return carService.GetCarDetailForAdmin(carId);
+    }
+    @GetMapping("/getBanedCars")
+    public ResponseEntity<List<CarDetailCard>> GetMyCars() {
+        return new ResponseEntity<>(carService.GetAllBanedCar(), HttpStatus.OK);
     }
 
-    @GetMapping("myCars")
+
+
+        @GetMapping("myCars")
     public ResponseEntity<List<CarDetailCard>> GetMyCars(@RequestParam("username") String username) {
         return new ResponseEntity<>(carService.GetMyCars(username), HttpStatus.OK);
     }
@@ -96,12 +104,17 @@ public class CarController {
     @GetMapping("getCarDetail")
     public ResponseEntity<CarDetailEdit> GetCarDetailForEdit(@RequestParam("carId") int carId, @RequestParam("userId") int userId) {
         return carService.GetCarDetailForEdit(carId, userId);
-
     }
 
     @GetMapping("/all-second-hand-car")
     public ResponseEntity<List<CarDetailCard>> GetSecondHandCars() {
         return new ResponseEntity<>(carService.GetAllSecondHandCars(), HttpStatus.OK);
+    }
+    @DeleteMapping("/deleteCar")
+    public ResponseEntity<String> DeleteCar(@RequestParam(name = "carId") int carId) {
+        System.out.println("delete");
+        carService.DeleteCar(carId);
+        return new ResponseEntity<>("ลบรถยนต์ออกจากระบบสำเร็จ",HttpStatus.OK);
     }
 
     @PostMapping("/add-car")
@@ -185,5 +198,19 @@ public class CarController {
             carImageService.AddCarImage(carImageDefect, carId, 2);
         }
         return new ResponseEntity<>("Car Data Updated.", HttpStatus.OK);
+    }
+    @PatchMapping("/banCar")
+    public ResponseEntity<String> BanCar(@RequestBody JustCarId carId){
+        carService.BanCar(carId.getCarId());
+        return new ResponseEntity<>("แบนโพสเรียบร้อย", HttpStatus.OK);
+    }
+    @PatchMapping("/unBanCar")
+    public ResponseEntity<String> UnBanCar(@RequestBody JustCarId carId){
+        carService.UnBanCar(carId.getCarId());
+        return new ResponseEntity<>("ปลดแบนโพสเรียบร้อย", HttpStatus.OK);
+    }
+    @GetMapping("/getCarDetailTable")
+    public ResponseEntity<List<CarDetailTable>> GetCarDetailTable(@RequestParam("userId") int userId){
+        return new ResponseEntity<>(carService.GetCarDetailTable(userId),HttpStatus.OK);
     }
 }

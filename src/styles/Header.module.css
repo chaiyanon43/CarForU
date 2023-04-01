@@ -9,3 +9,17 @@
     align-items: center;
     display: flex;
 } */
+@media (max-width: 600px) {
+    #top-navbar-profile-btn{
+        width: 70px;
+    }
+    #top-navbar-profile-btn{
+        width: 70px;
+    }
+    #top-navbar-profile-btn p{
+        display: none !important;
+    }
+    #top-navbar-profile-btn .profile-btn-inside{
+        margin: 0 !important;
+    }
+}

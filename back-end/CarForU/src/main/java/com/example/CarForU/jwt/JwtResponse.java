@@ -3,10 +3,20 @@ package com.example.CarForU.jwt;
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
+    private String role;
 
 
-    public JwtResponse(String accessToken) {
+    public JwtResponse(String accessToken,String role) {
         this.token = accessToken;
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getAccessToken() {

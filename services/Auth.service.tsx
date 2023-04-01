@@ -15,6 +15,7 @@ export class AuthService extends Component {
                 .then(async (res) => {
                     sessionStorage.setItem('authType', JSON.stringify(res.data.tokenType));
                     Cookies.set("token", res.data.accessToken);
+                    sessionStorage.setItem('role',res.data.role)
                     const authType = JSON.parse(sessionStorage.getItem("authType")!);
                     const token = Cookies.get("token");
                     axios.defaults.headers.common["Authorization"] = `${authType} ${token}`;

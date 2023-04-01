@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { FileUpload } from 'primereact/fileupload';
 import Link from 'next/link';
 import { Checkbox } from 'primereact/checkbox';
+import { toaster } from 'evergreen-ui';
 
 
 
@@ -39,26 +40,29 @@ const Signup = (props: SignupFormProps) => {
     const [file, setFile] = useState();
     const [imageURL, setImageURL] = useState<string>();
     const userSubmmit: SubmitHandler<userForm> = (user) => {
-        console.log(user)
-        // axios.post('http://localhost:8080/addUser', {
-        //     image: user.image,
-        //     username: user.username,
-        //     password: user.password,
-        //     name: user.name,
-        //     phoneNumber: user.phoneNumber,
-        //     address: user.address
-        // }, {
-        //     headers: {
-        //         "Content-Type": "multipart/form-data",
-        //     },
-        // }).then((res: any) => {
-        //     alert(res.data)
-        // }).catch((err: any) => {
-        //     alert("Add User Failed.")
-        // })
         if (!user.image) {
-            console.log("error")
+            toaster.warning("กรุณาเพิ่มรูปภาพโปรไฟล์ และ กรอกข้อมูลให้ครบถ้วน",{duration:3})
+            return
         }
+        axios.post('http://localhost:8080/addUser', {
+            image: user.image,
+            username: user.username,
+            password: user.password,
+            name: user.name,
+            phoneNumber: user.phoneNumber,
+            address: user.address
+        }, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }).then((res: any) => {
+            toaster.success(res.data,{duration:3})
+
+        }).catch((err: any) => {
+            toaster.danger('เพิ่ม User ไม่สำเร็จ',{duration:3})
+
+        })
+
     }
     const hiddenFileInput = React.useRef(null);
 
@@ -75,7 +79,6 @@ const Signup = (props: SignupFormProps) => {
         }
     };
     const onUploadFile = async (e: any) => {
-        console.log(e.files)
         setFile(e.files)
         setImageURL(URL.createObjectURL(e.files[0]))
     }
@@ -197,7 +200,7 @@ const Signup = (props: SignupFormProps) => {
                                     setImageURL('')
                                     setFileName('')
                                     setFile(undefined)
-                                    setValue('image', '')
+                                    setValue('image', undefined)
                                 }} ></i>
                             </i>
                             <label style={{ color: "#FEFEFE" }}>Choose file: <span><input className={style['input-file-name']} value={fileName} disabled></input></span></label>

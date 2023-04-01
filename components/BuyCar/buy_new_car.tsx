@@ -65,7 +65,7 @@ const BuyNewCar = (props: BuyCar) => {
                     {data ? data.map((e, index) => {
                         return (
                             <>
-                                <CarCard carDetail={e} carFavId={favCarId} getFavId={getFavId} isSecond={isSecond}/>
+                                <CarCard carDetail={e} carFavId={favCarId} getFavId={getFavId} isSecond={isSecond} setCarDetails={setData}/>
                             </>
 
                         )

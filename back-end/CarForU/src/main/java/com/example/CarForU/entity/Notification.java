@@ -24,6 +24,8 @@ public class Notification {
     private String notificationContactType;
     @Column(name = "NOTIFICATION_DESC")
     private String notificationDesc;
+    @Column(name = "NOTIFICATION_READ")
+    private Boolean notificationRead;
     @ManyToOne
     @JoinColumn(name = "NOTIFICATION_USER_ID",nullable = false)
     private User user;
