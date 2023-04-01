@@ -131,7 +131,7 @@ const Signup = (props: SignupFormProps) => {
                         </div>
                         <div className={style['sigup-btn-container']}>
                             <div className={style['btn-inside']}>
-                                <Button id={style['cancel']}>
+                                <Button type='button' id={style['cancel']}>
                                     <Link style={{ textDecoration: "none", color: "#FEFEFE" }} href={'/login'}>
                                         Cancel
                                     </Link></Button>

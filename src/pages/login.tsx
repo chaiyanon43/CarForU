@@ -30,7 +30,7 @@ const Login = () => {
                     </div>
                     <div className={style['login-inside']}>
                         <div className={style['login-inside-button']}>
-                            <Button id={style['signup']}>
+                            <Button type="button" id={style['signup']}>
                                 <Link style={{ textDecoration: "none",color: "#FEFEFE" }} href={'/sign-up'}>
                                     Sign-up
                                 </Link>
