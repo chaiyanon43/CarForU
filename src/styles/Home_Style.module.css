@@ -3,9 +3,10 @@
     font-size: 36px;
     font-weight: bold;
     color: #ffffff;
-    padding-top: 2%;
+    padding-top: 10%;
     justify-content: center;
     width: 100%;
+    letter-spacing: 2px;
 }
 .Text_Sub_Top_Home{
     display: flex;

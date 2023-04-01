@@ -139,3 +139,18 @@ input#file-input {
     background-color: red;
     color: #FFF;
 }
+.policy{
+  margin-top: 12px;
+  color: red;
+  cursor: pointer;
+}
+.policy_text{
+  margin-top: 12px;
+  margin-right: 10px;
+  color: #FFF;
+}
+.policy_check{
+  margin-top: 12px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
