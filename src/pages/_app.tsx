@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useSessionStorage } from 'usehooks-ts';
 export default function App({ Component, pageProps }: AppProps) {
   const [authType] = useSessionStorage("authType", "");
+  const [role] = useSessionStorage("role", "");
   return (
     <div>
       <Auth>

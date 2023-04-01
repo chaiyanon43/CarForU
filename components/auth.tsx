@@ -14,7 +14,9 @@ export default function Auth(props: ProtectedRouteInterface) {
   const token = Cookies.get("token");
   const [authenticate, setAuthenticate] = useState<boolean>();
   const [isAdmin,setIsAdmin] = useState<boolean>();
+  const [role,setRole] = useState<string>();
   const redirect = useCallback(() => {
+
     setAuthenticate(token !== undefined);
     setIsAdmin(sessionStorage.getItem("role") !== "admin")
     axios.defaults.headers.common["Authorization"] = `${authType} ${token}`;
@@ -24,24 +26,24 @@ export default function Auth(props: ProtectedRouteInterface) {
         router.push("/login");
       }
     }
-    if (router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/add-model") {
-
-      if (token && router.asPath !== "/add-model") {
+    if (router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/add-model" || router.asPath === "/users") {
+      if (token && (router.asPath === "/login" || router.asPath === "/sign-up")) {
         router.back();
       }
-      if(router.asPath === "/add-model" && sessionStorage.getItem('role') !== "admin"){
+      if((router.asPath === "/add-model" || router.asPath === "/users") && sessionStorage.getItem('role') !== "admin"){
         router.back();
       }
     }
   }, [authType, router, token]);
   useEffect(() => {
+    setRole(sessionStorage.getItem('role')!)
     redirect();
   }, [redirect, token]);
 
   if (
     (authenticate && (router.asPath === "/login" || router.asPath === "/sign-up")) ||
     (!authenticate && !(router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/home"))||
-    (sessionStorage.getItem('role') !== "admin" && router.asPath === "/add-model") || 
+    (role!== "admin" && (router.asPath === "/add-model" || router.asPath === "/users")) || 
     authenticate === undefined
   ) {
     return (

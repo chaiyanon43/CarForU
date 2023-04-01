@@ -54,6 +54,7 @@ export interface userForm {
     phoneNumber: string;
     address: string;
     role?: string;
+    status?:number;
 }
 export interface FavoriteRequest {
     username: string,

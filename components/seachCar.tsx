@@ -86,6 +86,7 @@ const SearchCar = (props: BuyCar) => {
 
     }
     const onFilter: SubmitHandler<filterForm> = (filter: any) => {
+        const status = sessionStorage.getItem("role") === "admin" ? 2:1
         if (!isSecond) {
             const axios = require('axios');
             const FormData = require('form-data');
@@ -96,6 +97,8 @@ const SearchCar = (props: BuyCar) => {
             data.append('carFuelType', filter.fuelType);
             data.append('carSeats', filter.seats[0] ? filter.seats[0] : 0);
             data.append('carGear', filter.gear[0] ? filter.gear[0] : '');
+            data.append('status', status);
+
             brands.map((e) => {
                 data.append(`carBrands`, e)
             })
@@ -131,6 +134,7 @@ const SearchCar = (props: BuyCar) => {
             data.append('carSeats', filter.seats[0] ? filter.seats[0] : 0);
             data.append('carGear', filter.gear[0] ? filter.gear[0] : '');
             data.append('carMileage', filter.mileage ? filter.mileage : 70001)
+            data.append('status', status);
             brands.map((e) => {
                 data.append(`carBrands`, e)
             })

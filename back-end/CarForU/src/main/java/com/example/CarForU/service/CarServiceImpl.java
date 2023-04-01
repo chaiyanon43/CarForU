@@ -38,10 +38,12 @@ public class CarServiceImpl implements CarService {
     @Override
     public EuclideanResultListResponse CarRecommendation(int carId, String condition) {
         List<Car> carAll = new ArrayList<>();
+        List<Integer> status = new ArrayList<>();
+        status.add(1);
         if (condition.equals("มือหนึ่ง")) {
-            carAll = carRepository.findFirstHandCondition();
+            carAll = carRepository.findFirstHandCondition(status);
         } else {
-            carAll = carRepository.findSecondHandCondition();
+            carAll = carRepository.findSecondHandCondition(status);
         }
         double priceMax = carAll.stream().max(Comparator.comparing(v -> v.getCarPrice())).get().getCarPrice();
         double priceMin = carAll.stream().min(Comparator.comparing(v -> v.getCarPrice())).get().getCarPrice();
@@ -228,8 +230,15 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarDetailCard> GetAllFirstHandCars() {
-        List<Car> cars = carRepository.findFirstHandCondition();
+    public List<CarDetailCard> GetAllFirstHandCars(int status) {
+        List<Integer> statusList = new ArrayList<>();
+        if(status == 1){
+            statusList.add(1);
+        }else{
+            statusList.add(1);
+            statusList.add(2);
+        }
+        List<Car> cars = carRepository.findFirstHandCondition(statusList);
         return ConditionClassify(cars);
     }
 
@@ -247,7 +256,8 @@ public class CarServiceImpl implements CarService {
                                                          List<String> carBrands,
                                                          List<String> carModels,
                                                          double carSeats,
-                                                         String carGear) {
+                                                         String carGear,
+                                                         int status) {
 
         if (carBrands.size() == 0 && carModels.size() == 0) {
             carBrands = new ArrayList<>();
@@ -274,12 +284,19 @@ public class CarServiceImpl implements CarService {
         } else {
             seats.add(carSeats);
         }
-        List<Car> cars = carRepository.searchCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType);
+        List<Integer> statusList = new ArrayList<>();
+        if(status == 1){
+            statusList.add(1);
+        }else{
+            statusList.add(1);
+            statusList.add(2);
+        }
+        List<Car> cars = carRepository.searchCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType,statusList);
         return ConditionClassify(cars);
     }
 
     @Override
-    public List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword, String[] carPrice, String[] carYear, String carFuelType, List<String> carBrands, List<String> carModels, double carSeats, String carGear, double carMileage) {
+    public List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword, String[] carPrice, String[] carYear, String carFuelType, List<String> carBrands, List<String> carModels, double carSeats, String carGear, double carMileage,int status) {
         if (carBrands.size() == 0 && carModels.size() == 0) {
             carBrands = new ArrayList<>();
             List<CarBrand> carBrand = carBrandRepository.findAll();
@@ -308,13 +325,27 @@ public class CarServiceImpl implements CarService {
         } else {
             seats.add(carSeats);
         }
-        List<Car> cars = carRepository.searchSecondCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage);
+        List<Integer> statusList = new ArrayList<>();
+        if(status == 1){
+            statusList.add(1);
+        }else{
+            statusList.add(1);
+            statusList.add(2);
+        }
+        List<Car> cars = carRepository.searchSecondCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage,statusList);
         return ConditionClassify(cars);
     }
 
     @Override
-    public List<CarDetailCard> GetAllSecondHandCars() {
-        List<Car> cars = carRepository.findSecondHandCondition();
+    public List<CarDetailCard> GetAllSecondHandCars(int status) {
+        List<Integer> statusList = new ArrayList<>();
+        if(status == 1){
+            statusList.add(1);
+        }else{
+            statusList.add(1);
+            statusList.add(2);
+        }
+        List<Car> cars = carRepository.findSecondHandCondition(statusList);
         return ConditionClassify(cars);
     }
 

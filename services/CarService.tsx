@@ -98,7 +98,8 @@ export class CarService {
     }
     async getCarFirstHand() {
         try {
-            return await axios.get("http://localhost:8080/all-first-hand-car")
+            const status = sessionStorage.getItem('role') === 'admin' ? 2:1
+            return await axios.get("http://localhost:8080/all-first-hand-car",{params:{status:status}})
                 .then((res) => res.data)
         } catch (err: any) {
             toaster.danger("Get cars Error!", {
@@ -108,7 +109,8 @@ export class CarService {
     }
     async getCarSecondHand() {
         try {
-            return await axios.get("http://localhost:8080/all-second-hand-car")
+            const status = sessionStorage.getItem('role') === 'admin' ? 2:1
+            return await axios.get("http://localhost:8080/all-second-hand-car",{params:{status:status}})
                 .then((res) => res.data)
         } catch (err: any) {
             toaster.danger("Get cars Error!", {

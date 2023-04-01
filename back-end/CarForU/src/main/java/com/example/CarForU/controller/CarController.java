@@ -32,9 +32,8 @@ public class CarController {
 //    }
 
     @GetMapping("/all-first-hand-car")
-    public ResponseEntity<List<CarDetailCard>> GetFirstHandCars(
-    ) {
-        return new ResponseEntity<>(carService.GetAllFirstHandCars(), HttpStatus.OK);
+    public ResponseEntity<List<CarDetailCard>> GetFirstHandCars(@RequestParam(name = "status") int status) {
+        return new ResponseEntity<>(carService.GetAllFirstHandCars(status), HttpStatus.OK);
     }
 
     @PostMapping("/all-first-hand-car-search")
@@ -46,7 +45,8 @@ public class CarController {
             @RequestParam(name = "carBrands", required = false, defaultValue = "") String[] carBrands,
             @RequestParam(name = "carModels", required = false, defaultValue = "") String[] carModels,
             @RequestParam(name = "carSeats", required = false, defaultValue = "0.0") double carSeats,
-            @RequestParam(name = "carGear", required = false) String carGear
+            @RequestParam(name = "carGear", required = false) String carGear,
+            @RequestParam(name = "status") int status
     ) {
         List<String> brands = new ArrayList<String>();
         List<String> models = new ArrayList<String>();
@@ -56,7 +56,7 @@ public class CarController {
         if(carModels != null){
             models = Arrays.asList(carModels);
         }
-        return new ResponseEntity<>(carService.GetAllFirstHandCarsSearch(keyword, carPrice, carYear, carFuelType, brands, models, carSeats, carGear), HttpStatus.OK);
+        return new ResponseEntity<>(carService.GetAllFirstHandCarsSearch(keyword, carPrice, carYear, carFuelType, brands, models, carSeats, carGear,status), HttpStatus.OK);
     }
     @PostMapping("/all-second-hand-car-search")
     public ResponseEntity<List<CarDetailCard>> GetSecondHandCarsSearch(
@@ -68,7 +68,8 @@ public class CarController {
             @RequestParam(name = "carModels", required = false, defaultValue = "") String[] carModels,
             @RequestParam(name = "carSeats", required = false, defaultValue = "0.0") double carSeats,
             @RequestParam(name = "carGear", required = false) String carGear,
-            @RequestParam(name = "carMileage" ,required = false, defaultValue = "70001.0") double carMileage
+            @RequestParam(name = "carMileage" ,required = false, defaultValue = "70001.0") double carMileage,
+            @RequestParam(name = "status") int status
     ) {
         List<String> brands = new ArrayList<String>();
         List<String> models = new ArrayList<String>();
@@ -78,7 +79,7 @@ public class CarController {
         if(carModels != null){
             models = Arrays.asList(carModels);
         }
-        return new ResponseEntity<>(carService.GetAllSecondHandCarsSearch(keyword, carPrice, carYear, carFuelType, brands, models, carSeats, carGear,carMileage), HttpStatus.OK);
+        return new ResponseEntity<>(carService.GetAllSecondHandCarsSearch(keyword, carPrice, carYear, carFuelType, brands, models, carSeats, carGear,carMileage,status), HttpStatus.OK);
     }
 
     @GetMapping("/getCar")
@@ -107,8 +108,8 @@ public class CarController {
     }
 
     @GetMapping("/all-second-hand-car")
-    public ResponseEntity<List<CarDetailCard>> GetSecondHandCars() {
-        return new ResponseEntity<>(carService.GetAllSecondHandCars(), HttpStatus.OK);
+    public ResponseEntity<List<CarDetailCard>> GetSecondHandCars(@RequestParam("status") int status) {
+        return new ResponseEntity<>(carService.GetAllSecondHandCars(status), HttpStatus.OK);
     }
     @DeleteMapping("/deleteCar")
     public ResponseEntity<String> DeleteCar(@RequestParam(name = "carId") int carId) {

@@ -218,7 +218,8 @@ const Details = () => {
                 <div className={style['detail-page-container']}>
                     <div className={style['detail-box']}>
                         <div className={style['seller-profile']}>
-                            {sessionStorage.getItem("role") === "admin" ? user?.status === 1 ? <Button disabled>สถานะ:ปกติ</Button>: <Button disabled>สถานะ:ระงับ</Button>  :<Button disabled={Number(sessionStorage.getItem("userId")) === user?.userId} style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} onClick={(event) => setDisplayDialog(true)} aria-haspopup aria-controls="overlay_tmenu">
+                            {sessionStorage.getItem("role") === "admin" ? user?.status === 1 ? <Button disabled style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} >สถานะ:ปกติ</Button>: 
+                            <Button disabled style={{ background: "red", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} >สถานะ:ระงับ</Button>  :<Button disabled={Number(sessionStorage.getItem("userId")) === user?.userId} style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} onClick={(event) => setDisplayDialog(true)} aria-haspopup aria-controls="overlay_tmenu">
                                 ติดต่อผู้ขาย
                             </Button>}
                             <div className={style['seller-profile-detail']}>
