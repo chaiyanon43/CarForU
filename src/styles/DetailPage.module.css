@@ -61,6 +61,17 @@
   margin:0;
   transition-duration: 0.3s;
 }
+.detail-page-container .detail-box .seller-profile .seller-profile-detail #ban{
+  color: red;
+  background-color: #FEFEFE;
+  padding:8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.detail-page-container .detail-box .seller-profile .seller-profile-detail #ban:hover{
+  color: #fefefe;
+  background-color: red;
+}
 .detail-page-container .detail-box .seller-profile .seller-profile-detail a i:hover{
   font-size:26px !important;
   transition-duration: 0.3s;

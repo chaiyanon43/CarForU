@@ -32,6 +32,8 @@ public class User{
     private String address;
     @Column(name = "USER_ROLE")
     private String role;
+    @Column(name = "USER_STATUS")
+    private int status;
     @Lob
     @Column(name = "USER_IMAGE",columnDefinition = "MEDIUMBLOB")
     private String image;

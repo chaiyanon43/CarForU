@@ -15,12 +15,16 @@ import java.util.List;
 
 @Repository
 public interface CarLikesRepository extends JpaRepository<CarLikes,Integer> {
-    @Query("select l from CarLikes l where l.user =:user")
+    @Query("select l from CarLikes l where l.user =:user and l.car.carStatus=1")
     List<CarLikes> findCarLikesByUser(@Param("user") User user);
-    @Query("select l.car.carId from CarLikes l where l.user =:user")
+    @Query("select l.car.carId from CarLikes l where l.user  =:user and l.car.carStatus=1")
     List<Integer> findCarLikesIdByUser(@Param("user") User user);
     @Modifying
     @Transactional
     @Query("delete from CarLikes l where l.user =:user and l.car =:car")
     void deleteCarLikesByCarAndUser(@Param("car") Car car,@Param("user") User user);
+    @Modifying
+    @Transactional
+    @Query("delete from CarLikes l where l.car.carId =:carId")
+    void deleteCarLikesByCarId(@Param("carId") int Id);
 }

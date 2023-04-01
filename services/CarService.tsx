@@ -1,5 +1,5 @@
 import axios from "../axios.config"
-import { CarData, FavoriteRequest } from "components/interfaces";
+import { CarData, carRec, FavoriteRequest } from "components/interfaces";
 import { toaster } from "evergreen-ui";
 
 export class CarService {
@@ -9,6 +9,16 @@ export class CarService {
                 .then((res) => res.data);
         } catch (err: any) {
             toaster.danger("Get Brand List Error!", {
+                duration: 5,
+            });
+        }
+    }
+    async getAllBanedCars() {
+        try {
+            return axios.get('http://localhost:8080/getBanedCars')
+                .then((res) => res.data);
+        } catch (err: any) {
+            toaster.danger("Get Car List Error!", {
                 duration: 5,
             });
         }
@@ -30,12 +40,35 @@ export class CarService {
     }
     async getCarDetail(carId: any) {
         try {
-            return await axios.get('http://localhost:8080/getCar', {
+            return await axios.get<carRec>('http://localhost:8080/getCar', {
                 params: {
                     carId: parseInt(carId)
                 }
             })
                 .then((res) => res.data)
+                .catch((err) => {
+                    toaster.danger("Get car detail Error!", {
+                        duration: 5,
+                    });
+                })
+        } catch (err: any) {
+            toaster.danger("Get car detail Error!", {
+                duration: 5,
+            });
+        }
+    }async getCarDetailForAdmin(carId: any) {
+        try {
+            return axios.get<carRec>('http://localhost:8080/getCarForAdmin', {
+                params: {
+                    carId: parseInt(carId)
+                }
+            })
+                .then((res) => res.data)
+                .catch((err) => {
+                    toaster.danger("Get car detail Error!", {
+                        duration: 5,
+                    });
+                })
         } catch (err: any) {
             toaster.danger("Get car detail Error!", {
                 duration: 5,
@@ -44,7 +77,6 @@ export class CarService {
     }
     async getCarFirstHandSearch(keyword?: string, carPrice?: [], carYear?: [], carFuelType?: string, carBrands?: string[], carModels?: string[], carSeats?: number, carGear?: string) {
         try {
-            console.log(carBrands)
             return await axios.get("http://localhost:8080/all-first-hand-car-search", {
                 params: {
                     "searchKeyword": keyword,
@@ -204,6 +236,59 @@ export class CarService {
                 })
         } catch {
             toaster.success("Edit car data error", {
+                duration: 5,
+            });
+        }
+    }
+    async banCar(carId: number) {
+        axios.patch('http://localhost:8080/banCar',
+            { carId: carId }
+        )
+            .then((res) => {
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            }).catch((err) => {
+                toaster.danger("Ban car error", {
+                    duration: 5,
+                });
+            })
+    }
+    async unBanCar(carId: number) {
+        axios.patch('http://localhost:8080/unBanCar',
+            { carId: carId }
+        )
+            .then((res) => {
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            }).catch((err) => {
+                toaster.danger("Unban car error", {
+                    duration: 5,
+                });
+            })
+    }
+    async deleteCar(carId: number) {
+        axios.delete('http://localhost:8080/deleteCar',
+            {params:{ carId: carId }}
+        )
+            .then((res) => {
+                toaster.success(res.data, {
+                    duration: 5,
+                });
+            }).catch((err) => {
+                toaster.danger("Delete error", {
+                    duration: 5,
+                });
+            })
+    }
+    async getCarTable(userId:number) {
+        try {
+            return axios.get('http://localhost:8080/getCarDetailTable',
+            {params:{userId:userId}})
+                .then((res) => res.data);
+        } catch (err: any) {
+            toaster.danger("Get Car List Error!", {
                 duration: 5,
             });
         }

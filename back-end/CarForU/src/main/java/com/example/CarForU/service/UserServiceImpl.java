@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         newUser.setName(name);
         newUser.setPhoneNumber(phoneNumber);
         newUser.setAddress(address);
+        newUser.setStatus(1);
         newUser.setRole("user");
 
         userRepository.save(newUser);
@@ -90,6 +93,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public int getUserId(String username) {
         User user = userRepository.findUserByUsernameForProfile(username);
         return user.getUserId();
+    }
+
+    @Override
+    public void BanUser(int userId) {
+        userRepository.banUserById(userId);
+    }
+
+    @Override
+    public List<UserDetailResponse> GetAllUser() {
+        List<User> users = userRepository.findAllUser();
+        List<UserDetailResponse> userDetailResponseList = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            UserDetailResponse userDetailResponse = new UserDetailResponse();
+            userDetailResponse.setUserId(users.get(i).getUserId());
+            userDetailResponse.setName(users.get(i).getName());
+            userDetailResponse.setAddress(users.get(i).getAddress());
+            userDetailResponse.setRole(users.get(i).getRole());
+            userDetailResponse.setImage(users.get(i).getImage());
+            userDetailResponse.setUsername(users.get(i).getUsername());
+            userDetailResponse.setPhoneNumber(users.get(i).getPhoneNumber());
+            userDetailResponse.setStatus(users.get(i).getStatus());
+            userDetailResponseList.add(userDetailResponse);
+        }
+        return userDetailResponseList;
     }
 
     @Override

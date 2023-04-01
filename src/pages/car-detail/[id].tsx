@@ -3,7 +3,7 @@ import { CarData, itemImage, notificationRequest, RecCarList, User } from "compo
 import { useRouter } from "next/router"
 import { Galleria } from 'primereact/galleria';
 import { parse } from "querystring";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CarService } from "services/CarService";
 import style from '../../styles/DetailPage.module.css'
 import CarCalculate from "../CarCalculate";
@@ -35,8 +35,11 @@ const Details = () => {
     const [img, setImg] = useState<itemImage[]>([]);
     const [imgDefect, setImgDefect] = useState<itemImage[]>([]);
     const [displayDialog, setDisplayDialog] = useState(false);
+    const [displayDialogBan, setDisplayDialogBan] = useState(false);
+    const [displayDialogUnban, setDisplayDialogUnban] = useState(false);
     const [isDefect, setIsDefect] = useState<boolean>(false)
     const [showProfile, setShowProfile] = useState<boolean>(false)
+    const [isErr, setIsErr] = useState<boolean>(false)
     const { register, handleSubmit, getValues, watch, setValue, resetField, formState: { errors } } = useForm<notificationRequest>();
     const responsiveOptions = [
         {
@@ -53,6 +56,76 @@ const Details = () => {
         }
     ];
     const noticationService = new NotificationService();
+    
+    const getCarDetail  = useCallback((carId: string | string[]) => {
+        if (sessionStorage.getItem('role') !== 'admin') {
+            const response = carService.getCarDetail(carId)
+            response.then((res) => {
+                if (!res) {
+                    setIsErr(true)
+                    return
+                }
+                setUser!(res.user)
+                setCar!(res.car)
+                setCarRec!(res.recList)
+                res.car.carImage.map((e) => {
+                    if (img.length < res.car.carImage.length) {
+                        img!.push({
+                            itemImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            thumbnailImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            alt: 'Car : ' + e.index,
+                            title: 'Car : ' + e.index
+                        })
+                    }
+
+                })
+                res.car.carImageDefect.map((e) => {
+                    if (imgDefect.length < res.car.carImageDefect.length) {
+                        imgDefect!.push({
+                            itemImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            thumbnailImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            alt: 'Car : ' + e.index,
+                            title: 'Car : ' + e.index
+                        })
+                    }
+
+                })
+            })
+        } else {
+            const response = carService.getCarDetailForAdmin(carId)
+            response.then((res) => {
+                if (!res) {
+                    setIsErr(true)
+                    return
+                }
+                setUser!(res.user)
+                setCar!(res.car)
+                res.car.carImage.map((e) => {
+                    if (img.length < res.car.carImage.length) {
+                        img!.push({
+                            itemImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            thumbnailImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            alt: 'Car : ' + e.index,
+                            title: 'Car : ' + e.index
+                        })
+                    }
+                })
+                res.car.carImageDefect.map((e) => {
+                    if (imgDefect.length < res.car.carImageDefect.length) {
+                        imgDefect!.push({
+                            itemImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            thumbnailImageSrc: `data:image/jpeg;base64,${e.carImage}`,
+                            alt: 'Car : ' + e.index,
+                            title: 'Car : ' + e.index
+                        })
+                    }
+
+                })
+            })
+        }
+
+    },[]);
+
     useEffect(() => {
         if (!router.isReady) return;
         if (id) {
@@ -60,39 +133,7 @@ const Details = () => {
             setCarId(id)
         }
 
-    }, [router.query.id, router.isReady]);
-    const getCarDetail = (carId: string | string[]) => {
-        const response = carService.getCarDetail(carId)
-
-        response.then((res) => {
-            setUser!(res.user)
-            setCar!(res.car)
-            setCarRec!(res.recList)
-            res.car.carImage.map((e) => {
-                if (img.length < res.car.carImage.length) {
-                    img!.push({
-                        itemImageSrc: `data:image/jpeg;base64,${e.carImage}`,
-                        thumbnailImageSrc: `data:image/jpeg;base64,${e.carImage}`,
-                        alt: 'Car : ' + e.index,
-                        title: 'Car : ' + e.index
-                    })
-                }
-
-            })
-            res.car.carImageDefect.map((e) => {
-                if (imgDefect.length < res.car.carImageDefect.length) {
-                    imgDefect!.push({
-                        itemImageSrc: `data:image/jpeg;base64,${e.carImage}`,
-                        thumbnailImageSrc: `data:image/jpeg;base64,${e.carImage}`,
-                        alt: 'Car : ' + e.index,
-                        title: 'Car : ' + e.index
-                    })
-                }
-
-            })
-        })
-    }
-
+    }, [router.query.id, router.isReady,getCarDetail]);
     const itemTemplate = (item: itemImage) => {
         return <img src={item.itemImageSrc} alt={item.alt} style={{ width: '100%', display: 'block' }} />;
     }
@@ -108,6 +149,22 @@ const Details = () => {
             </div>
         );
     }
+    const renderFooterBan = () => {
+        return (
+            <div>
+                <Button type="button" label="ยกเลิก" icon="pi pi-times" onClick={() => setDisplayDialogBan(false)} className="p-button-text" />
+                <Button type="submit" label="ยืนยัน" onClick={onBanCar} icon="pi pi-check" />
+            </div>
+        );
+    }
+    const renderFooterUnban = () => {
+        return (
+            <div>
+                <Button type="button" label="ยกเลิก" icon="pi pi-times" onClick={() => setDisplayDialogUnban(false)} className="p-button-text" />
+                <Button type="submit" label="ยืนยัน" onClick={onUnbanCar} icon="pi pi-check" />
+            </div>
+        );
+    }
     const onContact: SubmitHandler<notificationRequest> = (noti) => {
         noti.carId = car?.carId,
             noti.userId = user?.userId
@@ -115,14 +172,23 @@ const Details = () => {
         noticationService.sendNotification(noti)
         setDisplayDialog(false)
     }
-    const contact = [
-        { name: 'Phone', code: 'ระบุเบอร์โทรศัพท์' },
-        { name: 'LINE ID', code: 'ระบุ Line ID' },
-        { name: 'E-Mail', code: 'ระบุ E-mail' },
-    ];
+    const onBanCar = () => {
+        carService.banCar(car.carId)
+        // getCarDetail(car?.carId)
+        setDisplayDialogBan(false)
+    }
+    const onUnbanCar = () => {
+        carService.unBanCar(car.carId)
+        getCarDetail(car?.carId)
+        setDisplayDialogUnban(false)
+
+    }
     const menu = useRef(null);
     const commonFunc = new CommonFunc();
     if (!car) {
+        if (isErr) {
+            return <>ไม่สามารถดูได้เนื่องจากประกาศถูกแบน</>
+        }
         return <>Loading...</>
     } else {
         return (
@@ -145,13 +211,16 @@ const Details = () => {
                         <InputTextarea id={style["seller-text-area"]} value={user?.phoneNumber} disabled />
                     </div>
                 </Dialog>
-
+                <Dialog header="ยืนยันการแบน ?" visible={displayDialogBan} style={{ width: '400px' }} footer={renderFooterBan()} onHide={() => setDisplayDialogBan(false)}>
+                </Dialog>
+                <Dialog header="ยืนยันการปลดแบน ?" visible={displayDialogUnban} style={{ width: '400px' }} footer={renderFooterUnban()} onHide={() => setDisplayDialogUnban(false)}>
+                </Dialog>
                 <div className={style['detail-page-container']}>
                     <div className={style['detail-box']}>
                         <div className={style['seller-profile']}>
-                            <Button disabled={Number(sessionStorage.getItem("userId")) === user?.userId} style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} onClick={(event) => setDisplayDialog(true)} aria-haspopup aria-controls="overlay_tmenu">
+                            {sessionStorage.getItem("role") === "admin" ? user?.status === 1 ? <Button disabled>สถานะ:ปกติ</Button>: <Button disabled>สถานะ:ระงับ</Button>  :<Button disabled={Number(sessionStorage.getItem("userId")) === user?.userId} style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} onClick={(event) => setDisplayDialog(true)} aria-haspopup aria-controls="overlay_tmenu">
                                 ติดต่อผู้ขาย
-                            </Button>
+                            </Button>}
                             <div className={style['seller-profile-detail']}>
                                 <Button id={style["profile"]} onClick={(e) => setShowProfile(true)}>
                                     <div className={style["profile-img-box"]}>
@@ -159,7 +228,7 @@ const Details = () => {
                                     </div>
                                     <label>{user?.name}</label>
                                 </Button>
-                                {user?.userId === Number(sessionStorage.getItem("userId")) ? <Link href={'/edit-car-detail/' + car.carId} key={car.carId}>
+                                {sessionStorage.getItem("role") === "admin" ? car.carStatus === 1 ? <i className="pi pi-ban" onClick={() => setDisplayDialogBan(true)} id={style["ban"]}></i> : <i className="pi pi-lock-open" onClick={() => setDisplayDialogUnban(true)} id={style["ban"]}></i> : user?.userId === Number(sessionStorage.getItem("userId")) ? <Link href={'/edit-car-detail/' + car.carId} key={car.carId}>
                                     <i className="pi pi-pencil"></i>
                                 </Link> : null}
                             </div>
@@ -176,15 +245,15 @@ const Details = () => {
                             </Button>
                         </div> : null}
                         <div className={style['card-images']}>
-                            {isDefect && imgDefect ? <h2 style={{ color: "#FEFEFE" }}>ไม่มีรูปภาพตำหนิ</h2> : <Galleria value={isDefect ? imgDefect : img} numVisible={5} circular style={{ maxWidth: '640px' }}
+                            {isDefect && !imgDefect ? <h2 style={{ color: "#FEFEFE" }}>ไม่มีรูปภาพตำหนิ</h2> : <Galleria value={isDefect ? imgDefect : img} numVisible={5} circular style={{ maxWidth: '640px' }}
                                 showItemNavigators showItemNavigatorsOnHover item={itemTemplate} thumbnail={thumbnailTemplate} />}
 
                         </div>
                     </div>
                 </div>
                 <DetailCarContainer carDetail={car!} />
-                {car ? <><CarCalculate carDetail={car!} /></> : null}
-                <div className={style['car-rec-container']}>
+                {car && sessionStorage.getItem("role") !== "admin" ? <><CarCalculate carDetail={car!} /></> : null}
+                {car && sessionStorage.getItem("role") !== "admin" ? <><div className={style['car-rec-container']}>
                     <h3 style={{ color: '#FEFEFE' }}>NORMAL</h3>
                     <div className={style['car-rec-box']}>
                         {carRec?.normalCar.map((carNm) => {
@@ -234,9 +303,8 @@ const Details = () => {
                             )
                         })}
                     </div>
-                </div>
-
-            </div>
+                </div></> : null}
+            </div >
         )
     }
 

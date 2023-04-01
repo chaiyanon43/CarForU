@@ -10,23 +10,27 @@ import { carCard, CarData, FavoriteRequest } from './interfaces';
 import { CommonFunc } from './commonFunc';
 export interface CarCardForm {
     carDetail: carCard;
+    setCarDetails?: Dispatch<SetStateAction<carCard[]>>
     carFavId?: number[];
     getFavId?: any;
-    isSecond?:boolean;
+    isSecond?: boolean;
     isMine?: boolean;
+    isUnBan?: boolean;
 }
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { toaster } from 'evergreen-ui';
 import { CarService } from 'services/CarService';
 import { Dialog } from 'primereact/dialog';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 const CarCard = (props: CarCardForm) => {
     const commonFunc = new CommonFunc();
     const carService = new CarService();
     const [displayDialog, setDisplayDialog] = useState(false);
     const [displayDialogDelete, setDisplayDialogDelete] = useState(false);
-    const { carDetail, carFavId, getFavId, isMine,isSecond } = props
+    const [displayBan, setDisplayBan] = useState(false);
+    const [displayUnban, setDisplayUnban] = useState(false);
+    const { carDetail, carFavId, getFavId, isMine, isSecond, setCarDetails, isUnBan } = props
     const acceptLiked = async () => {
         const carForm: FavoriteRequest = {
             username: sessionStorage.getItem('user')!,
@@ -50,6 +54,28 @@ const CarCard = (props: CarCardForm) => {
     const onHideDelete = () => {
         setDisplayDialogDelete(false);
     }
+    const onBanCar = () => {
+        carService.banCar(carDetail.carId)
+        if (!isSecond) {
+            const response = carService.getCarFirstHand();
+            response.then((res) => {
+                setCarDetails!(res)
+            })
+        } else {
+            const response = carService.getCarSecondHand();
+            response.then((res) => {
+                setCarDetails!(res)
+            })
+        }
+    }
+    const onUnbanCar = async () => {
+        carService.unBanCar(carDetail.carId)
+        const response = carService.getAllBanedCars()
+        response.then((e)=>{
+            setCarDetails!(e)
+        })
+
+    }
 
     const renderFooter = () => {
         return (
@@ -60,6 +86,32 @@ const CarCard = (props: CarCardForm) => {
                 <Button label="Yes" icon="pi pi-check" onClick={() => {
                     acceptLiked();
                     onHide()
+                }} autoFocus />
+            </div>
+        );
+    }
+    const renderFooterBan = () => {
+        return (
+            <div>
+                <Button label="ยกเลิก" icon="pi pi-times" onClick={() => {
+                    setDisplayBan(false);
+                }} className="p-button-text" />
+                <Button label="ยืนยัน" icon="pi pi-check" onClick={() => {
+                    onBanCar();
+                    setDisplayBan(false);
+                }} autoFocus />
+            </div>
+        );
+    }
+    const renderFooterUnban = () => {
+        return (
+            <div>
+                <Button label="ยกเลิก" icon="pi pi-times" onClick={() => {
+                    setDisplayUnban(false);
+                }} className="p-button-text" />
+                <Button label="ยืนยัน" icon="pi pi-check" onClick={() => {
+                    onUnbanCar();
+                    setDisplayUnban(false);
                 }} autoFocus />
             </div>
         );
@@ -114,7 +166,7 @@ const CarCard = (props: CarCardForm) => {
                                     />
                                 }
                             />
-                            <p>: {isSecond ? commonFunc.numberWithCommas(carDetail.carMileage):"0-5k"} km.</p>
+                            <p>: {isSecond ? commonFunc.numberWithCommas(carDetail.carMileage) : "0-5k"} km.</p>
                         </div>
                         <div className={style["detail-box"]}>
                             <Button
@@ -149,10 +201,14 @@ const CarCard = (props: CarCardForm) => {
                 </div>
             </Link>
             <div className={style['header-icon-card']}>
-                {sessionStorage.getItem("user") === carDetail.username ? <><Link href={'/edit-car-detail/' + carDetail.carId} key={carDetail.carId}><i className="pi pi-pencil"></i></Link></> : carFavId?.find(num => {
+                {isUnBan ? <i onClick={() => setDisplayUnban(true)} className="pi pi-lock-open"></i> : sessionStorage.getItem('role') === "admin" ? <i onClick={() => setDisplayBan(true)} className="pi pi-ban"></i> : sessionStorage.getItem("user") === carDetail.username ? <><Link href={'/edit-car-detail/' + carDetail.carId} key={carDetail.carId}><i className="pi pi-pencil"></i></Link></> : carFavId?.find(num => {
                     return num === carDetail.carId
                 }) ? <i onClick={() => setDisplayDialogDelete(true)} className="pi pi-heart-fill"></i> : <i onClick={() => setDisplayDialog(true)} className="pi pi-heart"></i>}
             </div>
+            <Dialog header="ยืนยันการแบน ?" visible={displayBan} style={{ width: '400px' }} footer={renderFooterBan()} onHide={() => setDisplayBan(false)}>
+            </Dialog>
+            <Dialog header="ยืนยันการปลดแบน ?" visible={displayUnban} style={{ width: '400px' }} footer={renderFooterUnban()} onHide={() => setDisplayUnban(false)}>
+            </Dialog>
             <Dialog header="เพิ่มรถยนต์ในรายการโปรด" visible={displayDialog} style={{ width: '400px' }} footer={renderFooter()} onHide={() => onHide()}>
             </Dialog>
             <Dialog header="ลบรถยนต์ออกจากรายการโปรด" visible={displayDialogDelete} style={{ width: '400px' }} footer={renderFooterDelete()} onHide={() => onHideDelete()}>

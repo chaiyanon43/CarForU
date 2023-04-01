@@ -13,6 +13,7 @@ public class UserDetailResponse {
     private String address;
     private String role;
     private String image;
+    private int status;
 
     public UserDetailResponse() {
     }

@@ -15,6 +15,7 @@ import axios from '../../axios.config';
 import Router from 'next/router'
 import EditPanel from 'components/EditCar/EditPanel';
 import Toaster from 'evergreen-ui/types/toaster/src/Toaster';
+import { Dialog } from 'primereact/dialog';
 
 interface SellAndEditProps {
     carDetail?: CarData;
@@ -30,6 +31,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
     const [oldCarImageDefect, setOldCarImageDefect] = useState<CarImage[] | undefined>([])
     const [carImageIDDelete, setCarImageIDDelete] = useState<number[]>([])
     const [carImageIDDefectDelete, setCarImageIDDefectDelete] = useState<number[]>([])
+    const [displayDelete,setDisplayDelete] = useState<boolean>(false)
 
     const [models, setModels] = useState();
     const carService = new CarService();
@@ -243,6 +245,23 @@ const SellCarPanel = (props: SellAndEditProps) => {
 
         }
     }
+    const renderFooterDelete = () => {
+        return (
+            <div>
+                <Button label="No" icon="pi pi-times" onClick={() => {
+                    setDisplayDelete(false)
+                }} className="p-button-text" />
+                <Button label="Yes" icon="pi pi-check" onClick={() => {
+                    onDeleteCar();
+                    setDisplayDelete(false)
+                }} autoFocus />
+            </div>
+        );
+    }
+    const onDeleteCar=async()=>{
+        carService.deleteCar(carDetail?.carId)
+        window.location.href = "/my-car"
+    }
     const onUploadFiles = async (e: any) => {
         setFiles(e.files)
     }
@@ -371,10 +390,12 @@ const SellCarPanel = (props: SellAndEditProps) => {
                     <InputNumber onValueChange={(e) => setValue('carPrice', e.value!)} value={watch('carPrice')} required />
                 </div>
                 <div className={style['button-box']}>
-                    {isEdit && <Button type='button' id={style["delete-car"]}>ลบประกาศ</Button>}
+                    {isEdit && <Button type='button' onClick={()=> setDisplayDelete(true)} id={style["delete-car"]}>ลบประกาศ</Button>}
                     <Button type='submit'>ยืนยัน</Button>
                 </div>
             </form>
+            <Dialog header="ลบรถยนต์ออกจากระบบะ" visible={displayDelete} style={{ width: '400px' }} footer={renderFooterDelete()} onHide={() => setDisplayDelete(false)}>
+            </Dialog>
         </div >
     )
 }

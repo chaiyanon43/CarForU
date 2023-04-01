@@ -31,6 +31,7 @@ public class CarsAllResponse {
 
     private List<CarImageResponse> carImage;
     private List<CarImageResponse> carImageDefect;
+    private int carStatus;
 
     public CarsAllResponse() {
     }

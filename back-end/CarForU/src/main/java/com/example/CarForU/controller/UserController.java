@@ -2,9 +2,11 @@ package com.example.CarForU.controller;
 
 import com.example.CarForU.bean.UserDetailResponse;
 import com.example.CarForU.bean.UserProfileResponse;
+import com.example.CarForU.entity.User;
 import com.example.CarForU.jwt.JwtProvider;
 import com.example.CarForU.jwt.JwtResponse;
 import com.example.CarForU.jwt.LoginForm;
+import com.example.CarForU.repository.UserRepository;
 import com.example.CarForU.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class UserController {
@@ -31,6 +35,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     PasswordEncoder encoder;
+    @Autowired
+    UserRepository userRepository;
 
     @PostMapping("/addUser")
     public ResponseEntity<String> saveUser(@RequestParam("image") MultipartFile image,
@@ -57,10 +63,10 @@ public class UserController {
                         loginRequest.getPassword()
                 )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        String role = userRepository.findRoleByUsernameForProfile(loginRequest.getUsername());
+        return ResponseEntity.ok(new JwtResponse(jwt,role));
     }
 
     @GetMapping("/getUserId")
@@ -92,5 +98,14 @@ public class UserController {
         }
 
         return new ResponseEntity<>("User Updated", HttpStatus.OK);
+    }
+    @PatchMapping("/banUser")
+    public ResponseEntity<String> BanUser(@RequestParam("userId") int userId){
+        userService.BanUser(userId);
+        return new ResponseEntity<>("แบนผู้ใช้เรียบร้อย", HttpStatus.OK);
+    }
+    @GetMapping("/getAllUser")
+    public ResponseEntity<List<UserDetailResponse>> GetAllUser(){
+        return new ResponseEntity<>(userService.GetAllUser(),HttpStatus.OK);
     }
 }

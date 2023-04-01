@@ -1,9 +1,6 @@
 package com.example.CarForU.service;
 
-import com.example.CarForU.bean.CarDetailAndRec;
-import com.example.CarForU.bean.CarDetailCard;
-import com.example.CarForU.bean.CarDetailEdit;
-import com.example.CarForU.bean.EuclideanResultListResponse;
+import com.example.CarForU.bean.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,8 +10,10 @@ import java.util.List;
 public interface CarService {
     EuclideanResultListResponse CarRecommendation(int carId, String condition);
 
-    CarDetailAndRec GetCarDetail(int carId);
+    ResponseEntity<CarDetailAndRec> GetCarDetail(int carId);
+    ResponseEntity<CarDetailForAdmin> GetCarDetailForAdmin(int carId);
     List<CarDetailCard> GetAllFirstHandCars();
+    List<CarDetailCard> GetAllBanedCar();
 
     List<CarDetailCard> GetAllFirstHandCarsSearch(String keyword,
                                             String[] carPrice,
@@ -85,4 +84,9 @@ public interface CarService {
             int[] carImageIdDelete,
             int carId
     );
+    void BanCar(int carId);
+    void UnBanCar(int carId);
+    void DeleteCar(int carId);
+
+    List<CarDetailTable> GetCarDetailTable(int userId);
 }

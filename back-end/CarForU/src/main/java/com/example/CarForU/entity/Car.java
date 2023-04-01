@@ -47,6 +47,8 @@ public class Car {
     private String carCondition;
     @Column(name = "CAR_EV_RANGE")
     private double carEVRange;
+    @Column(name = "CAR_STATUS")
+    private int carStatus;
     @Column(name = "CAR_FUEL_CONSUMPTION")
     private double carFuelConsumption;
 
@@ -54,13 +56,13 @@ public class Car {
     @JoinColumn(name = "car_user_id",nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "car")
+    @OneToMany(mappedBy = "car" ,orphanRemoval = true, cascade = CascadeType.REMOVE)
     Set<CarLikes> carLikes;
 
-    @OneToMany(mappedBy = "car")
+    @OneToMany(mappedBy = "car" ,orphanRemoval = true, cascade = CascadeType.REMOVE)
     Set<CarImage> carImages;
 
-    @OneToMany(mappedBy = "car")
+    @OneToMany(mappedBy = "car",orphanRemoval = true, cascade = CascadeType.REMOVE)
     Set<Notification> notifications;
 
     public Car() {

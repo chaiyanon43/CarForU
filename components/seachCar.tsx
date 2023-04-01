@@ -90,7 +90,7 @@ const SearchCar = (props: BuyCar) => {
             const axios = require('axios');
             const FormData = require('form-data');
             let data = new FormData();
-            data.append('searchKeyword', filter.keyword)
+            data.append('searchKeyword', filter.keyword ? filter.keyword: '')
             data.append('carPrice', `${filter.carPrice[0]},${filter.carPrice[1]}`);
             data.append('carYear', `${filter.carYear[0]},${filter.carYear[1]}`);
             data.append('carFuelType', filter.fuelType);
@@ -123,13 +123,14 @@ const SearchCar = (props: BuyCar) => {
             const axios = require('axios');
             const FormData = require('form-data');
             let data = new FormData();
-            data.append('searchKeyword', filter.keyword)
+            console.log(filter.keyword)
+            data.append('searchKeyword', filter.keyword ? filter.keyword: '')
             data.append('carPrice', `${filter.carPrice[0]},${filter.carPrice[1]}`);
             data.append('carYear', `${filter.carYear[0]},${filter.carYear[1]}`);
             data.append('carFuelType', filter.fuelType);
             data.append('carSeats', filter.seats[0] ? filter.seats[0] : 0);
             data.append('carGear', filter.gear[0] ? filter.gear[0] : '');
-            data.append('carMileage' ,filter.mileage ? filter.mileage : 70001)
+            data.append('carMileage', filter.mileage ? filter.mileage : 70001)
             brands.map((e) => {
                 data.append(`carBrands`, e)
             })
@@ -177,124 +178,126 @@ const SearchCar = (props: BuyCar) => {
     }
     return (
         <div>
-            <div className="p-inputgroup">
-                <InputText placeholder="Keyword" {...register("keyword")} />
-                <Button icon="pi pi-search" className="p-button-warning" />
-            </div>
-
-            {isSearch && <form onSubmit={handleSubmit(onFilter)} encType='multipart/form-data' onReset={onReset}>
-                <div className={style['filter-container']}>
-                    <div className={style['filter-box']}>
-                        <h3>ยี่ห้อ - รุ่น</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['brand-model']}>
-                                <TreeSelect className="md:w-20rem w-full" id={style["input-brand"]} value={watch("brandModel")} options={brandsModels} display="chip" selectionMode="checkbox" onNodeSelect={onNodedSelect} onNodeUnselect={onNodeUnselect} onChange={(e) => {
-                                    setValue('brandModel', e.value)
-                                }
-                                } placeholder="Select Items">
-                                </TreeSelect>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={style['filter-box']}>
-                        <h3>ราคา</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['header-slider']}>
-                                <label>{watch('carPrice.0') && commonFunc.numberWithCommas(watch('carPrice.0'))}</label>
-                                <label>{watch('carPrice.1') && commonFunc.numberWithCommas(watch('carPrice.1'))}</label>
-                            </div>
-                            <Slider value={watch('carPrice')} onChange={(e: any) => setValue("carPrice", e.value)} min={200000} max={5000000} step={400000} range />
-                        </div>
-                    </div>
-
-                    <div className={style['filter-box']}>
-                        <h3>ปี</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['header-slider']}>
-                                <label>{watch('carYear.0')}</label>
-                                <label>{watch('carYear.1')}</label>
-                            </div>
-                            <Slider value={watch('carYear')} onChange={(e: any) => setValue("carYear", e.value)} min={2012} max={2023} step={1} range />
-                        </div>
-                    </div>
-                    <div className={style['filter-box']}>
-                        <h3>เชื้อเพลิง</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['fuel-container']}>
-                                <Button type="button" label="เบนซิน" onClick={(e) => setValue("fuelType", "เบนซิน")} style={watch("fuelType") === "เบนซิน" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                                <Button type="button" label="ดีเซล" onClick={(e) => setValue("fuelType", "ดีเซล")} style={watch("fuelType") === "ดีเซล" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                                <Button type="button" label="ไฮบริด" onClick={(e) => setValue("fuelType", "ไฮบริด")} style={watch("fuelType") === "ไฮบริด" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                                <Button type="button" label="EV" onClick={(e) => setValue("fuelType", "EV")} style={watch("fuelType") === "EV" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className={style['filter-box']}>
-                        <h3>ที่นั่ง</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['seat-selected']}>
-                                <div className="field-checkbox">
-                                    <Checkbox value="2" onChange={onSeatChange} checked={watch('seats').indexOf("2") !== -1} />
-                                    <label>2</label>
-                                </div>
-                                <div className="field-checkbox">
-                                    <Checkbox value="4" onChange={onSeatChange} checked={watch('seats').indexOf("4") !== -1} />
-                                    <label>4</label>
-                                </div>
-                                <div className="field-checkbox">
-                                    <Checkbox value="5" onChange={onSeatChange} checked={watch('seats').indexOf("5") !== -1} />
-                                    <label>5</label>
-                                </div>
-                                <div className="field-checkbox">
-                                    <Checkbox value="7" onChange={onSeatChange} checked={watch('seats').indexOf("7") !== -1} />
-                                    <label>7</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={style['filter-box']}>
-                        <h3>ระบบเกียร์</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['gear-selected']}>
-                                <div className="field-checkbox">
-                                    <Checkbox value="Auto" onChange={onGearChange} checked={watch('gear').indexOf('Auto') !== -1} />
-                                    <label>Auto</label>
-                                </div>
-                                <div className="field-checkbox">
-                                    <Checkbox value="Manual" onChange={onGearChange} checked={watch('gear').indexOf('Manual') !== -1} />
-                                    <label>Manual</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {isSecond && <div className={style['filter-box']}>
-                        <h3>เลขไมล์</h3>
-                        <div className={style['filter-inside']}>
-                            <div className={style['gear-selected']}>
-                                <div className={style['radio-btn']}>
-                                    <RadioButton value="20000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '20000'} />
-                                    <label>น้อยกว่า 20,000</label>
-                                </div>
-                                <div className={style['radio-btn']}>
-                                    <RadioButton value="40000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '40000'} />
-                                    <label>น้อยกว่า 40,000</label>
-                                </div>
-                                <div className={style['radio-btn']}>
-                                    <RadioButton value="70000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '70000'} />
-                                    <label>น้อยกว่า 70,000</label>
-                                </div>
-                                <div className={style['radio-btn']}>
-                                    <RadioButton value="100000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '100000'} />
-                                    <label>น้อยกว่า 100,000</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>}
+            <form onSubmit={handleSubmit(onFilter)} encType='multipart/form-data' onReset={onReset}>
+                <div className="p-inputgroup">
+                    <InputText placeholder="Keyword" value={watch("keyword")} onChange={(e) => setValue("keyword", e.target.value)} />
+                    <Button type='submit' icon="pi pi-search" className="p-button-warning" />
                 </div>
-                <div className={style["button-search-form"]}>
-                    <Button type="reset" id={style["reset"]}>รีเซ็ต</Button>
-                    <Button type="submit">ค้นหา</Button>
-                </div>
-            </form>}
+
+                {isSearch &&
+                    <>
+                        <div className={style['filter-container']}>
+                            <div className={style['filter-box']}>
+                                <h3>ยี่ห้อ - รุ่น</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['brand-model']}>
+                                        <TreeSelect className="md:w-20rem w-full" id={style["input-brand"]} value={watch("brandModel")} options={brandsModels} display="chip" selectionMode="checkbox" onNodeSelect={onNodedSelect} onNodeUnselect={onNodeUnselect} onChange={(e) => {
+                                            setValue('brandModel', e.value)
+                                        }
+                                        } placeholder="Select Items">
+                                        </TreeSelect>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={style['filter-box']}>
+                                <h3>ราคา</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['header-slider']}>
+                                        <label>{watch('carPrice.0') && commonFunc.numberWithCommas(watch('carPrice.0'))}</label>
+                                        <label>{watch('carPrice.1') && commonFunc.numberWithCommas(watch('carPrice.1'))}</label>
+                                    </div>
+                                    <Slider value={watch('carPrice')} onChange={(e: any) => setValue("carPrice", e.value)} min={200000} max={5000000} step={400000} range />
+                                </div>
+                            </div>
+
+                            <div className={style['filter-box']}>
+                                <h3>ปี</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['header-slider']}>
+                                        <label>{watch('carYear.0')}</label>
+                                        <label>{watch('carYear.1')}</label>
+                                    </div>
+                                    <Slider value={watch('carYear')} onChange={(e: any) => setValue("carYear", e.value)} min={2012} max={2023} step={1} range />
+                                </div>
+                            </div>
+                            <div className={style['filter-box']}>
+                                <h3>เชื้อเพลิง</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['fuel-container']}>
+                                        <Button type="button" label="เบนซิน" onClick={(e) => setValue("fuelType", "เบนซิน")} style={watch("fuelType") === "เบนซิน" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="ดีเซล" onClick={(e) => setValue("fuelType", "ดีเซล")} style={watch("fuelType") === "ดีเซล" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="ไฮบริด" onClick={(e) => setValue("fuelType", "ไฮบริด")} style={watch("fuelType") === "ไฮบริด" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="EV" onClick={(e) => setValue("fuelType", "EV")} style={watch("fuelType") === "EV" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={style['filter-box']}>
+                                <h3>ที่นั่ง</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['seat-selected']}>
+                                        <div className="field-checkbox">
+                                            <Checkbox value="2" onChange={onSeatChange} checked={watch('seats').indexOf("2") !== -1} />
+                                            <label>2</label>
+                                        </div>
+                                        <div className="field-checkbox">
+                                            <Checkbox value="4" onChange={onSeatChange} checked={watch('seats').indexOf("4") !== -1} />
+                                            <label>4</label>
+                                        </div>
+                                        <div className="field-checkbox">
+                                            <Checkbox value="5" onChange={onSeatChange} checked={watch('seats').indexOf("5") !== -1} />
+                                            <label>5</label>
+                                        </div>
+                                        <div className="field-checkbox">
+                                            <Checkbox value="7" onChange={onSeatChange} checked={watch('seats').indexOf("7") !== -1} />
+                                            <label>7</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={style['filter-box']}>
+                                <h3>ระบบเกียร์</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['gear-selected']}>
+                                        <div className="field-checkbox">
+                                            <Checkbox value="Auto" onChange={onGearChange} checked={watch('gear').indexOf('Auto') !== -1} />
+                                            <label>Auto</label>
+                                        </div>
+                                        <div className="field-checkbox">
+                                            <Checkbox value="Manual" onChange={onGearChange} checked={watch('gear').indexOf('Manual') !== -1} />
+                                            <label>Manual</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {isSecond && <div className={style['filter-box']}>
+                                <h3>เลขไมล์</h3>
+                                <div className={style['filter-inside']}>
+                                    <div className={style['gear-selected']}>
+                                        <div className={style['radio-btn']}>
+                                            <RadioButton value="20000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '20000'} />
+                                            <label>น้อยกว่า 20,000</label>
+                                        </div>
+                                        <div className={style['radio-btn']}>
+                                            <RadioButton value="40000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '40000'} />
+                                            <label>น้อยกว่า 40,000</label>
+                                        </div>
+                                        <div className={style['radio-btn']}>
+                                            <RadioButton value="70000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '70000'} />
+                                            <label>น้อยกว่า 70,000</label>
+                                        </div>
+                                        <div className={style['radio-btn']}>
+                                            <RadioButton value="100000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '100000'} />
+                                            <label>น้อยกว่า 100,000</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>}
+                        </div>
+                        <div className={style["button-search-form"]}>
+                            <Button type="reset" id={style["reset"]}>รีเซ็ต</Button>
+                            <Button type="submit">ค้นหา</Button>
+                        </div></>}
+            </form>
         </div>
     )
 }

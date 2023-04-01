@@ -53,12 +53,12 @@ const CarCalculate = (props: CarCalProps) => {
         let debt = finance + allIncreases;
         let paymentPerMonth = Math.ceil(debt / cal.numberInstallment)
         setResult({
-            carDownPayment: carDownPayment,
-            finance: finance,
-            increasesPerYear: increasesPerYear,
-            allIncreases: allIncreases,
-            debt: debt,
-            paymentPerMonth: paymentPerMonth
+            carDownPayment: Math.round(carDownPayment * 100) / 100,
+            finance: Math.round(finance * 100) / 100,
+            increasesPerYear: Math.round(increasesPerYear * 100) / 100,
+            allIncreases: Math.round(allIncreases * 100) / 100,
+            debt: Math.round(debt * 100) / 100,
+            paymentPerMonth: Math.round(paymentPerMonth * 100) / 100,
         })
         setShowResult(true)
 
@@ -98,7 +98,7 @@ const CarCalculate = (props: CarCalProps) => {
                         <div className={style["cal-inside"]}>
                             <label>ดอกเบี้ย</label>
                             <div className={style["cal-detail"]}>
-                                <InputNumber minFractionDigits={0} maxFractionDigits={2} style={{ width: "160px" }} id={style["price"]} onValueChange={(e) => setValue("percentIncreases", e.value!)}></InputNumber>
+                                <InputNumber  minFractionDigits={0} maxFractionDigits={2} min={0} max={10} style={{ width: "160px" }} id={style["price"]} onValueChange={(e) => setValue("percentIncreases", e.value!)}></InputNumber>
                                 <label>% ต่อปี</label>
                             </div>
                         </div>

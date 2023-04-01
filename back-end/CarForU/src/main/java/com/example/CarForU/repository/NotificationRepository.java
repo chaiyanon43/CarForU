@@ -3,10 +3,12 @@ package com.example.CarForU.repository;
 import com.example.CarForU.entity.Notification;
 import com.example.CarForU.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -15,4 +17,8 @@ public interface NotificationRepository  extends JpaRepository<Notification,Inte
     List<Notification> findNotificationsByUserId(@Param("userId") int userId);
     @Query("select n from Notification n where n.notificationId =:notificationId")
     Notification findNotificationsById(@Param("notificationId") int notificationId);
+    @Modifying
+    @Transactional
+    @Query("delete from Notification n where n.car.carId =:carId")
+    void deleteNotificationByCarId(@Param("carId") int Id);
 }

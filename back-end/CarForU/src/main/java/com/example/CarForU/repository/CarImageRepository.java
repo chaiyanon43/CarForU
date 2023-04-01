@@ -24,4 +24,8 @@ public interface CarImageRepository extends JpaRepository<CarImage,Integer> {
     @Transactional
     @Query("delete from CarImage cm where cm.carImageId = :carImageId")
     void DeleteCarImageByID(@Param("carImageId") int carImageId);
+    @Modifying
+    @Transactional
+    @Query("delete from CarImage cm where cm.car.carId = :carId")
+    void DeleteCarImageByCarId(@Param("carId") int carId);
 }

@@ -16,6 +16,16 @@ export class UserService {
             });
         }
     }
+    async getAllUser(){
+        try {
+            return await axios.get('http://localhost:8080/getAllUser')
+                .then((res) => res.data);
+        } catch (err: any) {
+            toaster.danger("Get User Data Error!", {
+                duration: 5,
+            });
+        }
+    }
     async updateUser(user:userForm){
         try {
             await axios.patch('http://localhost:8080/updateUser',{

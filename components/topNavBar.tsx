@@ -32,7 +32,8 @@ const TopNavBar = () => {
     const notiMenu = useRef(null);
     const notificationService = new NotificationService();
     const [displayDialog, setDisplayDialog] = useState(false);
-    const [notificationId,setNotificationId]= useState();
+    const [userDrop, setUserDrop] = useState<any[]>([]);
+    const [notificationId, setNotificationId] = useState();
     const renderFooter = () => {
         return (
             <div>
@@ -54,23 +55,85 @@ const TopNavBar = () => {
         response.then((res) => {
             setUserProfile!(res)
         })
-        setItems([
-            {
-                label: 'ซื้อรถยนต์ใหม่',
-                icon: 'pi pi-fw pi-car',
-                command: () => { window.location.href = "/buy-new"; },
-            },
-            {
-                label: 'ซื้อรถยนต์มือสอง',
-                icon: 'pi pi-fw pi-replay',
-                command: () => { window.location.href = "/second-hand-car"; }
-            },
-            {
-                label: 'ประกาศขายรถยนต์',
-                icon: 'pi pi-fw pi-dollar',
-                command: () => { window.location.href = "/sell-car"; }
-            },
-        ])
+        if (sessionStorage.getItem("role") === "admin") {
+            setItems([
+                {
+                    label: 'มือหนึ่ง',
+                    command: () => { window.location.href = "/buy-new"; },
+                },
+                {
+                    label: 'มือสอง',
+                    command: () => { window.location.href = "/second-hand-car"; }
+                },
+                {
+                    label: 'เพิ่มยี่ห้อ-รุ่น',
+                    // icon: 'pi pi-fw pi-dollar',
+                    command: () => { window.location.href = "/add-model"; }
+                },
+                {
+                    label: 'รถยนต์ที่ถูกแบน',
+                    // icon: 'pi pi-fw pi-dollar',
+                    command: () => { window.location.href = "/baned-car"; }
+                },
+                {
+                    label: 'ผู้ใช้ทั้งหมด',
+                    // icon: 'pi pi-fw pi-dollar',
+                    command: () => { window.location.href = "/users"; }
+                }
+            ])
+            setUserDrop([
+                {
+                    label: 'ข้อมูลส่วนตัว',
+                    icon: 'pi pi-fw pi-user',
+                    command: () => { window.location.href = "/user-setting"; },
+                },
+                {
+                    label: 'ออกจากระบบ',
+                    icon: 'pi pi-fw pi-sign-out',
+                    command: () => { onClickMenu() },
+                }
+            ])
+        } else {
+            setItems([
+                {
+                    label: 'ซื้อรถยนต์ใหม่',
+                    icon: 'pi pi-fw pi-car',
+                    command: () => { window.location.href = "/buy-new"; },
+                },
+                {
+                    label: 'ซื้อรถยนต์มือสอง',
+                    icon: 'pi pi-fw pi-replay',
+                    command: () => { window.location.href = "/second-hand-car"; }
+                },
+                {
+                    label: 'ประกาศขายรถยนต์',
+                    icon: 'pi pi-fw pi-dollar',
+                    command: () => { window.location.href = "/sell-car"; }
+                },
+            ])
+            setUserDrop([
+                {
+                    label: 'ข้อมูลส่วนตัว',
+                    icon: 'pi pi-fw pi-user',
+                    command: () => { window.location.href = "/user-setting"; },
+                },
+                {
+                    label: 'รถของฉัน',
+                    icon: 'pi pi-fw pi-car',
+                    command: () => { window.location.href = "/my-car"; },
+                },
+                {
+                    label: 'รายการที่ชื่นชอบ',
+                    icon: 'pi pi-fw pi-heart-fill',
+                    command: () => { window.location.href = "/favorite-car"; },
+                },
+                {
+                    label: 'ออกจากระบบ',
+                    icon: 'pi pi-fw pi-sign-out',
+                    command: () => { onClickMenu() },
+                }
+            ])
+        }
     }
     const getNotifications = (userId: number) => {
         const response = notificationService.getNotificationList(userId)
@@ -80,13 +143,13 @@ const TopNavBar = () => {
                     notiLabel.push(
                         {
                             label: "การติดต่อจากคุณ : " + e.contactorName,
-                            command: () => { 
+                            command: () => {
                                 const response = notificationService.getNotificationDetail(e.notificationId)
-                                response.then((res)=>{
+                                response.then((res) => {
                                     setNotification(res)
                                     setDisplayDialog(true)
                                 })
-                             }
+                            }
                         }
                     )
                 }
@@ -95,7 +158,7 @@ const TopNavBar = () => {
         })
     }
     useEffect(() => {
-        if (sessionStorage.getItem('user')) {
+        if (sessionStorage.getItem('user') && sessionStorage.getItem('role')) {
             getItems();
 
         } if (sessionStorage.getItem('userId')) {
@@ -107,39 +170,7 @@ const TopNavBar = () => {
     const start = <Link style={{ textDecoration: "none", fontWeight: "bold", margin: "0 8px", color: "#FEFEFE", letterSpacing: "2px" }} href={'/home'}>
         CAR<span style={{ color: "red", letterSpacing: "2px" }}>FORU</span>
     </Link>;
-    const userDrop = [
-        {
-            label: 'ข้อมูลส่วนตัว',
-            icon: 'pi pi-fw pi-user',
-            command: () => { window.location.href = "/user-setting"; },
-        },
-        {
-            label: 'รถของฉัน',
-            icon: 'pi pi-fw pi-car',
-            command: () => { window.location.href = "/my-car"; },
-        },
-        {
-            label: 'รายการที่ชื่นชอบ',
-            icon: 'pi pi-fw pi-heart-fill',
-            command: () => { window.location.href = "/favorite-car"; },
-        },
-        {
-            label: 'ออกจากระบบ',
-            icon: 'pi pi-fw pi-sign-out',
-            command: () => { onClickMenu() },
-        }
-    ]
-    const notiDrop = [
-        {
-            label: 'noti1',
-        },
-        {
-            label: 'noti2',
-        },
-        {
-            label: 'noti1',
-        }
-    ]
+
     const onClickNotification = (notiId: number) => {
         return <>Hello {notiId}</>
     }
@@ -158,11 +189,11 @@ const TopNavBar = () => {
             notiMenu.current.toggle(event)
         }
         } ></i></div>
-        <TieredMenu model={notiLabel} onClick={onClickMenu} popup ref={notiMenu} id={style["notification-drop"]}/>
+        <TieredMenu model={notiLabel} onClick={onClickMenu} popup ref={notiMenu} id={style["notification-drop"]} />
         <TieredMenu model={userDrop} onClick={onClickNotification} popup ref={menu} id="overlay_tmenu" />
-        <Button style={{ background: "transparent", border: "none" }} onClick={(event) => menu.current.toggle(event)} aria-haspopup aria-controls="overlay_tmenu">
+        <Button style={{ background: "transparent", border: "none" }} id={style['top-navbar-profile-btn']} onClick={(event) => menu.current.toggle(event)} aria-haspopup aria-controls="overlay_tmenu">
             <div style={{ width: "auto", display: 'flex' }}>
-                <div style={{ marginRight: "12px", width: "30px", height: "30px", overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: "25px" }}>
+                <div style={{ marginRight: "12px", width: "30px", height: "30px", overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: "25px" }} className={style['profile-btn-inside']}>
                     <img style={{ width: '100%', objectFit: 'cover' }} src={`data:image/jpeg;base64,${userProfile?.image}`}></img>
                 </div>
                 <p style={{
@@ -177,7 +208,7 @@ const TopNavBar = () => {
         </Button></div>)
     return (
         <div>
-            {notification && <NotificationPanel displayDialog={displayDialog} setDisplayDialog={setDisplayDialog} notificationData={notification} setNotificationData={setNotification}/>}
+            {notification && <NotificationPanel displayDialog={displayDialog} setDisplayDialog={setDisplayDialog} notificationData={notification} setNotificationData={setNotification} />}
             <Menubar
                 model={items}
                 start={start}
