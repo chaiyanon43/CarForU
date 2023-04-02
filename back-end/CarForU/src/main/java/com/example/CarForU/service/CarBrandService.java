@@ -8,5 +8,6 @@ import java.util.List;
 public interface CarBrandService {
     List<String> GetAllBrand();
     CarBrand GetCarBrand(String brandName);
+    void AddBrand(String brandName);
     List<CarBrandAndModelSearch> GetAllBrandsAndModels();
 }

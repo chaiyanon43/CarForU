@@ -1,5 +1,6 @@
 package com.example.CarForU.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,7 @@ public class User{
     @Column(name = "USER_ID")
     private int userId;
     @Column(name = "USER_USERNAME",unique = true)
+    @NotNull
     private String username;
     @Column(name = "USER_PASSWORD")
     private String password;

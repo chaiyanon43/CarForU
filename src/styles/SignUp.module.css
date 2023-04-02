@@ -55,12 +55,24 @@ input#file-input {
 .signup-container .signup-box .sigup-btn-container .btn-inside{
   width: fit-content;
   display: flex;
+  flex-direction: column;
   margin-left: auto;
+}
+.signup-container .signup-box .sigup-btn-container .btn-inside  .policy-container{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  position:relative;
 }
 .signup-container .signup-box .sigup-btn-container .btn-inside #cancel{
   background: transparent;
   color: #FEFEFE;
   text-decoration: underline;
+}
+.signup-container .signup-box .sigup-btn-container .btn-inside .button-signup{
+  width: fit-content;
+  display: flex;
+  
 }
 .signup-container .signup-box .sigup-btn-container .btn-inside #cancel:hover{
   font-weight: 600;

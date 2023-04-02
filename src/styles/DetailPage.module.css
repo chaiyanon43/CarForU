@@ -136,7 +136,7 @@
 .car-rec-container .car-rec-box {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-    margin: 16px 0px;
+  margin: 0px 0px 16px 0px;
 }
 .car-rec-container .car-rec-box a{
   text-decoration: none;
@@ -215,13 +215,48 @@
 
 .car-rec-container .car-rec-box .car-rec-inside #header{
   font-weight: 600;
-  
+}
+.car-rec-container #car-type{
+  background-color: #FEFEFE;
+  height: 40px;
+  width: 120px;
+  margin-left: 16px;
+  color: #292929;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 0 5px 5px rgb(0, 0, 0, 0.32);
+}
+.car-rec-container .car-rec-box .car-rec-inside #level{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  background-color: #FEFEFE;
+  padding: 4px;
+  left: 18px;
+  bottom: 6px;
+  border-radius: 10px 2px;
+  box-shadow: 0px 5px 5px rgb(0, 0, 0, 0.32);
+  color: black;
+  font-weight: 600;
 }
 .car-rec-container .car-rec-box .car-rec-inside #data{
   position: absolute;
   right: 6px;
   bottom: 6px;
-  color: #707070;  
+  color: #292929;  
+  height: 32px;
+  background-color: #FEFEFE;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 5px rgb(0, 0, 0, 0.32);
 }
 .car-rec-container .car-rec-box .car-rec-inside:hover {
     box-shadow: 0 10px 15px rgb(0, 0, 0, 0.32);

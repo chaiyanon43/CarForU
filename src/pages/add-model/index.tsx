@@ -10,8 +10,8 @@ import { CarService } from "services/CarService"
 
 
 interface carBrandAdd {
-    brandName: String,
-    modelName: String
+    brandName: string,
+    modelName: string
 }
 const AddModel = () => {
     const { register, handleSubmit, watch, setValue, getValues, formState: { errors } } = useForm<carBrandAdd>();
@@ -34,20 +34,13 @@ const AddModel = () => {
         }).then((e) => {
             toaster.success(e.data)
         }).catch((err) => {
-            toaster.danger(err)
+            toaster.danger(err.response.data)
         })
 
     }
     const onAddBrand: SubmitHandler<carBrandAdd> = (brand) => {
-        axios.post("http://localhost:8080/add-brand", {
-            brandName: brand.brandName,
-            
-        }).then((e) => {
-            toaster.success(e.data)
-        }).catch((err) => {
-            toaster.danger(err)
-        })
-
+        const carService = new CarService();
+        carService.addBrand(brand.brandName)
     }
 
     useEffect(() => {
@@ -64,7 +57,7 @@ const AddModel = () => {
                     <><h2>เพิ่มยี่ห้อรถยนต์</h2>
                         <form onSubmit={handleSubmit2(onAddBrand)}>
                             <InputText placeholder="ระบุยี่ห้อรถยนต์" {...register2('brandName')} />
-                            <Button>Add</Button>
+                            <Button type="submit">Add</Button>
                         </form></>
                     :
                     <>
@@ -72,7 +65,7 @@ const AddModel = () => {
                         <form onSubmit={handleSubmit(onAddModel)} style={{marginTop:"16px"}}>
                             <Dropdown className={style["brand-dropdown"]} options={brands} placeholder="ระบุยี่ห้อ" value={watch('brandName')} {...register("brandName")} />
                             <InputText {...register('modelName')} />
-                            <Button>Add</Button>
+                            <Button type="submit">Add</Button>
                         </form>
                     </>}
 

@@ -16,7 +16,6 @@ public class CarModelController {
     CarModelService carModelService;
     @PostMapping("/add-model")
     public ResponseEntity<String> AddModel(@RequestBody AddModelForm addModelForm){
-        System.out.println("Brand: "+addModelForm.getBrandName()+"Model: "+addModelForm.getModelName());
         carModelService.AddModel(addModelForm.getBrandName(), addModelForm.getModelName());
         return new ResponseEntity<>("Model is added", HttpStatus.OK);
     }

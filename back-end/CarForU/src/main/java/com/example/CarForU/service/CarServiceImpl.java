@@ -332,7 +332,12 @@ public class CarServiceImpl implements CarService {
             statusList.add(1);
             statusList.add(2);
         }
-        List<Car> cars = carRepository.searchSecondCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage,statusList);
+        List<Car> cars = new ArrayList<>();
+        if(carMileage == 70002){
+            cars = carRepository.searchSecondCarMoreThan(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage,statusList);
+        }else{
+            cars = carRepository.searchSecondCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage,statusList);
+        }
         return ConditionClassify(cars);
     }
 
@@ -412,7 +417,8 @@ public class CarServiceImpl implements CarService {
     @Override
     public void AddCar(String carAddress, String carBrandName, String carColor, String carCondition, String carDesc, double carEVRange, double carFuelConsumption, String carFuelType, Boolean carGas, String carGearType, double carHorsePower, double carMileage, String carModelName, double carPrice, double carSeats, double carYear, String carHeader, int userId, List<MultipartFile> carImage, List<MultipartFile> carImageDefect) {
         Car addCar = new Car();
-        CarModel carModel = carModelRepository.findCarModelByModelName(carModelName);
+        CarBrand carBrand = carBrandRepository.findCarBrandIdByBrandName(carBrandName);
+        CarModel carModel = carModelRepository.findCarModelByModelName(carModelName,carBrand.getBrandId());
         User user = userRepository.findUserById(userId);
         addCar.setCarAddress(carAddress);
         addCar.setCarColor(carColor);
@@ -431,6 +437,7 @@ public class CarServiceImpl implements CarService {
         addCar.setModelId(carModel);
         addCar.setUser(user);
         addCar.setCarHeader(carHeader);
+        addCar.setCarStatus(1);
         Car carAdded = carRepository.save(addCar);
         carImageService.AddCarImage(carImage, carAdded.getCarId(), 1);
         if (carImageDefect != null) {
@@ -444,7 +451,8 @@ public class CarServiceImpl implements CarService {
                             double carMileage, String carModelName, double carPrice, double carSeats, double carYear,
                             String carHeader, List<MultipartFile> carImage, List<MultipartFile> carImageDefect,
                             int[] carImageIdDelete, int carId) {
-        CarModel carModel = carModelRepository.findCarModelByModelName(carModelName);
+        CarBrand carBrand = carBrandRepository.findCarBrandIdByBrandName(carBrandName);
+        CarModel carModel = carModelRepository.findCarModelByModelName(carModelName,carBrand.getBrandId());
         carRepository.UpdateCarDetail(carAddress, carColor, carCondition, carDesc, carEVRange, carFuelConsumption, carFuelType, carGas, carGearType, carHorsePower, carMileage, carPrice, carSeats, carYear, carModel, carHeader, carId);
         if (carImageIdDelete != null) {
             for (int i = 0; i < carImageIdDelete.length; i++) {

@@ -61,7 +61,7 @@ public class CarController {
     @PostMapping("/all-second-hand-car-search")
     public ResponseEntity<List<CarDetailCard>> GetSecondHandCarsSearch(
             @RequestParam(name = "searchKeyword") String keyword,
-            @RequestParam(name = "carPrice", required = false, defaultValue = "0,20000000") String[] carPrice,
+            @RequestParam(name = "carPrice", required = false, defaultValue = "0,200000000") String[] carPrice,
             @RequestParam(name = "carYear", required = false, defaultValue = "0,3000") String[] carYear,
             @RequestParam(name = "carFuelType", required = false) String carFuelType,
             @RequestParam(name = "carBrands", required = false, defaultValue = "") String[] carBrands,
@@ -113,7 +113,6 @@ public class CarController {
     }
     @DeleteMapping("/deleteCar")
     public ResponseEntity<String> DeleteCar(@RequestParam(name = "carId") int carId) {
-        System.out.println("delete");
         carService.DeleteCar(carId);
         return new ResponseEntity<>("ลบรถยนต์ออกจากระบบสำเร็จ",HttpStatus.OK);
     }
@@ -141,6 +140,7 @@ public class CarController {
             @RequestParam(name = "carHeader") String carHeader,
             @RequestParam(name = "userId") int userId
     ) {
+        System.out.println(carAddress);
         try {
             carService.AddCar(
                     carAddress,

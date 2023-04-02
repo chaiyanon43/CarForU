@@ -3,7 +3,6 @@ package com.example.CarForU.controller;
 import com.example.CarForU.bean.JustUserId;
 import com.example.CarForU.bean.UserDetailResponse;
 import com.example.CarForU.bean.UserProfileResponse;
-import com.example.CarForU.entity.User;
 import com.example.CarForU.jwt.JwtProvider;
 import com.example.CarForU.jwt.JwtResponse;
 import com.example.CarForU.jwt.LoginForm;
@@ -46,8 +45,12 @@ public class UserController {
                                            @RequestParam("name") String name,
                                            @RequestParam("phoneNumber") String phoneNumber,
                                            @RequestParam("address") String address) {
-        userService.saveUser(image, username, encoder.encode(password), name, phoneNumber, address);
-        return new ResponseEntity<>("User Added", HttpStatus.OK);
+        try {
+            userService.saveUser(image, username, encoder.encode(password), name, phoneNumber, address);
+            return new ResponseEntity<>("เพิ่มบัญชีผู้ใช้สำเร็จ", HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("ไม่สามารถใช้ชื่อบัญชีผู้ใช้นี้ได้", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/login")
@@ -66,7 +69,7 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateJwtToken(authentication);
         String role = userRepository.findRoleByUsernameForProfile(loginRequest.getUsername());
-        return ResponseEntity.ok(new JwtResponse(jwt,role));
+        return ResponseEntity.ok(new JwtResponse(jwt, role));
     }
 
     @GetMapping("/getUserId")
@@ -85,36 +88,40 @@ public class UserController {
     }
 
     @PatchMapping("/updateUser")
-    public ResponseEntity<String> updateUser(@RequestParam(value = "image",required = false) MultipartFile image,
+    public ResponseEntity<String> updateUser(@RequestParam(value = "image", required = false) MultipartFile image,
                                              @RequestParam("username") String username,
                                              @RequestParam("name") String name,
                                              @RequestParam("phoneNumber") String phoneNumber,
                                              @RequestParam("address") String address,
                                              @RequestParam("userId") int userId) {
-        if(image == null){
+        if (image == null) {
             userService.updateUserWithOut(username, name, phoneNumber, address, userId);
-        }else{
-            userService.updateUser(image,username,name,phoneNumber,address,userId);
+        } else {
+            userService.updateUser(image, username, name, phoneNumber, address, userId);
         }
 
         return new ResponseEntity<>("User Updated", HttpStatus.OK);
     }
+
     @PatchMapping("/banUser")
-    public ResponseEntity<String> BanUser(@RequestBody JustUserId user){
+    public ResponseEntity<String> BanUser(@RequestBody JustUserId user) {
         userService.BanUser(user.getUserId());
         return new ResponseEntity<>("แบนผู้ใช้เรียบร้อย", HttpStatus.OK);
     }
+
     @PatchMapping("/unbanUser")
     public ResponseEntity<String> UnbanUser(@RequestBody JustUserId user) {
         userService.UnbanUser(user.getUserId());
         return new ResponseEntity<>("ปลดแบนผู้ใช้เรียบร้อย", HttpStatus.OK);
     }
+
     @GetMapping("/getAllUser")
-    public ResponseEntity<List<UserDetailResponse>> GetAllUser(){
-        return new ResponseEntity<>(userService.GetAllUser(),HttpStatus.OK);
+    public ResponseEntity<List<UserDetailResponse>> GetAllUser() {
+        return new ResponseEntity<>(userService.GetAllUser(), HttpStatus.OK);
     }
+
     @GetMapping("/getUserDetailForAdmin")
-    public ResponseEntity<UserDetailResponse> GetUserDetailForAdmin(@RequestParam("userId")int userId){
-        return new ResponseEntity<>(userService.GetUserDetailForAdmin(userId),HttpStatus.OK);
+    public ResponseEntity<UserDetailResponse> GetUserDetailForAdmin(@RequestParam("userId") int userId) {
+        return new ResponseEntity<>(userService.GetUserDetailForAdmin(userId), HttpStatus.OK);
     }
 }

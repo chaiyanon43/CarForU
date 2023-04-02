@@ -151,7 +151,7 @@ export class CarService {
                     });
                 })
         } catch {
-            toaster.success("delete error", {
+            toaster.danger("delete error", {
                 duration: 5,
             });
         }
@@ -165,7 +165,21 @@ export class CarService {
                     });
                 })
         } catch {
-            toaster.success("Add to favorite error", {
+            toaster.danger("Add to favorite error", {
+                duration: 5,
+            });
+        }
+    }
+    async addBrand(brandName: string) {
+        try {
+            await axios.post('http://localhost:8080/addBrand', {brandName:brandName})
+                .then((res) => {
+                    toaster.success(res.data, {
+                        duration: 5,
+                    });
+                })
+        } catch {
+            toaster.danger("Add brand error", {
                 duration: 5,
             });
         }

@@ -30,6 +30,13 @@ public class CarBrandServiceImpl implements CarBrandService{
     }
 
     @Override
+    public void AddBrand(String brandName) {
+        CarBrand carBrand = new CarBrand();
+        carBrand.setBrandName(brandName);
+        carBrandRepository.save(carBrand);
+    }
+
+    @Override
     public List<CarBrandAndModelSearch> GetAllBrandsAndModels() {
         List<CarBrand> carBrands = carBrandRepository.findAll();
         List<CarBrandAndModelSearch> carBrandAndModelSearches = new ArrayList<>();

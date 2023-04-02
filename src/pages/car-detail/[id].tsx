@@ -40,6 +40,7 @@ const Details = () => {
     const [isDefect, setIsDefect] = useState<boolean>(false)
     const [showProfile, setShowProfile] = useState<boolean>(false)
     const [isErr, setIsErr] = useState<boolean>(false)
+    const [recLevel, setRecLevel] = useState<number[]>([])
     const { register, handleSubmit, getValues, watch, setValue, resetField, formState: { errors } } = useForm<notificationRequest>();
     const responsiveOptions = [
         {
@@ -56,14 +57,29 @@ const Details = () => {
         }
     ];
     const noticationService = new NotificationService();
-    
-    const getCarDetail  = useCallback((carId: string | string[]) => {
+
+    const getCarDetail = useCallback((carId: string | string[]) => {
         if (sessionStorage.getItem('role') !== 'admin') {
             const response = carService.getCarDetail(carId)
             response.then((res) => {
                 if (!res) {
                     setIsErr(true)
                     return
+                }
+                if (recLevel.length < 3) {
+                    if (res.car.carFuelType === "เบนซิน" || res.car.carFuelType === "ดีเซล") {
+                        recLevel.push(1)
+                        recLevel.push(2)
+                        recLevel.push(3)
+                    } else if (res.car.carFuelType === "ไฮบริด") {
+                        recLevel.push(2)
+                        recLevel.push(1)
+                        recLevel.push(3)
+                    } else {
+                        recLevel.push(3)
+                        recLevel.push(2)
+                        recLevel.push(1)
+                    }
                 }
                 setUser!(res.user)
                 setCar!(res.car)
@@ -124,7 +140,7 @@ const Details = () => {
             })
         }
 
-    },[]);
+    }, []);
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -133,7 +149,7 @@ const Details = () => {
             setCarId(id)
         }
 
-    }, [router.query.id, router.isReady,getCarDetail]);
+    }, [router.query.id, router.isReady, getCarDetail]);
     const itemTemplate = (item: itemImage) => {
         return <img src={item.itemImageSrc} alt={item.alt} style={{ width: '100%', display: 'block' }} />;
     }
@@ -174,7 +190,6 @@ const Details = () => {
     }
     const onBanCar = () => {
         carService.banCar(car.carId)
-        // getCarDetail(car?.carId)
         setDisplayDialogBan(false)
     }
     const onUnbanCar = () => {
@@ -185,6 +200,75 @@ const Details = () => {
     }
     const menu = useRef(null);
     const commonFunc = new CommonFunc();
+    const recomendLevel = (level: number) => {
+        if (level === 1) {
+            return (
+                <>
+                    <h3 id={style["car-type"]}>NORMAL</h3>
+                    <div className={style['car-rec-box']}>
+                        {carRec?.normalCar.map((carNm,index) => {
+                            return (
+                                <div className={style['car-rec-inside']} key={carNm.carId} onClick={(e) => window.location.href = "/car-detail/" + carNm.carId}>
+                                    <div className={style['car-rec-image-container']}>
+                                        <img src={`data:image/jpeg;base64,${carNm.carImage}`} />
+                                    </div>
+                                    <div className={style['car-rec-text']}>
+                                        <label id={style['header']}>{carNm.carHeader}</label>
+                                        <label id={style['level']}>#{index+1}</label>
+                                        <label id={style['data']}>{commonFunc.numberWithCommas(carNm.carPrice)} บาท</label>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </>
+            )
+        } else if (level === 2) {
+            return (
+                <>
+                    <h3 id={style["car-type"]}>HYBRID</h3>
+                    <div className={style['car-rec-box']}>
+                        {carRec?.hybridCar.map((carHb,index) => {
+                            return (
+                                <div className={style['car-rec-inside']} key={carHb.carId} onClick={(e) => window.location.href = "/car-detail/" + carHb.carId}>
+                                    <div className={style['car-rec-image-container']}>
+                                        <img src={`data:image/jpeg;base64,${carHb.carImage}`} />
+                                    </div>
+                                    <div className={style['car-rec-text']}>
+                                        <label id={style['header']}>{carHb.carHeader}</label>
+                                        <label id={style['level']}>#{index+1}</label>
+                                        <label id={style['data']}>{commonFunc.numberWithCommas(carHb.carPrice)} บาท</label>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </>
+            )
+        } else if (level === 3) {
+            return (
+                <>
+                    <h3 id={style["car-type"]}>EV</h3>
+                    <div className={style['car-rec-box']}>
+                        {carRec?.evcar.map((carEv,index) => {
+                            return (
+                                <div className={style['car-rec-inside']} key={carEv.carId} onClick={(e) => window.location.href = "/car-detail/" + carEv.carId}>
+                                    <div className={style['car-rec-image-container']}>
+                                        <img src={`data:image/jpeg;base64,${carEv.carImage}`} />
+                                    </div>
+                                    <div className={style['car-rec-text']}>
+                                        <label id={style['header']}>{carEv.carHeader}</label>
+                                        <label id={style['level']}>#{index+1}</label>
+                                        <label id={style['data']}>{commonFunc.numberWithCommas(carEv.carPrice)} บาท</label>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </>
+            )
+        }
+    }
     if (!car) {
         if (isErr) {
             return <>ไม่สามารถดูได้เนื่องจากประกาศถูกแบน</>
@@ -218,8 +302,8 @@ const Details = () => {
                 <div className={style['detail-page-container']}>
                     <div className={style['detail-box']}>
                         <div className={style['seller-profile']}>
-                            {sessionStorage.getItem("role") === "admin" ? user?.status === 1 ? <Button disabled style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} >สถานะ:ปกติ</Button>: 
-                            <Button disabled style={{ background: "red", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} >สถานะ:ระงับ</Button>  :<Button disabled={Number(sessionStorage.getItem("userId")) === user?.userId} style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} onClick={(event) => setDisplayDialog(true)} aria-haspopup aria-controls="overlay_tmenu">
+                            {sessionStorage.getItem("role") === "admin" ? user?.status === 1 ? <Button disabled style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} >สถานะ:ปกติ</Button> :
+                                <Button disabled style={{ background: "red", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} >สถานะ:ระงับ</Button> : <Button disabled={Number(sessionStorage.getItem("userId")) === user?.userId} style={{ background: "rgb(50, 205, 50)", display: "flex", justifyContent: "center", border: "none", width: "25%", minWidth: "130px" }} onClick={(event) => setDisplayDialog(true)} aria-haspopup aria-controls="overlay_tmenu">
                                 ติดต่อผู้ขาย
                             </Button>}
                             <div className={style['seller-profile-detail']}>
@@ -254,57 +338,13 @@ const Details = () => {
                 </div>
                 <DetailCarContainer carDetail={car!} />
                 {car && sessionStorage.getItem("role") !== "admin" ? <><CarCalculate carDetail={car!} /></> : null}
-                {car && sessionStorage.getItem("role") !== "admin" ? <><div className={style['car-rec-container']}>
-                    <h3 style={{ color: '#FEFEFE' }}>NORMAL</h3>
-                    <div className={style['car-rec-box']}>
-                        {carRec?.normalCar.map((carNm) => {
-                            return (
-                                <div className={style['car-rec-inside']} key={carNm.carId} onClick={(e) => window.location.href = "/car-detail/" + carNm.carId}>
-                                    <div className={style['car-rec-image-container']}>
-                                        <img src={`data:image/jpeg;base64,${carNm.carImage}`} />
-                                    </div>
-                                    <div className={style['car-rec-text']}>
-                                        <label id={style['header']}>{carNm.carHeader}</label>
-                                        <label id={style['data']}>{commonFunc.numberWithCommas(carNm.carPrice)} บาท</label>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <h3 style={{ color: '#FEFEFE' }}>HYBRID</h3>
-                    <div className={style['car-rec-box']}>
-                        {carRec?.hybridCar.map((carHb) => {
-                            return (
-
-                                <div className={style['car-rec-inside']} key={carHb.carId} onClick={(e) => window.location.href = "/car-detail/" + carHb.carId}>
-                                    <div className={style['car-rec-image-container']}>
-                                        <img src={`data:image/jpeg;base64,${carHb.carImage}`} />
-                                    </div>
-                                    <div className={style['car-rec-text']}>
-                                        <label id={style['header']}>{carHb.carHeader}</label>
-                                        <label id={style['data']}>{commonFunc.numberWithCommas(carHb.carPrice)} บาท</label>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <h3 style={{ color: '#FEFEFE' }}>EV</h3>
-                    <div className={style['car-rec-box']}>
-                        {carRec?.evcar.map((carEv) => {
-                            return (
-                                <div className={style['car-rec-inside']} key={carEv.carId} onClick={(e) => window.location.href = "/car-detail/" + carEv.carId}>
-                                    <div className={style['car-rec-image-container']}>
-                                        <img src={`data:image/jpeg;base64,${carEv.carImage}`} />
-                                    </div>
-                                    <div className={style['car-rec-text']}>
-                                        <label id={style['header']}>{carEv.carHeader}</label>
-                                        <label id={style['data']}>{commonFunc.numberWithCommas(carEv.carPrice)} บาท</label>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div></> : null}
+                {car && sessionStorage.getItem("role") !== "admin" ?
+                    <>
+                        <div className={style['car-rec-container']}>
+                            {recLevel.map((e) => {
+                                return recomendLevel(e)
+                            })}
+                        </div></> : null}
             </div >
         )
     }

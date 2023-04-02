@@ -81,7 +81,9 @@
   font-family: "Prompt", sans-serif;
 }
 body {
+  box-sizing: border-box;
   background-color: rgb(65, 65, 65);
+  height: 100vh;
 }
 .p-menubar {
   border-radius: 0 !important;

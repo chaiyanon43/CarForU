@@ -12,6 +12,8 @@ import java.util.List;
 public interface CarBrandRepository extends JpaRepository<CarBrand, Integer> {
     @Query("SELECT b FROM CarBrand b order by b.brandName")
     CarBrand[] findAllBrand();
-    @Query("SELECT b FROM CarBrand b WHERE b.brandName = :brandName order by b.brandName")
+    @Query("SELECT b FROM CarBrand b WHERE b.brandName = :brandName")
     CarBrand findCarBrandByBrandName(@Param("brandName") String brandName);
+    @Query("SELECT b FROM CarBrand b WHERE b.brandName = :brandName")
+    CarBrand findCarBrandIdByBrandName(@Param("brandName") String brandName);
 }

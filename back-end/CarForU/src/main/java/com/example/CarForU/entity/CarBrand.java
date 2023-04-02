@@ -15,7 +15,7 @@ public class CarBrand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BRAND_ID")
     private int brandId;
-    @Column(name = "BRAND_NAME")
+    @Column(name = "BRAND_NAME",unique = true)
     private String brandName;
     @OneToMany(mappedBy = "carBrand")
     Set<CarModel> carModels;

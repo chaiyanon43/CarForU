@@ -23,14 +23,14 @@ export default function Auth(props: ProtectedRouteInterface) {
 
     if (!(router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/home")) {
       if (!token) {
-        router.push("/login");
+        router.push("/home");
       }
     }
     if (router.asPath === "/login" || router.asPath === "/sign-up" || router.asPath === "/add-model" || router.asPath === "/users") {
       if (token && (router.asPath === "/login" || router.asPath === "/sign-up")) {
         router.back();
       }
-      if((router.asPath === "/add-model" || router.asPath === "/users") && sessionStorage.getItem('role') !== "admin"){
+      if(token && ((router.asPath === "/add-model" || router.asPath === "/users") && sessionStorage.getItem('role') !== "admin")){
         router.back();
       }
     }

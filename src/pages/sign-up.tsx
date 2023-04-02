@@ -15,6 +15,8 @@ import { FileUpload } from 'primereact/fileupload';
 import Link from 'next/link';
 import { Checkbox } from 'primereact/checkbox';
 import { toaster } from 'evergreen-ui';
+import { InputNumber } from 'primereact/inputnumber';
+import { useRouter } from 'next/router';
 
 
 
@@ -29,6 +31,7 @@ interface userForm {
     name: string;
     image: File;
     phoneNumber: string;
+    confirmPassword: string;
     address: string;
 
 }
@@ -39,10 +42,35 @@ const Signup = (props: SignupFormProps) => {
     const [display, setDisplay] = useState<boolean>(false);
     const [file, setFile] = useState();
     const [imageURL, setImageURL] = useState<string>();
+    const router = useRouter();
     const userSubmmit: SubmitHandler<userForm> = (user) => {
         if (!user.image) {
-            toaster.warning("กรุณาเพิ่มรูปภาพโปรไฟล์ และ กรอกข้อมูลให้ครบถ้วน",{duration:3})
+            toaster.warning("กรุณาเพิ่มรูปภาพโปรไฟล์", { duration: 3 })
             return
+        }
+        if(!user.username){
+            toaster.warning("กรุณาระบุชื่อบัญชี", { duration: 3 })
+            return 
+        }
+        if(!user.password){
+            toaster.warning("กรุณาระบุรหัสผ่าน", { duration: 3 })
+            return 
+        }
+        if(user.confirmPassword !== user.password){
+            toaster.warning("รหัสผ่านไม่ตรงกัน", { duration: 3 })
+            return
+        }
+        if(!user.name){
+            toaster.warning("กรุณาระบุชื่อผู้ใช้", { duration: 3 })
+            return 
+        }
+        if(!user.phoneNumber){
+            toaster.warning("กรุณาระบุเบอร์ติดต่อ", { duration: 3 })
+            return 
+        }
+        if(!user.address){
+            toaster.warning("กรุณาระบุที่อยู่", { duration: 3 })
+            return 
         }
         axios.post('http://localhost:8080/addUser', {
             image: user.image,
@@ -56,10 +84,12 @@ const Signup = (props: SignupFormProps) => {
                 "Content-Type": "multipart/form-data",
             },
         }).then((res: any) => {
-            toaster.success(res.data,{duration:3})
+            toaster.success(res.data, { duration: 3 })
+            router.push("/login")
 
         }).catch((err: any) => {
-            toaster.danger('เพิ่ม User ไม่สำเร็จ',{duration:3})
+        
+            toaster.danger(err.response.data, { duration: 3 })
 
         })
 
@@ -84,21 +114,12 @@ const Signup = (props: SignupFormProps) => {
     }
     const onRemoveFile = async (e: any) => {
     }
-    const [check, setCheck] = useState<any>([]);
+    const [check, setCheck] = useState<boolean>(false);
 
-    const onCheck = (e: any) => {
-        let CheckPolicy = [...check];
 
-        if (e.checked)
-            CheckPolicy.push(e.value);
-        else
-            CheckPolicy.splice(CheckPolicy.indexOf(e.value), 1);
-
-        setValue("checked", CheckPolicy);
-    }
 
     return (<>
-        <Dialog header='Policy' visible={display} onHide={() => setDisplay(false)}>
+        <Dialog header='Policy' style={{width:"90%",maxWidth:"800px"}} visible={display} onHide={() => setDisplay(false)}>
             <p>1.ข้อมูลส่วนบุคคลที่บริษัทฯมีการเก็บรวบรวม ใช้ และ/หรือเปิดเผย</p>
             <p>1.1 ชื่อ - นามสกุล</p>
             <p>1.2 เบอร์ติดต่อ</p>
@@ -218,7 +239,7 @@ const Signup = (props: SignupFormProps) => {
                         </div>
                         <div className={style['sigup-inside']}>
                             <label >Confirm Password</label>
-                            <Password placeholder='Confirm Password' toggleMask feedback={false} />
+                            <Password placeholder='Confirm Password' onChange={(e) => setValue('confirmPassword', e.target.value)} toggleMask feedback={false} />
                         </div>
                         <div className={style['sigup-inside']}>
                             <label >Name</label>
@@ -226,7 +247,7 @@ const Signup = (props: SignupFormProps) => {
                         </div>
                         <div className={style['sigup-inside']}>
                             <label >Phone Number</label>
-                            <InputText placeholder='Phone Number' {...register("phoneNumber")} />
+                            <InputText placeholder='Phone Number' {...register('phoneNumber')} id="numbers" keyfilter="num" />
                         </div>
                         <div className={style['sigup-inside']}>
                             <label >Address</label>
@@ -234,20 +255,30 @@ const Signup = (props: SignupFormProps) => {
                         </div>
                         <div className={style['sigup-btn-container']}>
                             <div className={style['btn-inside']}>
-                                <label className={style['policy_text']}>คุณรับทราบ</label>
-                                <label className={style['policy']} onClick={()=>setDisplay(true)}>Policy</label>
-                                <Checkbox className={style['policy_check']} value="check" onChange={onCheck}></Checkbox>                                <Button type='button' id={style['cancel']}>
-                                    <Link style={{ textDecoration: "none", color: "#FEFEFE" }} href={'/login'}>
-                                        Cancel
-                                    </Link></Button>
-                                <Button type='submit'>Sign Up</Button>
+                                <div className={style['policy-container']}>
+                                    <label className={style['policy_text']}>คุณรับทราบ
+                                        <span className={style['policy']} onClick={() => setDisplay(true)}>นโยบายความเป็นส่วนตัว</span>
+                                    </label>
+                                    <Checkbox className={style['policy_check']} checked={check} onChange={(e)=> setCheck(!check)}></Checkbox>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div className={style['sigup-btn-container']}>
+                        <div className={style['btn-inside']}>
+                                <div className={style["button-signup"]}>
+                                    <Button type='button' id={style['cancel']}>
+                                        <Link style={{ textDecoration: "none", color: "#FEFEFE" }} href={'/login'}>
+                                            Cancel
+                                        </Link></Button>
+                                    <Button type='submit' disabled={!check}>Sign Up</Button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
         </div >
-        <label onClick={()=>setDisplay(true)}>Policy</label>
     </>)
 }
 export default Signup

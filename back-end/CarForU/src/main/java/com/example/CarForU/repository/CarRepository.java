@@ -34,7 +34,7 @@ public interface CarRepository extends JpaRepository<Car,Integer> {
     Car findByIdAndUserid(@Param("carId") int carId,@Param("userId") int userId);
     @Query("SELECT c FROM Car c where c.carId = :carId")
     Car findRecCarById(@Param("carId")int carId);
-    @Query("SELECT c FROM Car c WHERE c.user = :user and c.carStatus =1")
+    @Query("SELECT c FROM Car c WHERE c.user = :user and c.carStatus =1 order by c.carId DESC ")
     List<Car>  findCarByUser(@Param("user") User user);
     @Modifying
     @Transactional
@@ -61,6 +61,19 @@ public interface CarRepository extends JpaRepository<Car,Integer> {
             "ORDER BY c.carId DESC "
     )
     List<Car> searchSecondCar(@Param("keyword") String keyword,@Param("carBrands") List<String> carBrands,@Param("carModels") List<String> carModels
+            ,@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,@Param("yearMin") double yearMin
+            ,@Param("yearMax") double yearMax,List<Double> carSeats,@Param("gear") String gear,@Param("fuelType") String fuelType
+            ,@Param("carMileage") double carMileage,@Param("status") List<Integer> status);
+    @Query("SELECT c FROM Car c WHERE (c.carHeader LIKE CONCAT('%', :keyword,'%') " +
+            "OR c.modelId.carBrand.brandName LIKE CONCAT('%', :keyword,'%')  " +
+            "OR c.modelId.modelName LIKE CONCAT('%', :keyword,'%')  " +
+            "OR c.carDesc LIKE CONCAT('%', :keyword,'%')) and (c.modelId.carBrand.brandName IN :carBrands or " +
+            "c.modelId.modelName IN :carModels) and (c.carPrice between :priceMin and :priceMax) and (c.carYear between :yearMin and  :yearMax) and " +
+            "(c.carMileage >:carMileage)" +
+            "and c.carSeats in :carSeats and c.carGearType LIKE CONCAT('%', :gear,'%') and c.carFuelType LIKE CONCAT('%', :fuelType,'%') and  c.carCondition='มือสอง' and c.carStatus=1 and c.user.status IN :status " +
+            "ORDER BY c.carId DESC "
+    )
+    List<Car> searchSecondCarMoreThan(@Param("keyword") String keyword,@Param("carBrands") List<String> carBrands,@Param("carModels") List<String> carModels
             ,@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,@Param("yearMin") double yearMin
             ,@Param("yearMax") double yearMax,List<Double> carSeats,@Param("gear") String gear,@Param("fuelType") String fuelType
             ,@Param("carMileage") double carMileage,@Param("status") List<Integer> status);

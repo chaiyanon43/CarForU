@@ -12,10 +12,11 @@ import { CarService } from 'services/CarService';
 import { AllBrandsAndModels, itemsMultipleDropDown, models } from './interfaces';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
+import { toaster } from 'evergreen-ui';
 export interface filterForm {
     brandModel: [],
-    carPrice: [200000, 5000000],
-    carYear: [2012, 2023],
+    carPrice: [100000, 5000000],
+    carYear: [1960, 2023],
     fuelType: string,
     seats: any[],
     gear: any[],
@@ -28,15 +29,15 @@ const SearchCar = (props: BuyCar) => {
     const { isSecond, isSearch, setData } = props;
     const { register, watch, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm<filterForm>({
         defaultValues: {
-            carPrice: [200000, 5000000],
-            carYear: [2012, 2023],
+            carPrice: [100000, 5000000],
+            carYear: [1960, 2023],
             fuelType: "",
             seats: [],
             gear: [],
         }
     });
-    const [range, setRange] = useState<[number, number]>([200000, 5000000])
-    const [year, setYear] = useState<[number, number]>([2012, 2023])
+    const [range, setRange] = useState<[number, number]>([100000, 5000000])
+    const [year, setYear] = useState<[number, number]>([1960, 2023])
     const [seats, setSeats] = useState<any>([]);
     const [gears, setGears] = useState<any>([]);
     const [brandModel, setBeandModel] = useState<any[]>([])
@@ -59,9 +60,6 @@ const SearchCar = (props: BuyCar) => {
 
         })
     }
-    const searchCar = () => {
-
-    }
     const onSeatChange = (e: any) => {
         let selectedSeats = [...seats];
 
@@ -82,11 +80,9 @@ const SearchCar = (props: BuyCar) => {
 
         setValue("gear", selectedGears);
     }
-    const setBrandFunc = async () => {
-
-    }
     const onFilter: SubmitHandler<filterForm> = (filter: any) => {
         const status = sessionStorage.getItem("role") === "admin" ? 2:1
+    
         if (!isSecond) {
             const axios = require('axios');
             const FormData = require('form-data');
@@ -210,7 +206,7 @@ const SearchCar = (props: BuyCar) => {
                                         <label>{watch('carPrice.0') && commonFunc.numberWithCommas(watch('carPrice.0'))}</label>
                                         <label>{watch('carPrice.1') && commonFunc.numberWithCommas(watch('carPrice.1'))}</label>
                                     </div>
-                                    <Slider value={watch('carPrice')} onChange={(e: any) => setValue("carPrice", e.value)} min={200000} max={5000000} step={400000} range />
+                                    <Slider value={watch('carPrice')} onChange={(e: any) => setValue("carPrice", e.value)} min={100000} max={5000000} step={200000} range />
                                 </div>
                             </div>
 
@@ -221,7 +217,7 @@ const SearchCar = (props: BuyCar) => {
                                         <label>{watch('carYear.0')}</label>
                                         <label>{watch('carYear.1')}</label>
                                     </div>
-                                    <Slider value={watch('carYear')} onChange={(e: any) => setValue("carYear", e.value)} min={2012} max={2023} step={1} range />
+                                    <Slider value={watch('carYear')} onChange={(e: any) => setValue("carYear", e.value)} min={1960} max={2023} step={1} range />
                                 </div>
                             </div>
                             <div className={style['filter-box']}>
@@ -290,8 +286,8 @@ const SearchCar = (props: BuyCar) => {
                                             <label>น้อยกว่า 70,000</label>
                                         </div>
                                         <div className={style['radio-btn']}>
-                                            <RadioButton value="100000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '100000'} />
-                                            <label>น้อยกว่า 100,000</label>
+                                            <RadioButton value="70002" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '70002'} />
+                                            <label>มากกว่า 70,000</label>
                                         </div>
                                     </div>
                                 </div>

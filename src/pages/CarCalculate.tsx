@@ -98,7 +98,7 @@ const CarCalculate = (props: CarCalProps) => {
                         <div className={style["cal-inside"]}>
                             <label>ดอกเบี้ย</label>
                             <div className={style["cal-detail"]}>
-                                <InputNumber  minFractionDigits={0} maxFractionDigits={2} min={0} max={10} style={{ width: "160px" }} id={style["price"]} onValueChange={(e) => setValue("percentIncreases", e.value!)}></InputNumber>
+                                <InputNumber  minFractionDigits={0} maxFractionDigits={2} min={0} max={15} style={{ width: "160px" }} id={style["price"]} onValueChange={(e) => setValue("percentIncreases", e.value!)}></InputNumber>
                                 <label>% ต่อปี</label>
                             </div>
                         </div>
@@ -124,13 +124,13 @@ const CarCalculate = (props: CarCalProps) => {
                     </div>
                 </div>
                 <div className={style['after-cal']}>
-                    <div style={{ width: "100%", display: "flex", justifyContent: "center",marginBottom:"8px" }}>
+                    {showResult && <div style={{ width: "100%", display: "flex", justifyContent: "center",marginBottom:"8px" }}>
                         <div>
                             <label style={{display:"flex",alignItems:"center"}}>Vat 7%</label>
                             <InputSwitch checked={checkedVat} onChange={(e) => setCheckedVat(e.value)} />
                         </div>
-                    </div>
-                    {showResult && <label>ค่างวด/เดือน <span style={{ color: "rgb(50, 205, 50)" }}>{result?.paymentPerMonth ? commonFunc.numberWithCommas(result?.paymentPerMonth) : null}</span> บาท</label>}
+                    </div>}
+                    {showResult && <label>ค่างวด/เดือน <span style={{ color: "rgb(50, 205, 50)" }}>{result?.paymentPerMonth ? commonFunc.numberWithCommas(Math.round(result?.paymentPerMonth + (checkedVat ? (result?.paymentPerMonth*0.07):(0)))) : null}</span> บาท</label>}
                     <div className={style['button-cal']}>
                         <Button onReset={resetCal} type={"reset"} id={style["clear-btn"]}>Clear</Button>
                         <Button onSubmit={handleSubmit(onCalculate)} type={"submit"} id={style["submit-btn"]}>คำนวณ</Button>
