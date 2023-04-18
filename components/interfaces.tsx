@@ -43,6 +43,7 @@ export interface carCard {
     carAddress: string,
     carFuelType: string,
     carImage: string,
+    carYear: number,
     username: string
 }
 export interface userForm {

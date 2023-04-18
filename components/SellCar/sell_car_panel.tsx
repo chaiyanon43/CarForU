@@ -16,6 +16,7 @@ import Router, { useRouter } from 'next/router'
 import EditPanel from 'components/EditCar/EditPanel';
 import Toaster from 'evergreen-ui/types/toaster/src/Toaster';
 import { Dialog } from 'primereact/dialog';
+import { Checkbox } from 'primereact/checkbox';
 
 interface SellAndEditProps {
     carDetail?: CarData;
@@ -32,8 +33,10 @@ const SellCarPanel = (props: SellAndEditProps) => {
     const [oldCarImageDefect, setOldCarImageDefect] = useState<CarImage[] | undefined>([])
     const [carImageIDDelete, setCarImageIDDelete] = useState<number[]>([])
     const [carImageIDDefectDelete, setCarImageIDDefectDelete] = useState<number[]>([])
-    const [displayDelete,setDisplayDelete] = useState<boolean>(false)
-    const [year,setYear] = useState<number[]>([])
+    const [displayDelete, setDisplayDelete] = useState<boolean>(false)
+    const [year, setYear] = useState<number[]>([])
+    const [seatCustom, setSeatCustom] = useState<boolean>(false);
+    const [customColor, setCustomColor] = useState<boolean>(false);
 
     const [models, setModels] = useState();
     const carService = new CarService();
@@ -45,7 +48,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
     }
 
 
-    const { register, handleSubmit, watch, setValue, getValues,reset, formState: { errors } } = useForm<CarData>({
+    const { register, handleSubmit, watch, setValue, getValues, resetField, reset, formState: { errors } } = useForm<CarData>({
         defaultValues: {
             carHeader: carDetail?.carHeader,
             carCondition: carDetail?.carCondition,
@@ -69,68 +72,72 @@ const SellCarPanel = (props: SellAndEditProps) => {
     const condition = ['มือหนึ่ง', 'มือสอง'];
     const fuelType = ["เบนซิน", "ดีเซล", "ไฮบริด", `EV`];
     const gears = ["Auto", "Manual"];
-    const seats = [2, 4, 5, 7];
+    const seats = [2, 4, 5, 7, 13];
     const gas = ["ไม่ติดตั้ง", "ติดตั้ง"]
+    const colors = ["ดำ", "ขาว", "เทา", "แดง", "เงิน", "ทอง", "เหลือง", "น้ำเงิน"]
     const onUpload: SubmitHandler<CarData> = (carForm) => {
-        if(!carForm.carHeader){
+        if (!carForm.carHeader) {
             toaster.warning("กรุณาระบุหัวข้อ")
             return
         }
-        if(!carForm.carCondition){
+        if (!carForm.carCondition) {
             toaster.warning("กรุณาระบุสภาพรถยนต์")
             return
         }
-        if(!carForm.carFuelType){
+        if (!carForm.carFuelType) {
             toaster.warning("กรุณาระบุประเภทเชื้อเพลิง")
             return
         }
-        if(!carForm.carBrand){
+        if (!carForm.carBrand) {
             toaster.warning("กรุณาระบุยี่ห้อ")
             return
         }
-        if(!carForm.carModel){
+        if (!carForm.carModel) {
             toaster.warning("กรุณาระบุรุ่น")
             return
         }
-        if(!carForm.carColor){
+        if (!carForm.carColor) {
             toaster.warning("กรุณาระบุสีรถยนต์")
             return
         }
-        if(carForm.carCondition === "มือสอง" && !carForm.carMileage){
+        if (carForm.carCondition === "มือสอง" && !carForm.carMileage) {
             toaster.warning("กรุราระบุเลขไมล์")
             return
         }
-        if(!carForm.carSeats){
+        if (!carForm.carSeats) {
             toaster.warning("กรุณาระบุจำนวนที่นั่ง")
             return
         }
-        if(carForm.carFuelType !== "EV" && !carForm.carFuelConsumption){
+        if (carForm.carFuelType !== "EV" && !carForm.carFuelConsumption) {
             toaster.warning("กรุณาระบุอัตราสิ้นเปลือง")
             return
         }
-        if(!carForm.carYear){
+        if (!carForm.carYear) {
             toaster.warning("กรุณาระบุปีรถยนต์")
             return
         }
-        if(carForm.carFuelType === "EV" && !carForm.carEVRange){
+        if (carForm.carFuelType === "EV" && !carForm.carEVRange) {
             toaster.warning("กรุณาระบุระยะทางที่สามารถวิ่งได้ต่อการชาร์จ")
             return
         }
-        if(carForm.carCondition === "มือสอง" && !carForm.carGas){
+        if (carForm.carCondition === "มือสอง" && !carForm.carGas) {
             toaster.warning("กรุณาระบุสถานะการติดตั้งแก๊ส")
             return
         }
-        if(!carForm.carDesc){
+        if (!carForm.carDesc) {
             toaster.warning("กรุณาระบุรายละเอียดเพิ่มเติม")
             return
         }
-        if(!carForm.carAddress){
+        if (!carForm.carAddress) {
             toaster.warning("กรุณาระบุที่อยู่")
             return
         }
-        if(!carForm.carPrice){
+        if (!carForm.carPrice) {
             toaster.warning("กรุณาระบุราคารถยนต์")
             return
+        }
+        if (carForm.carFuelType === "EV") {
+            carForm.carGearType
         }
         if (!isEdit) {
             if (!files) {
@@ -260,7 +267,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
                        data.append('carImageIDDelete',e) 
                     });
                 }
-                
+
             }
             data.append('carAddress', carForm.carAddress)
             data.append('carBrand', carForm.carBrand)
@@ -318,7 +325,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
             </div>
         );
     }
-    const onDeleteCar=async()=>{
+    const onDeleteCar = async () => {
         carService.deleteCar(carDetail?.carId)
         window.location.href = "/my-car"
     }
@@ -350,7 +357,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
         carImageIDDefectDelete.push(imageId);
     }
     useEffect(() => {
-        for(let i=2023;i>=1960;i--){
+        for (let i = 2023; i >= 1960; i--) {
             year.push(i)
         }
         if (carDetail) {
@@ -366,7 +373,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
     }, [])
     return (
         <div className={style['sell-main-container']}>
-            <form onSubmit={handleSubmit(onUpload)} encType='multipart/form-data'>
+            <form encType='multipart/form-data'>
                 {isEdit ? <h3>แก้ไขข้อมูล</h3> : <h3>ขายรถยนต์</h3>}
                 {isEdit && <div style={{ marginBottom: "16px" }}>
                     รูปรถยนต์
@@ -388,11 +395,19 @@ const SellCarPanel = (props: SellAndEditProps) => {
                 </div> : null}
                 <div className={style['sell-box']}>
                     <h3>รถยนต์ มือหนึ่ง/มือสอง </h3>
-                    <SelectButton options={condition} value={watch('carCondition')} {...register("carCondition")} />
+                    <SelectButton options={condition} value={watch('carCondition')} onChange={(e)=>{
+                        resetField('carYear')
+                        setValue("carCondition",e.value)
+                    }} />
                 </div>
                 <div className={style['sell-box']}>
                     <h3>เชื้อเพลิง</h3>
-                    <SelectButton options={fuelType} value={watch('carFuelType')} {...register("carFuelType")} />
+                    <SelectButton options={fuelType} value={watch('carFuelType')} onChange={((e) => {
+                        if (e.value === "EV" || e.value === "ไฮบริด") {
+                            setValue('carGearType', "Auto")
+                        }
+                        setValue('carFuelType', e.value)
+                    })} />
                 </div>
                 <div className={style['sell-box']}>
                     <h3>ยี่ห้อ</h3>
@@ -404,11 +419,19 @@ const SellCarPanel = (props: SellAndEditProps) => {
                 </div>
                 <div className={style['sell-box']}>
                     <h3>สี</h3>
-                    <InputText {...register('carColor')} />
+                    <div className={style['sell-box-flex']}>
+                        {customColor && <InputText {...register('carColor')} placeholder='ระบุสีรถยนต์'/>}
+                        {!customColor && <Dropdown className={style['dropdown']} options={colors} placeholder="ระบุสีรถยนต์" value={watch('carColor')} {...register("carColor")} />}
+                        <Checkbox onChange={(e) => {
+                            resetField('carColor')
+                            setCustomColor(!customColor)
+                        }} checked={customColor} id={style["sell-check"]} />
+                        <label>ระบุเอง</label>
+                    </div>
                 </div>
                 <div className={style['sell-box']}>
                     <h3>ระบบเกียร์</h3>
-                    <SelectButton options={gears} value={watch('carGearType')} {...register("carGearType")} />
+                    <SelectButton options={(watch('carFuelType') === "EV" || watch('carFuelType') === "ไฮบริด") ? ["Auto"] : gears} value={(watch('carFuelType') === "EV" || watch('carFuelType') === "ไฮบริด") ? "Auto" : watch('carGearType')} {...register("carGearType")} />
                 </div>
                 <div className={style['sell-box']}>
                     <h3>แรงม้า</h3>
@@ -420,7 +443,15 @@ const SellCarPanel = (props: SellAndEditProps) => {
                 </div>
                 <div className={style['sell-box']}>
                     <h3>จำนวนที่นั่ง</h3>
-                    <SelectButton options={seats} value={watch('carSeats')} {...register("carSeats")} />
+                    <div className={style['sell-box-flex']}>
+                        {seatCustom ? <InputNumber onValueChange={(e) => setValue("carSeats", e.value)} min={14} max={30} style={{ display: "block" }} placeholder='ระบุจำนวนที่นั่ง (14-30)' /> :
+                            <SelectButton options={seats} value={watch('carSeats')} {...register("carSeats")} />}
+                            <Checkbox id={style["sell-check"]} checked={seatCustom} onChange={(e)=>{
+                                resetField('carSeats')
+                                setSeatCustom(!seatCustom)
+                            }}/>
+                            <label>ระบุเอง</label>
+                    </div>
                 </div>
                 <div className={style['sell-box']}>
                     <h3>อัตราสิ้นเปลือง (กิโลเมตร/ลิตร)</h3>
@@ -428,7 +459,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
                 </div>
                 <div className={style['sell-box']}>
                     <h3>ปี</h3>
-                    <Dropdown className={style['dropdown']} options={year} placeholder="ระบุปีรถยนต์" value={watch('carYear')} {...register("carYear")} />
+                    <Dropdown className={style['dropdown']} options={watch('carCondition') === 'มือหนึ่ง' ? [2021,2022,2023]:year} placeholder="ระบุปีรถยนต์" value={watch('carYear')} {...register("carYear")} />
                 </div>
                 <div className={style['sell-box']}>
                     <h3>ระยะทาง(กิโลเมตร)/ชาร์จ 1 ครั้ง</h3>
@@ -436,7 +467,7 @@ const SellCarPanel = (props: SellAndEditProps) => {
                 </div>
                 <div className={style['sell-box']}>
                     <h3>ติดตั้งระบบแก๊ส</h3>
-                    <SelectButton options={gas} value={watch('carGas')} {...register("carGas")} disabled={(watch('carCondition') === "มือหนึ่ง" || watch('carCondition') === null) ? true : watch('carFuelType') === "เบนซิน" ? false:true}/>
+                    <SelectButton options={gas} value={watch('carGas')} {...register("carGas")} disabled={(watch('carCondition') === "มือหนึ่ง" || watch('carCondition') === null) ? true : watch('carFuelType') === "เบนซิน" ? false : true} />
                 </div>
                 <div className={style['sell-box']}>
                     <h3>รายละเอียดเพิ่มเติม</h3>
@@ -448,11 +479,11 @@ const SellCarPanel = (props: SellAndEditProps) => {
                 </div>
                 <div className={style['sell-box']}>
                     <h3>ราคา</h3>
-                    <InputNumber onValueChange={(e) => setValue('carPrice', e.value!)} min={100000} max={10000000} value={watch('carPrice')}  />
+                    <InputNumber onValueChange={(e) => setValue('carPrice', e.value!)} min={100000} max={10000000} value={watch('carPrice')} />
                 </div>
                 <div className={style['button-box']}>
-                    {isEdit && <Button type='button' onClick={()=> setDisplayDelete(true)} id={style["delete-car"]}>ลบประกาศ</Button>}
-                    <Button type='submit'>ยืนยัน</Button>
+                    {isEdit && <Button type='button' onClick={() => setDisplayDelete(true)} id={style["delete-car"]}>ลบประกาศ</Button>}
+                    <Button type='button' onClick={handleSubmit(onUpload)}>ยืนยัน</Button>
                 </div>
             </form>
             <Dialog header="ลบรถยนต์ออกจากระบบะ" visible={displayDelete} style={{ width: '400px' }} footer={renderFooterDelete()} onHide={() => setDisplayDelete(false)}>

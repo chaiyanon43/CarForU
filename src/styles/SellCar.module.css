@@ -13,6 +13,7 @@
 .button-box{
   display: flex;
 }
+
 .sell-main-container .button-box button{
   width: 120px;
   display: flex;
@@ -28,6 +29,15 @@
 }
 .sell-box .dropdown {
   width: 320px;
+}
+.sell-box-flex{
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+}
+#sell-check{
+  margin:auto 16px;
 }
 .edit-image-box {
   background-color: rgb(75, 75, 75);

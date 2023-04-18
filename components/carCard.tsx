@@ -5,6 +5,7 @@ import carGear from "../images/gearbox.svg"
 import miles from "../images/medium.png"
 import fuel from "../images/fuel.png"
 import position from "../images/position.png"
+import calenda from "../images/calendar.png"
 import style from '../src/styles/NewCar.module.css'
 import { carCard, CarData, FavoriteRequest } from './interfaces';
 import { CommonFunc } from './commonFunc';
@@ -16,21 +17,25 @@ export interface CarCardForm {
     isSecond?: boolean;
     isMine?: boolean;
     isUnBan?: boolean;
+    getCarBaned?: any;
 }
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { toaster } from 'evergreen-ui';
 import { CarService } from 'services/CarService';
 import { Dialog } from 'primereact/dialog';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useRouter } from 'next/router';
 
 const CarCard = (props: CarCardForm) => {
+    const { carDetail, carFavId, getFavId, isMine, isSecond, setCarDetails, isUnBan, getCarBaned } = props
+    const router = useRouter()
     const commonFunc = new CommonFunc();
     const carService = new CarService();
     const [displayDialog, setDisplayDialog] = useState(false);
     const [displayDialogDelete, setDisplayDialogDelete] = useState(false);
     const [displayBan, setDisplayBan] = useState(false);
     const [displayUnban, setDisplayUnban] = useState(false);
-    const { carDetail, carFavId, getFavId, isMine, isSecond, setCarDetails, isUnBan } = props
+
     const acceptLiked = async () => {
         const carForm: FavoriteRequest = {
             username: sessionStorage.getItem('user')!,
@@ -54,8 +59,9 @@ const CarCard = (props: CarCardForm) => {
     const onHideDelete = () => {
         setDisplayDialogDelete(false);
     }
-    const onBanCar = () => {
+    const onBanCar = async () => {
         carService.banCar(carDetail.carId)
+        router.reload(window.location.pathname)
         if (!isSecond) {
             const response = carService.getCarFirstHand();
             response.then((res) => {
@@ -70,10 +76,11 @@ const CarCard = (props: CarCardForm) => {
     }
     const onUnbanCar = async () => {
         carService.unBanCar(carDetail.carId)
-        const response = carService.getAllBanedCars()
-        response.then((e)=>{
-            setCarDetails!(e)
-        })
+        router.reload(window.location.pathname)
+        // const response = carService.getAllBanedCars()
+        // response.then((e)=>{
+        //     setCarDetails!(e)
+        // })
 
     }
 
@@ -132,7 +139,7 @@ const CarCard = (props: CarCardForm) => {
     return (
         <div className={style["card"]}>
             <Link href={'/car-detail/' + carDetail.carId} key={carDetail.carId}>
-                <div key={carDetail.carId} >
+                <div key={carDetail.carId} className={style["card-detail-box"]}>
                     <div className={style["image-container"]}>
                         <img src={`data:image/jpeg;base64,${carDetail.carImage}`}></img>
                     </div>
@@ -154,6 +161,20 @@ const CarCard = (props: CarCardForm) => {
                                 }
                             />
                             <p>: {carDetail.carGearType}</p>
+                        </div>
+                        <div className={style["detail-box"]}>
+                            <Button
+                                icon={
+                                    <Image
+                                        id="icon"
+                                        src={calenda}
+                                        width={"22"}
+                                        height={"22"}
+                                        alt={"PaperCheck"}
+                                    />
+                                }
+                            />
+                            <p>: {carDetail.carYear}</p>
                         </div>
                         <div className={style["detail-box"]}>
                             <Button
@@ -194,9 +215,10 @@ const CarCard = (props: CarCardForm) => {
                             />
                             <p>: {carDetail.carAddress}</p>
                         </div>
-                        <div className={style["detail-box"]}>
-                            <h3>฿{commonFunc.numberWithCommas(carDetail.carPrice)} </h3>
-                        </div>
+
+                    </div>
+                    <div className={style["price-box"]}>
+                        <h3 id={style['price']}>฿{commonFunc.numberWithCommas(carDetail.carPrice)} </h3>
                     </div>
                 </div>
             </Link>

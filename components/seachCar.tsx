@@ -1,6 +1,6 @@
 import { Button } from 'primereact/button';
 import { Slider } from 'primereact/slider';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Checkbox } from 'primereact/checkbox';
 import style from '../src/styles/Filter.module.css'
@@ -13,42 +13,37 @@ import { AllBrandsAndModels, itemsMultipleDropDown, models } from './interfaces'
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
 import { toaster } from 'evergreen-ui';
+import { InputNumber } from 'primereact/inputnumber';
+import { Dropdown } from 'primereact/dropdown';
 export interface filterForm {
     brandModel: [],
-    carPrice: [100000, 5000000],
-    carYear: [1960, 2023],
+    carPrice: [100000, 10000000],
+    carYear: [1960, 2023] | [2020, 2023],
     fuelType: string,
-    seats: any[],
-    gear: any[],
-    mileage: string,
+    seats: any,
+    gear: any,
+    carMileage: [0, 1000000],
     keyword: string,
     brandsName: string[],
-    modelsName: string[]
+    modelsName: string[],
 }
 const SearchCar = (props: BuyCar) => {
-    const { isSecond, isSearch, setData } = props;
-    const { register, watch, handleSubmit, getValues, reset, setValue, formState: { errors } } = useForm<filterForm>({
+    const { isSecond, isSearch, setData, setSortBy, sortBy, setBrands, setModels, brands, models, getAllData } = props;
+    const { register, watch, handleSubmit, getValues, resetField, reset, setValue, formState: { errors } } = useForm<filterForm>({
         defaultValues: {
-            carPrice: [100000, 5000000],
-            carYear: [1960, 2023],
+            carPrice: [100000, 10000000],
+            carYear: !isSecond ? [2020, 2023] : [1960, 2023],
+            carMileage: [0, 1000000],
             fuelType: "",
-            seats: [],
-            gear: [],
+            seats: "",
+            gear: "",
         }
     });
-    const [range, setRange] = useState<[number, number]>([100000, 5000000])
-    const [year, setYear] = useState<[number, number]>([1960, 2023])
-    const [seats, setSeats] = useState<any>([]);
-    const [gears, setGears] = useState<any>([]);
-    const [brandModel, setBeandModel] = useState<any[]>([])
-    const commonFunc = new CommonFunc();
-    const [brandToSend, setBrandToSend] = useState<string>('')
-    const [modelToSend, setModelToSend] = useState<string>('')
 
+    const commonFunc = new CommonFunc();
     const carService = new CarService();
     const [brandsModels, setBrandsModels] = useState<itemsMultipleDropDown[]>([])
-    const [brands, setBrands] = useState<string[]>([])
-    const [models, setModels] = useState<string[]>([])
+
     useEffect(() => {
         getBrandsModels();
     }, [])
@@ -60,101 +55,8 @@ const SearchCar = (props: BuyCar) => {
 
         })
     }
-    const onSeatChange = (e: any) => {
-        let selectedSeats = [...seats];
-
-        if (e.checked)
-            selectedSeats.push(e.value);
-        else
-            selectedSeats.splice(selectedSeats.indexOf(e.value), 1);
-
-        setValue("seats", selectedSeats);
-    }
-    const onGearChange = (e: any) => {
-        let selectedGears = [...gears];
-
-        if (e.checked)
-            selectedGears.push(e.value);
-        else
-            selectedGears.splice(selectedGears.indexOf(e.value), 1);
-
-        setValue("gear", selectedGears);
-    }
-    const onFilter: SubmitHandler<filterForm> = (filter: any) => {
-        const status = sessionStorage.getItem("role") === "admin" ? 2:1
-    
-        if (!isSecond) {
-            const axios = require('axios');
-            const FormData = require('form-data');
-            let data = new FormData();
-            data.append('searchKeyword', filter.keyword ? filter.keyword: '')
-            data.append('carPrice', `${filter.carPrice[0]},${filter.carPrice[1]}`);
-            data.append('carYear', `${filter.carYear[0]},${filter.carYear[1]}`);
-            data.append('carFuelType', filter.fuelType);
-            data.append('carSeats', filter.seats[0] ? filter.seats[0] : 0);
-            data.append('carGear', filter.gear[0] ? filter.gear[0] : '');
-            data.append('status', status);
-
-            brands.map((e) => {
-                data.append(`carBrands`, e)
-            })
-            models.map((e) => {
-                data.append(`carModels`, e)
-            })
-            let config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: 'http://localhost:8080/all-first-hand-car-search',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                data: data
-            };
-
-            axios(config)
-                .then((response) => {
-                    setData(response.data)
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        } else {
-            const axios = require('axios');
-            const FormData = require('form-data');
-            let data = new FormData();
-            console.log(filter.keyword)
-            data.append('searchKeyword', filter.keyword ? filter.keyword: '')
-            data.append('carPrice', `${filter.carPrice[0]},${filter.carPrice[1]}`);
-            data.append('carYear', `${filter.carYear[0]},${filter.carYear[1]}`);
-            data.append('carFuelType', filter.fuelType);
-            data.append('carSeats', filter.seats[0] ? filter.seats[0] : 0);
-            data.append('carGear', filter.gear[0] ? filter.gear[0] : '');
-            data.append('carMileage', filter.mileage ? filter.mileage : 70001)
-            data.append('status', status);
-            brands.map((e) => {
-                data.append(`carBrands`, e)
-            })
-            models.map((e) => {
-                data.append(`carModels`, e)
-            })
-            let config = {
-                method: 'post',
-                maxBodyLength: Infinity,
-                url: 'http://localhost:8080/all-second-hand-car-search',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                data: data
-            };
-
-            axios(config)
-                .then((response) => {
-                    setData(response.data)
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
+    const onFilter: SubmitHandler<filterForm> = async (filter: any) => {
+        getAllData(filter, sortBy)
     }
     const onNodedSelect = (e) => {
         if (e.node.children) {
@@ -167,6 +69,7 @@ const SearchCar = (props: BuyCar) => {
         reset()
         setBrands([])
         setModels([])
+        onFilter(getValues())
     }
 
     const onNodeUnselect = (e) => {
@@ -176,9 +79,30 @@ const SearchCar = (props: BuyCar) => {
             setModels(models.filter((model) => model !== e.node.data))
         }
     }
+    const onSortPrice = async (e) => {
+        setSortBy(e.value)
+        // onFilter(getValues())
+    }
+    const onSortYear = async (e) => {
+        setSortBy(e.value)
+        // onFilter(getValues())
+    }
+    useEffect(() => {
+        onFilter(getValues())
+    }, [sortBy, setSortBy])
+    const sortOptions = [
+        { label: 'ราคาต่ำไปสูง', value: 'priceMin' },
+        { label: 'ราคาสูงไปต่ำ', value: 'priceMax' },
+        { label: 'ปีต่ำไปสูง', value: 'yearMin' },
+        { label: 'ปีสูงไปต่ำ', value: 'yearMax' }
+    ];
     return (
         <div>
             <form onSubmit={handleSubmit(onFilter)} encType='multipart/form-data' onReset={onReset}>
+                <div className={style["sort-by"]}>
+                    <h3>เรียงตาม : </h3>
+                    <Dropdown id={style['dropdown-sort']} value={sortBy} options={sortOptions} onChange={(e) => setSortBy(e.value)} />
+                </div>
                 <div className="p-inputgroup">
                     <InputText placeholder="Keyword" value={watch("keyword")} onChange={(e) => setValue("keyword", e.target.value)} />
                     <Button type='submit' icon="pi pi-search" className="p-button-warning" />
@@ -203,10 +127,16 @@ const SearchCar = (props: BuyCar) => {
                                 <h3>ราคา</h3>
                                 <div className={style['filter-inside']}>
                                     <div className={style['header-slider']}>
-                                        <label>{watch('carPrice.0') && commonFunc.numberWithCommas(watch('carPrice.0'))}</label>
-                                        <label>{watch('carPrice.1') && commonFunc.numberWithCommas(watch('carPrice.1'))}</label>
+                                        <InputNumber value={watch('carPrice.0')} min={100000} max={watch("carPrice.1") - 50000} onValueChange={(e) => {
+                                            setValue("carPrice.0", e.value)
+                                        }
+                                        } />
+                                        <InputNumber value={watch('carPrice.1')} min={watch("carPrice.0") + 50000} max={10000000} onValueChange={(e) => setValue("carPrice.1", e.target.value)} />
+
+                                        {/* <label>{watch('carPrice.0') && commonFunc.numberWithCommas(watch('carPrice.0'))}</label>
+                                        <label>{watch('carPrice.1') && commonFunc.numberWithCommas(watch('carPrice.1'))}</label> */}
                                     </div>
-                                    <Slider value={watch('carPrice')} onChange={(e: any) => setValue("carPrice", e.value)} min={100000} max={5000000} step={200000} range />
+                                    <Slider value={watch('carPrice')} onChange={(e: any) => setValue("carPrice", e.value)} min={100000} max={10000000} step={50000} range />
                                 </div>
                             </div>
 
@@ -214,20 +144,33 @@ const SearchCar = (props: BuyCar) => {
                                 <h3>ปี</h3>
                                 <div className={style['filter-inside']}>
                                     <div className={style['header-slider']}>
-                                        <label>{watch('carYear.0')}</label>
-                                        <label>{watch('carYear.1')}</label>
+                                        <InputNumber useGrouping={false} value={watch('carYear.0')} min={isSecond ? 1960:2020} max={watch("carYear.1") - 1} onValueChange={(e) => {
+                                            setValue("carYear.0", e.value)
+                                        }
+                                        } />
+                                        <InputNumber useGrouping={false} value={watch('carYear.1')} min={watch("carYear.0") + 1} max={2023} onValueChange={(e) => setValue("carYear.1", e.target.value)} />
                                     </div>
-                                    <Slider value={watch('carYear')} onChange={(e: any) => setValue("carYear", e.value)} min={1960} max={2023} step={1} range />
+                                    <Slider value={watch('carYear')} onChange={(e: any) => setValue("carYear", e.value)} min={!isSecond ? 2020 : 1960} max={2023} step={1} range />
                                 </div>
                             </div>
                             <div className={style['filter-box']}>
                                 <h3>เชื้อเพลิง</h3>
                                 <div className={style['filter-inside']}>
                                     <div className={style['fuel-container']}>
-                                        <Button type="button" label="เบนซิน" onClick={(e) => setValue("fuelType", "เบนซิน")} style={watch("fuelType") === "เบนซิน" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                                        <Button type="button" label="ดีเซล" onClick={(e) => setValue("fuelType", "ดีเซล")} style={watch("fuelType") === "ดีเซล" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                                        <Button type="button" label="ไฮบริด" onClick={(e) => setValue("fuelType", "ไฮบริด")} style={watch("fuelType") === "ไฮบริด" ? { background: "#6366F1", color: "#FFF" } : {}} />
-                                        <Button type="button" label="EV" onClick={(e) => setValue("fuelType", "EV")} style={watch("fuelType") === "EV" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="เบนซิน" onClick={(e) => {
+                                            setValue("fuelType", "เบนซิน")
+                                        }} style={watch("fuelType") === "เบนซิน" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="ดีเซล" onClick={(e) => {
+                                            setValue("fuelType", "ดีเซล")
+                                        }} style={watch("fuelType") === "ดีเซล" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="ไฮบริด" onClick={(e) => {
+                                            setValue("gear", "Auto")
+                                            setValue("fuelType", "ไฮบริด")
+                                        }} style={watch("fuelType") === "ไฮบริด" ? { background: "#6366F1", color: "#FFF" } : {}} />
+                                        <Button type="button" label="EV" onClick={(e) => {
+                                            setValue("gear", "Auto")
+                                            setValue("fuelType", "EV")
+                                        }} style={watch("fuelType") === "EV" ? { background: "#6366F1", color: "#FFF" } : {}} />
                                     </div>
                                 </div>
                             </div>
@@ -235,21 +178,29 @@ const SearchCar = (props: BuyCar) => {
                                 <h3>ที่นั่ง</h3>
                                 <div className={style['filter-inside']}>
                                     <div className={style['seat-selected']}>
-                                        <div className="field-checkbox">
-                                            <Checkbox value="2" onChange={onSeatChange} checked={watch('seats').indexOf("2") !== -1} />
+                                        <div className="field-checkbox" style={{ padding: "8px 0" }}>
+                                            <RadioButton value={2} onChange={(e) => setValue("seats", e.value)} checked={watch('seats') === 2} />
                                             <label>2</label>
                                         </div>
-                                        <div className="field-checkbox">
-                                            <Checkbox value="4" onChange={onSeatChange} checked={watch('seats').indexOf("4") !== -1} />
+                                        <div className="field-checkbox" style={{ padding: "8px 0" }}>
+                                            <RadioButton value={4} onChange={(e) => setValue("seats", e.value)} checked={watch('seats') === 4} />
                                             <label>4</label>
                                         </div>
-                                        <div className="field-checkbox">
-                                            <Checkbox value="5" onChange={onSeatChange} checked={watch('seats').indexOf("5") !== -1} />
+                                        <div className="field-checkbox" style={{ padding: "8px 0" }}>
+                                            <RadioButton value={5} onChange={(e) => setValue("seats", e.value)} checked={watch('seats') === 5} />
                                             <label>5</label>
                                         </div>
-                                        <div className="field-checkbox">
-                                            <Checkbox value="7" onChange={onSeatChange} checked={watch('seats').indexOf("7") !== -1} />
+                                        <div className="field-checkbox" style={{ padding: "8px 0" }}>
+                                            <RadioButton value={7} onChange={(e) => setValue("seats", e.value)} checked={watch('seats') === 7} />
                                             <label>7</label>
+                                        </div>
+                                        <div className="field-checkbox" style={{ padding: "8px 0" }}>
+                                            <RadioButton value={13} onChange={(e) => setValue("seats", e.value)} checked={watch('seats') === 13} />
+                                            <label>13</label>
+                                        </div>
+                                        <div className="field-checkbox">
+                                            <RadioButton value={14} onChange={(e) => setValue("seats", e.value)} checked={watch('seats') === 14} />
+                                            <label>13 ขึ้นไป</label>
                                         </div>
                                     </div>
                                 </div>
@@ -259,37 +210,28 @@ const SearchCar = (props: BuyCar) => {
                                 <div className={style['filter-inside']}>
                                     <div className={style['gear-selected']}>
                                         <div className="field-checkbox">
-                                            <Checkbox value="Auto" onChange={onGearChange} checked={watch('gear').indexOf('Auto') !== -1} />
+                                            <RadioButton value="Auto" onChange={(e) => setValue("gear", e.value)} checked={watch('gear') === "Auto"} />
                                             <label>Auto</label>
                                         </div>
-                                        <div className="field-checkbox">
-                                            <Checkbox value="Manual" onChange={onGearChange} checked={watch('gear').indexOf('Manual') !== -1} />
+                                        {(watch('fuelType') !== "EV" && watch('fuelType') !== "ไฮบริด") && <div className="field-checkbox">
+                                            <RadioButton value="Manual" onChange={(e) => setValue("gear", e.value)} checked={watch('gear') === "Manual"} />
                                             <label>Manual</label>
-                                        </div>
+                                        </div>}
                                     </div>
                                 </div>
                             </div>
                             {isSecond && <div className={style['filter-box']}>
                                 <h3>เลขไมล์</h3>
                                 <div className={style['filter-inside']}>
-                                    <div className={style['gear-selected']}>
-                                        <div className={style['radio-btn']}>
-                                            <RadioButton value="20000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '20000'} />
-                                            <label>น้อยกว่า 20,000</label>
-                                        </div>
-                                        <div className={style['radio-btn']}>
-                                            <RadioButton value="40000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '40000'} />
-                                            <label>น้อยกว่า 40,000</label>
-                                        </div>
-                                        <div className={style['radio-btn']}>
-                                            <RadioButton value="70000" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '70000'} />
-                                            <label>น้อยกว่า 70,000</label>
-                                        </div>
-                                        <div className={style['radio-btn']}>
-                                            <RadioButton value="70002" onChange={(e) => setValue("mileage", e.value)} checked={watch("mileage") === '70002'} />
-                                            <label>มากกว่า 70,000</label>
-                                        </div>
+
+                                    <div className={style['header-slider']}>
+                                        <InputNumber useGrouping={false} value={watch('carMileage.0')} min={0} max={watch("carMileage.1") - 5000} onValueChange={(e) => {
+                                            setValue("carMileage.0", e.value)
+                                        }
+                                        } />
+                                        <InputNumber value={watch('carMileage.1')} min={watch("carMileage.0") + 5000} max={1000000} onValueChange={(e) => setValue("carMileage.1", e.target.value)} />
                                     </div>
+                                    <Slider value={watch('carMileage')} onChange={(e: any) => setValue("carMileage", e.value)} min={0} max={1000000} step={5000} range />
                                 </div>
                             </div>}
                         </div>

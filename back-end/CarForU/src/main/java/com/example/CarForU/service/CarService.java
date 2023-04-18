@@ -35,7 +35,7 @@ public interface CarService {
                                                    List<String> carModels,
                                                    double carSeats,
                                                    String carGear,
-                                                   double carMileage,
+                                                   String[] carMileage,
                                                    int status);
 
     List<CarDetailCard> GetAllSecondHandCars(int status);

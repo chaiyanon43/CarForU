@@ -18,6 +18,8 @@ import DetailCarContainer from "components/DetailCarContainer";
 import Link from "next/link";
 import { NotificationService } from "services/Notification.service";
 import { NotificationPanel } from "components/notificationPanel";
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 
 interface contactForm {
     contactTitle: { name: string, code: string },
@@ -56,6 +58,24 @@ const Details = () => {
             numVisible: 1
         }
     ];
+    const responsive = {
+        superLargeDesktop: {
+            breakpoint: { max: 4000, min: 3000 },
+            items: 5
+        },
+        desktop: {
+            breakpoint: { max: 3000, min: 1024 },
+            items: 3
+        },
+        tablet: {
+            breakpoint: { max: 1024, min: 464 },
+            items: 2
+        },
+        mobile: {
+            breakpoint: { max: 464, min: 0 },
+            items: 1
+        }
+    };
     const noticationService = new NotificationService();
 
     const getCarDetail = useCallback((carId: string | string[]) => {
@@ -190,10 +210,12 @@ const Details = () => {
     }
     const onBanCar = () => {
         carService.banCar(car.carId)
+        router.reload(window.location.pathname)
         setDisplayDialogBan(false)
     }
     const onUnbanCar = () => {
         carService.unBanCar(car.carId)
+        router.reload(window.location.pathname)
         getCarDetail(car?.carId)
         setDisplayDialogUnban(false)
 
@@ -206,20 +228,22 @@ const Details = () => {
                 <>
                     <h3 id={style["car-type"]}>NORMAL</h3>
                     <div className={style['car-rec-box']}>
-                        {carRec?.normalCar.map((carNm,index) => {
-                            return (
-                                <div className={style['car-rec-inside']} key={carNm.carId} onClick={(e) => window.location.href = "/car-detail/" + carNm.carId}>
-                                    <div className={style['car-rec-image-container']}>
-                                        <img src={`data:image/jpeg;base64,${carNm.carImage}`} />
+                        <Carousel responsive={responsive}>
+                            {carRec?.normalCar.map((carNm, index) => {
+                                return (
+                                    <div className={style['car-rec-inside']} key={carNm.carId} onClick={(e) => window.location.href = "/car-detail/" + carNm.carId}>
+                                        <div className={style['car-rec-image-container']}>
+                                            <img src={`data:image/jpeg;base64,${carNm.carImage}`} />
+                                        </div>
+                                        <div className={style['car-rec-text']}>
+                                            <label id={style['header']}>{carNm.carHeader}</label>
+                                            <label id={style['level']}>#{index + 1}</label>
+                                            <label id={style['data']}>{commonFunc.numberWithCommas(carNm.carPrice)} บาท</label>
+                                        </div>
                                     </div>
-                                    <div className={style['car-rec-text']}>
-                                        <label id={style['header']}>{carNm.carHeader}</label>
-                                        <label id={style['level']}>#{index+1}</label>
-                                        <label id={style['data']}>{commonFunc.numberWithCommas(carNm.carPrice)} บาท</label>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })}
+                        </Carousel>;
                     </div>
                 </>
             )
@@ -227,21 +251,25 @@ const Details = () => {
             return (
                 <>
                     <h3 id={style["car-type"]}>HYBRID</h3>
+
                     <div className={style['car-rec-box']}>
-                        {carRec?.hybridCar.map((carHb,index) => {
-                            return (
-                                <div className={style['car-rec-inside']} key={carHb.carId} onClick={(e) => window.location.href = "/car-detail/" + carHb.carId}>
-                                    <div className={style['car-rec-image-container']}>
-                                        <img src={`data:image/jpeg;base64,${carHb.carImage}`} />
+                        <Carousel responsive={responsive}>
+                            {carRec?.hybridCar.map((carHb, index) => {
+                                return (
+                                    <div className={style['car-rec-inside']} key={carHb.carId} onClick={(e) => window.location.href = "/car-detail/" + carHb.carId}>
+                                        <div className={style['car-rec-image-container']}>
+                                            <img src={`data:image/jpeg;base64,${carHb.carImage}`} />
+                                        </div>
+                                        <div className={style['car-rec-text']}>
+                                            <label id={style['header']}>{carHb.carHeader}</label>
+                                            <label id={style['level']}>#{index + 1}</label>
+                                            <label id={style['data']}>{commonFunc.numberWithCommas(carHb.carPrice)} บาท</label>
+                                        </div>
                                     </div>
-                                    <div className={style['car-rec-text']}>
-                                        <label id={style['header']}>{carHb.carHeader}</label>
-                                        <label id={style['level']}>#{index+1}</label>
-                                        <label id={style['data']}>{commonFunc.numberWithCommas(carHb.carPrice)} บาท</label>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })}
+                        </Carousel>;
+
                     </div>
                 </>
             )
@@ -250,20 +278,23 @@ const Details = () => {
                 <>
                     <h3 id={style["car-type"]}>EV</h3>
                     <div className={style['car-rec-box']}>
-                        {carRec?.evcar.map((carEv,index) => {
-                            return (
-                                <div className={style['car-rec-inside']} key={carEv.carId} onClick={(e) => window.location.href = "/car-detail/" + carEv.carId}>
-                                    <div className={style['car-rec-image-container']}>
-                                        <img src={`data:image/jpeg;base64,${carEv.carImage}`} />
+                        <Carousel responsive={responsive}>
+                            {carRec?.evcar.map((carEv, index) => {
+                                return (
+                                    <div className={style['car-rec-inside']} key={carEv.carId} onClick={(e) => window.location.href = "/car-detail/" + carEv.carId}>
+                                        <div className={style['car-rec-image-container']}>
+                                            <img src={`data:image/jpeg;base64,${carEv.carImage}`} />
+                                        </div>
+                                        <div className={style['car-rec-text']}>
+                                            <label id={style['header']}>{carEv.carHeader}</label>
+                                            <label id={style['level']}>#{index + 1}</label>
+                                            <label id={style['data']}>{commonFunc.numberWithCommas(carEv.carPrice)} บาท</label>
+                                        </div>
                                     </div>
-                                    <div className={style['car-rec-text']}>
-                                        <label id={style['header']}>{carEv.carHeader}</label>
-                                        <label id={style['level']}>#{index+1}</label>
-                                        <label id={style['data']}>{commonFunc.numberWithCommas(carEv.carPrice)} บาท</label>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })}
+                        </Carousel>;
+
                     </div>
                 </>
             )

@@ -9,8 +9,9 @@
   border-radius: 15px;
   box-shadow: 5px 5px 5px rgb(0, 0, 0, 0.2);
   overflow: hidden;
-  height: 120px;
+  height: auto;
   transition-duration: 0.5s;
+  position:relative ;
 }
 .search-box .arrow-search{
   width: 100%;
@@ -21,6 +22,7 @@
 }
 .search-box .arrow-search i{
   transition-duration: 0.3s;
+
 }
 .search-box .arrow-search i:hover{
 
@@ -49,10 +51,14 @@
   padding-bottom:8px;
   box-shadow: 0px 10px 10px rgb(0, 0, 0, 0.2);
   margin: 16px;
-  height: 540px;
+  height: 560px;
   position: relative;
   cursor: pointer;
   transition-duration: 0.3s;
+}
+.card-container .card .card-detail-box{
+  /* background-color: #707070; */
+
 }
 .card-container .card:hover{
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.726);
@@ -83,7 +89,7 @@
 .card-container .card .car-detail{
   margin: 16px;
   padding-right: 12px;
-  height: 245px;
+  height: 220px;
   overflow-y: auto;
 }
 .card-container .card .car-detail h3{
@@ -190,11 +196,36 @@
   width: 100%;
   display: flex;
 }
-.card-container .card .car-detail .detail-box h3{
+.card-container .card .card-detail-box #price{
   margin: 0 auto;
   padding:6px;
   border-radius: 5px;
+  width: fit-content;
   color: #707070;
+}
+.apologize-container{
+  background-color: #707070;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px;
+}
+.apologize-container .img-container{
+  width: 90%;
+  max-width: 300px;
+}
+.apologize-container img{
+  width: 100%;
+  height: auto;
+}
+.apologize-container label{
+  font-size: 2vw;
+}
+.apologize-container label #reset{
+  color: rgb(15, 255, 80);
+  cursor: pointer;
+  text-decoration: underline;
 }
 @media (max-width: 1600px) {
   .card-container  { grid-template-columns: repeat(3, 1fr); }
@@ -203,5 +234,8 @@
   .card-container  { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 800px) {
+  .apologize-container label{
+    font-size: 3vw;
+  }
   .card-container  { grid-template-columns: repeat(1, 1fr); }
 }

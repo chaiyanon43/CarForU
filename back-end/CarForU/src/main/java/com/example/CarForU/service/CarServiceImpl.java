@@ -277,11 +277,13 @@ public class CarServiceImpl implements CarService {
         double yearMax = Double.parseDouble(carYear[1]);
         List<Double> seats = new ArrayList<>();
         if (carSeats == 0) {
-            seats.add(2.0);
-            seats.add(4.0);
-            seats.add(5.0);
-            seats.add(7.0);
-        } else {
+            seats = carRepository.findGroupByCarSeats();
+        } else if(carSeats == 14){
+            for (double i = 13; i <= 30; i++) {
+                seats.add(i);
+            }
+        }
+        else {
             seats.add(carSeats);
         }
         List<Integer> statusList = new ArrayList<>();
@@ -296,7 +298,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword, String[] carPrice, String[] carYear, String carFuelType, List<String> carBrands, List<String> carModels, double carSeats, String carGear, double carMileage,int status) {
+    public List<CarDetailCard> GetAllSecondHandCarsSearch(String keyword, String[] carPrice, String[] carYear, String carFuelType, List<String> carBrands, List<String> carModels, double carSeats, String carGear, String[] carMileage,int status) {
         if (carBrands.size() == 0 && carModels.size() == 0) {
             carBrands = new ArrayList<>();
             List<CarBrand> carBrand = carBrandRepository.findAll();
@@ -313,16 +315,17 @@ public class CarServiceImpl implements CarService {
         double priceMax = Double.parseDouble(carPrice[1]);
         double yearMin = Double.parseDouble(carYear[0]);
         double yearMax = Double.parseDouble(carYear[1]);
-        if (carMileage == 70001.0) {
-            carMileage = 100000000;
-        }
+        double mileageMin = Double.parseDouble(carMileage[0]);
+        double mileageMax = Double.parseDouble(carMileage[1]);
         List<Double> seats = new ArrayList<>();
         if (carSeats == 0) {
-            seats.add(2.0);
-            seats.add(4.0);
-            seats.add(5.0);
-            seats.add(7.0);
-        } else {
+            seats = carRepository.findGroupByCarSeats();
+        } else if(carSeats == 14){
+            for (double i = 13; i <= 30; i++) {
+                seats.add(i);
+            }
+        }
+        else {
             seats.add(carSeats);
         }
         List<Integer> statusList = new ArrayList<>();
@@ -333,11 +336,7 @@ public class CarServiceImpl implements CarService {
             statusList.add(2);
         }
         List<Car> cars = new ArrayList<>();
-        if(carMileage == 70002){
-            cars = carRepository.searchSecondCarMoreThan(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage,statusList);
-        }else{
-            cars = carRepository.searchSecondCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, carMileage,statusList);
-        }
+        cars = carRepository.searchSecondCar(keyword, carBrands, carModels, priceMin, priceMax, yearMin, yearMax, seats, carGear, carFuelType, mileageMin,mileageMax,statusList);
         return ConditionClassify(cars);
     }
 
@@ -511,6 +510,7 @@ public class CarServiceImpl implements CarService {
             car.setCarHeader(cars.get(i).getCarHeader());
             car.setCarImage(carImageRepository.findCarImageByCarId(cars.get(i).getCarId()).get(0).getCarImage());
             car.setUsername(cars.get(i).getUser().getUsername());
+            car.setCarYear(cars.get(i).getCarYear());
             carResult.add(car);
         }
         return carResult;
@@ -548,9 +548,9 @@ public class CarServiceImpl implements CarService {
             }
         }
 
-        Object[] sortedEVEuclidean = evResult.stream().sorted((eu1, eu2) -> Double.compare(eu1.getEuclideanDistance(), eu2.getEuclideanDistance())).limit(3).toArray();
-        Object[] sortedHybridEuclidean = hybridResult.stream().sorted((eu1, eu2) -> Double.compare(eu1.getEuclideanDistance(), eu2.getEuclideanDistance())).limit(3).toArray();
-        Object[] sortedNormalEuclidean = norResult.stream().sorted((eu1, eu2) -> Double.compare(eu1.getEuclideanDistance(), eu2.getEuclideanDistance())).limit(3).toArray();
+        Object[] sortedEVEuclidean = evResult.stream().sorted((eu1, eu2) -> Double.compare(eu1.getEuclideanDistance(), eu2.getEuclideanDistance())).toArray();
+        Object[] sortedHybridEuclidean = hybridResult.stream().sorted((eu1, eu2) -> Double.compare(eu1.getEuclideanDistance(), eu2.getEuclideanDistance())).toArray();
+        Object[] sortedNormalEuclidean = norResult.stream().sorted((eu1, eu2) -> Double.compare(eu1.getEuclideanDistance(), eu2.getEuclideanDistance())).toArray();
         euclideanResultList.setEuclideanResultEVList(sortedEVEuclidean);
         euclideanResultList.setEuclideanResultHybridList(sortedHybridEuclidean);
         euclideanResultList.setEuclideanResultNormalList(sortedNormalEuclidean);
@@ -566,7 +566,8 @@ public class CarServiceImpl implements CarService {
             tempEuclideanDistance = tempEuclideanDistance + Math.pow(recTemp.getCarEVRange() - norCar.getCarEVRange(), 2);
         } else if (
                 ((recTemp.getCarFuelType().equals("ไฮบริด") && norCar.getCarFuelType().equals("ไฮบริด")) ||
-                        (!recTemp.getCarFuelType().equals("ไฮบริด") && !norCar.getCarFuelType().equals("ไฮบริด"))) && !(recTemp.getCarFuelType().equals("EV") || norCar.getCarFuelType().equals("EV"))
+                        (!recTemp.getCarFuelType().equals("ไฮบริด") && !norCar.getCarFuelType().equals("ไฮบริด")))
+                        && !(recTemp.getCarFuelType().equals("EV") || norCar.getCarFuelType().equals("EV"))
         ) {
             tempEuclideanDistance = tempEuclideanDistance +
                     (Math.pow(recTemp.getCarFuelConsumption() - norCar.getCarFuelConsumption(), 2));

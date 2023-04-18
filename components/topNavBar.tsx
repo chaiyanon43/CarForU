@@ -17,6 +17,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { NotificationService } from 'services/Notification.service';
 import { MenuItemCommandParams } from 'primereact/menuitem';
 import { NotificationPanel } from './notificationPanel';
+import newCar from '../images/new-car.png'
 import style from "../src/styles/Header.module.css"
 const TopNavBar = () => {
     const [displayBasic, setDisplayBasic] = useState<boolean>(false);

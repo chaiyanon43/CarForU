@@ -3,6 +3,7 @@ package com.example.CarForU.repository;
 import com.example.CarForU.entity.Car;
 import com.example.CarForU.entity.CarModel;
 import com.example.CarForU.entity.User;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -56,14 +57,14 @@ public interface CarRepository extends JpaRepository<Car,Integer> {
             "OR c.modelId.modelName LIKE CONCAT('%', :keyword,'%')  " +
             "OR c.carDesc LIKE CONCAT('%', :keyword,'%')) and (c.modelId.carBrand.brandName IN :carBrands or " +
             "c.modelId.modelName IN :carModels) and (c.carPrice between :priceMin and :priceMax) and (c.carYear between :yearMin and  :yearMax) and " +
-            "(c.carMileage <:carMileage)" +
+            "(c.carMileage between :mileageMin and :mileageMax) " +
             "and c.carSeats in :carSeats and c.carGearType LIKE CONCAT('%', :gear,'%') and c.carFuelType LIKE CONCAT('%', :fuelType,'%') and  c.carCondition='มือสอง' and c.carStatus=1 and c.user.status IN :status " +
             "ORDER BY c.carId DESC "
     )
     List<Car> searchSecondCar(@Param("keyword") String keyword,@Param("carBrands") List<String> carBrands,@Param("carModels") List<String> carModels
             ,@Param("priceMin") double priceMin,@Param("priceMax") double priceMax,@Param("yearMin") double yearMin
             ,@Param("yearMax") double yearMax,List<Double> carSeats,@Param("gear") String gear,@Param("fuelType") String fuelType
-            ,@Param("carMileage") double carMileage,@Param("status") List<Integer> status);
+            ,@Param("mileageMin") double mileageMin,@Param("mileageMax") double mileageMax,@Param("status") List<Integer> status);
     @Query("SELECT c FROM Car c WHERE (c.carHeader LIKE CONCAT('%', :keyword,'%') " +
             "OR c.modelId.carBrand.brandName LIKE CONCAT('%', :keyword,'%')  " +
             "OR c.modelId.modelName LIKE CONCAT('%', :keyword,'%')  " +
@@ -113,5 +114,10 @@ public interface CarRepository extends JpaRepository<Car,Integer> {
     void unBanCarById(@Param("carId") int carId);
     @Query("SELECT c from Car c where c.user.userId =:userId")
     List<Car> findCarForAdminByUserId(@Param("userId") int userId);
+
+    @Query("Select c from Car c where c.user.userId =:userId")
+    List<Car> findCarTestSort(@Param("userId") int userId, Sort sort);
+    @Query("Select c.carSeats from Car c group by c.carSeats")
+    List<Double> findGroupByCarSeats();
 
 }

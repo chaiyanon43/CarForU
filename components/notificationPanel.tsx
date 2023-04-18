@@ -82,6 +82,9 @@ export const NotificationPanel = (props: notificationForm) => {
                         <InputTextarea id={style["desc"]} style={{ margin: "8px 0", overflow: "auto" }} rows={5} cols={30} autoResize placeholder="กรุณากรอกรายละเอียดหรือข้อมูลที่ต้องการสอบถามเบื้องต้น"
                             onChange={(e) => setValue("notificationDesc", e.target.value)} value={notificationData ? notificationData.notificationDesc:watch("notificationDesc")} disabled={notificationData} />
                     </div>
+                    <div className={style["contact-box"]}>
+                        {notificationData ? <Button onClick={(e)=>window.location.href = "/car-detail/"+notificationData.carId}>ไปที่หน้ารถยนต์</Button>:null}
+                    </div>
                 </div>
             </Dialog>
 

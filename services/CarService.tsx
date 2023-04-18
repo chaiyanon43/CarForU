@@ -1,5 +1,5 @@
 import axios from "../axios.config"
-import { CarData, carRec, FavoriteRequest } from "components/interfaces";
+import { carCard, CarData, carRec, FavoriteRequest } from "components/interfaces";
 import { toaster } from "evergreen-ui";
 
 export class CarService {
@@ -99,7 +99,7 @@ export class CarService {
     async getCarFirstHand() {
         try {
             const status = sessionStorage.getItem('role') === 'admin' ? 2:1
-            return await axios.get("http://localhost:8080/all-first-hand-car",{params:{status:status}})
+            return await axios.get<carCard[]>("http://localhost:8080/all-first-hand-car",{params:{status:status}})
                 .then((res) => res.data)
         } catch (err: any) {
             toaster.danger("Get cars Error!", {
@@ -110,7 +110,7 @@ export class CarService {
     async getCarSecondHand() {
         try {
             const status = sessionStorage.getItem('role') === 'admin' ? 2:1
-            return await axios.get("http://localhost:8080/all-second-hand-car",{params:{status:status}})
+            return await axios.get<carCard[]>("http://localhost:8080/all-second-hand-car",{params:{status:status}})
                 .then((res) => res.data)
         } catch (err: any) {
             toaster.danger("Get cars Error!", {

@@ -41,6 +41,17 @@
   justify-content: center;
   flex-direction: column;
 }
+.cal-main .after-cal .after-cal-inside{
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+}
+.cal-main .after-cal .after-cal-inside label{
+  margin: 8px 0;
+}
 .cal-main .after-cal label {
   width: fit-content;
   margin: 0 auto;
@@ -50,6 +61,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 12px;
 }
 .cal-main .after-cal .button-cal button {
   width: 90px;
@@ -86,6 +98,9 @@
     width: 100%;
     margin-bottom: 8px;
   }
-  
-  
+}
+@media (max-width: 400px) {
+  .cal-main .after-cal .after-cal-inside{
+    flex-direction: column;
+  }
 }

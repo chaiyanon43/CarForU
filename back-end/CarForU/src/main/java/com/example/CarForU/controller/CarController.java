@@ -1,9 +1,12 @@
 package com.example.CarForU.controller;
 
 import com.example.CarForU.bean.*;
+import com.example.CarForU.entity.Car;
+import com.example.CarForU.repository.CarRepository;
 import com.example.CarForU.service.CarImageService;
 import com.example.CarForU.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,8 @@ public class CarController {
     CarService carService;
     @Autowired
     CarImageService carImageService;
+    @Autowired
+    CarRepository carRepository;
 
 
 //    @GetMapping("/rec-func1")
@@ -38,7 +43,7 @@ public class CarController {
 
     @PostMapping("/all-first-hand-car-search")
     public ResponseEntity<List<CarDetailCard>> GetFirstHandCarsSearch(
-            @RequestParam(name = "searchKeyword") String keyword,
+            @RequestParam(name = "searchKeyword" , required = false) String keyword,
             @RequestParam(name = "carPrice", required = false, defaultValue = "0,20000000") String[] carPrice,
             @RequestParam(name = "carYear", required = false, defaultValue = "0,3000") String[] carYear,
             @RequestParam(name = "carFuelType", required = false) String carFuelType,
@@ -60,7 +65,7 @@ public class CarController {
     }
     @PostMapping("/all-second-hand-car-search")
     public ResponseEntity<List<CarDetailCard>> GetSecondHandCarsSearch(
-            @RequestParam(name = "searchKeyword") String keyword,
+            @RequestParam(name = "searchKeyword" , required = false) String keyword,
             @RequestParam(name = "carPrice", required = false, defaultValue = "0,200000000") String[] carPrice,
             @RequestParam(name = "carYear", required = false, defaultValue = "0,3000") String[] carYear,
             @RequestParam(name = "carFuelType", required = false) String carFuelType,
@@ -68,7 +73,7 @@ public class CarController {
             @RequestParam(name = "carModels", required = false, defaultValue = "") String[] carModels,
             @RequestParam(name = "carSeats", required = false, defaultValue = "0.0") double carSeats,
             @RequestParam(name = "carGear", required = false) String carGear,
-            @RequestParam(name = "carMileage" ,required = false, defaultValue = "70001.0") double carMileage,
+            @RequestParam(name = "carMileage" ,required = false, defaultValue = "0,1000000") String[] carMileage,
             @RequestParam(name = "status") int status
     ) {
         List<String> brands = new ArrayList<String>();

@@ -15,6 +15,7 @@ public class CarDetailCard {
     private double carPrice;
     private String carImage;
     private String username;
+    private double carYear;
 
     public CarDetailCard() {
     }
